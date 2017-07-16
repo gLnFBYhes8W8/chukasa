@@ -3,6 +3,7 @@ package pro.hirooka.chukasa.domain.configuration;
 import com.google.common.base.Predicates;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
@@ -21,15 +22,11 @@ public class Swagger2Configuration {
                 "",
                 ""
         );
-        ApiInfo apiInfo = new ApiInfo(
-                "chukasa",
-                "chukasa API",
-                "1",
-                "",
-                contact,
-                "",
-                ""
-        );
+        ApiInfo apiInfo = new ApiInfoBuilder()
+                .title("chukasa")
+                .version("1")
+                .description("chukasa API")
+                .build();
         return new Docket(
                 DocumentationType.SWAGGER_2)
                 .select()
