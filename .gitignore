@@ -1,4 +1,32 @@
-.gradle/
+# Java
+
+# Eclipse
+.project
+.classpath
+.settings
+
+# Idea
 .idea/
-build/
-logs/
+*.iml
+*.iws
+*.ipr
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Gradle
+.gradle/
+
+# Maven
+target
+
+# Build
+out
+build
+bin
+
+# Other
+*.log
+*.swp
+*.bak
