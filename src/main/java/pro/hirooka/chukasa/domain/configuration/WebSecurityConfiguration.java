@@ -8,7 +8,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import pro.hirooka.chukasa.chukasa_auth.domain.service.IChukasaUserDetailsService;
+import pro.hirooka.chukasa.chukasa_aaa.domain.service.IChukasaUserDetailsService;
 
 @EnableWebSecurity
 @Configuration

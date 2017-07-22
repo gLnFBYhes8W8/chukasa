@@ -1,18 +1,18 @@
-package pro.hirooka.chukasa.chukasa_auth.domain.service;
+package pro.hirooka.chukasa.chukasa_aaa.domain.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import pro.hirooka.chukasa.chukasa_auth.domain.entity.OperationEntity;
-import pro.hirooka.chukasa.chukasa_auth.domain.entity.PermissionEntity;
-import pro.hirooka.chukasa.chukasa_auth.domain.entity.RoleEntity;
-import pro.hirooka.chukasa.chukasa_auth.domain.entity.UserDetailsEntity;
-import pro.hirooka.chukasa.chukasa_auth.domain.entity.type.OperationType;
-import pro.hirooka.chukasa.chukasa_auth.domain.repository.OperationEntityRepository;
-import pro.hirooka.chukasa.chukasa_auth.domain.repository.PermissionEntityRepository;
-import pro.hirooka.chukasa.chukasa_auth.domain.repository.RoleEntityRepository;
-import pro.hirooka.chukasa.chukasa_auth.domain.repository.UserDetailsEntityRepository;
+import pro.hirooka.chukasa.chukasa_aaa.domain.entity.PermissionEntity;
+import pro.hirooka.chukasa.chukasa_aaa.domain.entity.UserDetailsEntity;
+import pro.hirooka.chukasa.chukasa_aaa.domain.repository.RoleEntityRepository;
+import pro.hirooka.chukasa.chukasa_aaa.domain.entity.OperationEntity;
+import pro.hirooka.chukasa.chukasa_aaa.domain.entity.RoleEntity;
+import pro.hirooka.chukasa.chukasa_aaa.domain.entity.type.OperationType;
+import pro.hirooka.chukasa.chukasa_aaa.domain.repository.OperationEntityRepository;
+import pro.hirooka.chukasa.chukasa_aaa.domain.repository.PermissionEntityRepository;
+import pro.hirooka.chukasa.chukasa_aaa.domain.repository.UserDetailsEntityRepository;
 
 import javax.annotation.PostConstruct;
 import java.util.HashSet;

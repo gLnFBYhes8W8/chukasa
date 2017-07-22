@@ -1,8 +1,0 @@
-spring:
-    datasource:
-        url: jdbc:postgresql://localhost:5432/chukasa
-        username: chukasa
-        password: chukasa
-    jpa:
-        hibernate:
-          ddl-auto: create-drop

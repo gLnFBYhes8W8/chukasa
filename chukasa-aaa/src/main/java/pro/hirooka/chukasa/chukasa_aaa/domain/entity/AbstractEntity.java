@@ -1,4 +1,4 @@
-package pro.hirooka.chukasa.chukasa_auth.domain.entity;
+package pro.hirooka.chukasa.chukasa_aaa.domain.entity;
 
 import lombok.Getter;
 import org.hibernate.annotations.CreationTimestamp;

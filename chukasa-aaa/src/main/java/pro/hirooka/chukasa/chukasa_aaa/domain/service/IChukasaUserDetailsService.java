@@ -1,4 +1,4 @@
-package pro.hirooka.chukasa.chukasa_auth.domain.service;
+package pro.hirooka.chukasa.chukasa_aaa.domain.service;
 
 import org.springframework.security.core.userdetails.UserDetailsService;
 

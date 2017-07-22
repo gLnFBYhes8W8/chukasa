@@ -10,7 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import pro.hirooka.chukasa.api.v1.helper.IChukasaBrowserDetector;
-import pro.hirooka.chukasa.chukasa_auth.domain.entity.UserDetailsEntity;
+import pro.hirooka.chukasa.chukasa_aaa.domain.entity.UserDetailsEntity;
 import pro.hirooka.chukasa.domain.configuration.ChukasaConfiguration;
 import pro.hirooka.chukasa.domain.configuration.EpgdumpConfiguration;
 import pro.hirooka.chukasa.domain.configuration.SystemConfiguration;
