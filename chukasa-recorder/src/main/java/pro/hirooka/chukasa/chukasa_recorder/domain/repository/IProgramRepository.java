@@ -2,10 +2,12 @@ package pro.hirooka.chukasa.chukasa_recorder.domain.repository;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
+import org.springframework.stereotype.Repository;
 import pro.hirooka.chukasa.chukasa_recorder.domain.model.Program;
 
 import java.util.List;
 
+@Repository
 public interface IProgramRepository extends MongoRepository<Program, String> {
 
     // ex. {$and:[{'piyo':{$eq:123}},{'channel':{$regex:/^GR_/}}]}

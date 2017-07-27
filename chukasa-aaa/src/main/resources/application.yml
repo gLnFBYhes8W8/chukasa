@@ -1,7 +1,14 @@
 spring:
   profiles:
     active: localhost-postgresql
+---
+spring:
+  profiles: localhost-hsqldb
+---
+spring:
+  profiles: localhost-postgresql
   datasource:
+    url: jdbc:postgresql://localhost:5432/chukasa
     username: chukasa
     password: chukasa
   jpa:
@@ -9,11 +16,11 @@ spring:
       ddl-auto: create-drop
 ---
 spring:
-  profiles: localhost-postgresql
-  datasource:
-    url: jdbc:postgresql://localhost:5432/chukasa
----
-spring:
   profiles: localhost-mysql
   datasource:
     url: jdbc:mysql://localhost:3306/chukasa # TODO: not working...
+    username: chukasa
+    password: chukasa
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
