@@ -1,0 +1,10 @@
+# MongoDB
+# if want to use this application on Docker, change ex. "spring.data.mongodb.host=mongo"
+# spring.data.mongodb.host=mongo
+spring:
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: chukasa
+      server-selection-timeout: 500

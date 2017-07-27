@@ -1,8 +1,8 @@
-package pro.hirooka.chukasa.domain.service.chukasa.task;
-
-public interface ITaskCoordinatorService {
-    void execute();
-    void cancel();
-    void stop();
-    void remove();
-}
+//package pro.hirooka.chukasa.domain.service.chukasa.task;
+//
+//public interface ITaskCoordinatorService {
+//    void execute();
+//    void cancel();
+//    void stop();
+//    void remove();
+//}
