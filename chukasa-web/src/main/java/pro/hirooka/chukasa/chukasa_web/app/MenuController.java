@@ -78,6 +78,10 @@ public class MenuController {
             log.info("ADMIN");
         }
         // SecurityExpressionRoot
+        if(userDetailsEntity == null){
+            userDetailsEntity = new UserDetailsEntity();
+            userDetailsEntity.setUsername("inMmemory");
+        }
         model.addAttribute("user", userDetailsEntity);
 
         if(epgdumpService.getStatus().equals(EpgdumpStatus.RUNNING)){

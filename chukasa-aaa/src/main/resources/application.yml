@@ -1,9 +1,12 @@
 spring:
   profiles:
-    active: localhost-hsqldb
+    active: inmemory
   jpa:
     hibernate:
       ddl-auto: create-drop
+---
+spring:
+  profiles: inmemory
 ---
 spring:
   profiles: localhost-hsqldb

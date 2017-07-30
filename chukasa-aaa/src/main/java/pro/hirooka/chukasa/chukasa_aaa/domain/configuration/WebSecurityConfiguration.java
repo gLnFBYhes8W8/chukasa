@@ -16,11 +16,21 @@ import pro.hirooka.chukasa.chukasa_aaa.domain.service.IChukasaUserDetailsService
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
+    AaaConfiguration aaaConfiguration;
+    @Autowired
     IChukasaUserDetailsService chukasaUserDetailsService;
 
     @Override
     protected void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
-        authenticationManagerBuilder.userDetailsService(this.chukasaUserDetailsService);//.passwordEncoder(passwordEncoder()); // TODO:
+        if(aaaConfiguration.getProfiles().equals("localhost-hsqldb")
+                || aaaConfiguration.getProfiles().equals("localhost-postgresql")
+                || aaaConfiguration.getProfiles().equals("localhost-mysql")){
+            authenticationManagerBuilder.userDetailsService(this.chukasaUserDetailsService);//.passwordEncoder(passwordEncoder()); // TODO:
+        }else if(aaaConfiguration.getProfiles().equals("inmemory")) {
+            authenticationManagerBuilder.inMemoryAuthentication().withUser("admin").password("admin").roles("ADMIN");
+            authenticationManagerBuilder.inMemoryAuthentication().withUser("user").password("user").roles("USER");
+            authenticationManagerBuilder.inMemoryAuthentication().withUser("guest").password("guest").roles("GUEST");
+        }
     }
 
     @Override
