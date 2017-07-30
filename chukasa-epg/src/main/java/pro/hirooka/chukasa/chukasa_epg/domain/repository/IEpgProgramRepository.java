@@ -8,7 +8,7 @@ import pro.hirooka.chukasa.chukasa_recorder.domain.model.Program;
 import java.util.List;
 
 @Repository
-public interface IProgramRepository extends MongoRepository<Program, String> {
+public interface IEpgProgramRepository extends MongoRepository<Program, String> {
 
     // ex. {$and:[{'piyo':{$eq:123}},{'channel':{$regex:/^GR_/}}]}
     //@Query("{$and:[{'piyo':{$eq:?0}},{'channel':{$regex:?1}}]}")

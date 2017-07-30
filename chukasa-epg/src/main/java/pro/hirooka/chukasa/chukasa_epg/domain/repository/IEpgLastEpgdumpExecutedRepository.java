@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 import pro.hirooka.chukasa.chukasa_epg.domain.model.LastEpgdumpExecuted;
 
 @Repository
-public interface ILastEpgdumpExecutedRepository extends MongoRepository<LastEpgdumpExecuted, Integer> {
+public interface IEpgLastEpgdumpExecutedRepository extends MongoRepository<LastEpgdumpExecuted, Integer> {
 }

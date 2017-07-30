@@ -1,6 +1,9 @@
 spring:
   profiles:
-    active: localhost-postgresql
+    active: localhost-hsqldb
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
 ---
 spring:
   profiles: localhost-hsqldb
@@ -11,9 +14,6 @@ spring:
     url: jdbc:postgresql://localhost:5432/chukasa
     username: chukasa
     password: chukasa
-  jpa:
-    hibernate:
-      ddl-auto: create-drop
 ---
 spring:
   profiles: localhost-mysql
@@ -21,6 +21,3 @@ spring:
     url: jdbc:mysql://localhost:3306/chukasa # TODO: not working...
     username: chukasa
     password: chukasa
-  jpa:
-    hibernate:
-      ddl-auto: create-drop

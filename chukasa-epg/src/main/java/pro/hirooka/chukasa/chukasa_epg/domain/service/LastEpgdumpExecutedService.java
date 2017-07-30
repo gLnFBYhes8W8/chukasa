@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
 import org.springframework.stereotype.Component;
 import pro.hirooka.chukasa.chukasa_common.domain.configuration.MongoDBConfiguration;
 import pro.hirooka.chukasa.chukasa_epg.domain.model.LastEpgdumpExecuted;
-import pro.hirooka.chukasa.chukasa_epg.domain.repository.ILastEpgdumpExecutedRepository;
+import pro.hirooka.chukasa.chukasa_epg.domain.repository.IEpgLastEpgdumpExecutedRepository;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ import java.util.List;
 public class LastEpgdumpExecutedService implements ILastEpgdumpExecutedService {
 
     @Autowired
-    ILastEpgdumpExecutedRepository lastEpgdumpExecutedRepository;
+    IEpgLastEpgdumpExecutedRepository lastEpgdumpExecutedRepository;
     @Autowired
     private MongoDBConfiguration mongoDBConfiguration;
 
