@@ -30,12 +30,12 @@ repositories {
 }
 
 dependencies {
+    compile project(':chukasa-common')
     compile ('org.springframework.boot:spring-boot-starter-web') {
         exclude module: 'spring-boot-starter-tomcat'
     }
     compile 'org.springframework.boot:spring-boot-starter-jetty'
     compile 'org.springframework.data:spring-data-mongodb'
-    compile project(':chukasa-common')
 }
 
 dependencyManagement {

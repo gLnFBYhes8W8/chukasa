@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pro.hirooka.chukasa.chukasa_common.domain.constants.ChukasaConstants;
+import pro.hirooka.chukasa.chukasa_common.domain.enums.FfmpegVcodecType;
+import pro.hirooka.chukasa.chukasa_common.domain.enums.HardwareAccelerationType;
 import pro.hirooka.chukasa.chukasa_common.domain.enums.PlaylistType;
 import pro.hirooka.chukasa.chukasa_hls.domain.model.ChukasaModel;
 import pro.hirooka.chukasa.chukasa_hls.domain.service.IChukasaModelManagementComponent;
@@ -20,7 +22,6 @@ public class PlaylistCreator implements IPlaylistCreator {
     final String FILE_SEPARATOR = ChukasaConstants.FILE_SEPARATOR;
     final String initialStreamPath = ChukasaConstants.INITIAL_STREAM_PATH;
     final String STREAM_FILE_NAME_PREFIX = ChukasaConstants.STREAM_FILE_NAME_PREFIX;
-    final String STREAM_FILE_EXTENSION = ChukasaConstants.STREAM_FILE_EXTENSION;
     final String M3U8_FILE_NAME = ChukasaConstants.M3U8_FILE_NAME;
     final String M3U8_FILE_EXTENSION = ChukasaConstants.M3U8_FILE_EXTENSION;
 
@@ -39,6 +40,7 @@ public class PlaylistCreator implements IPlaylistCreator {
         try {
 
             final ChukasaModel chukasaModel = chukasaModelManagementComponent.get(adaptiveBitrateStreaming);
+            final String STREAM_FILE_EXTENSION = chukasaModel.getStreamFileExtension();
 
             final int URI_IN_PLAYLIST = chukasaModel.getHlsConfiguration().getUriInPlaylist();
             final int TARGET_DURATION = chukasaModel.getHlsConfiguration().getDuration() + 1;
@@ -46,6 +48,8 @@ public class PlaylistCreator implements IPlaylistCreator {
             final PlaylistType playlistType = chukasaModel.getChukasaSettings().getPlaylistType();
             final String playlistPath = chukasaModel.getStreamPath() + FILE_SEPARATOR + M3U8_FILE_NAME + M3U8_FILE_EXTENSION;
             final boolean canEncrypt = chukasaModel.getChukasaSettings().isCanEncrypt();
+
+            final FfmpegVcodecType ffmpegVcodecType = chukasaModel.getFfmpegVcodecType();
 
             final int sequenceMediaSegment = chukasaModel.getSequenceMediaSegment();
             final int sequencePlaylist = chukasaModel.getSequencePlaylist();
@@ -81,6 +85,13 @@ public class PlaylistCreator implements IPlaylistCreator {
                         }
                         bufferedWriter.newLine();
 
+                        // TODO: HardwareAccelerationType -> hls_segment_type
+                        // /usr/local/bin/ffmpeg -i now_transcoding.ts -acodec aac -ab 160k -ar 48000 -ac 2 -s 1280x720 -vcodec hevc_nvenc -tag:v hvc1 -g 60 -b:v 2560k -threads 1 -f hls -hls_segment_type fmp4 -segment_time 2 i.m3u8
+                        if(ffmpegVcodecType == FfmpegVcodecType.HEVC_NVENC){
+                            bufferedWriter.write("#EXT-X-MAP:URI=\"" + initialStreamPath + "/init.mp4\"");
+                            bufferedWriter.newLine();
+                        }
+
                         if (playlistType == PlaylistType.LIVE) {
                             for (int i = initialSequenceInPlaylist; i < initialSequenceInPlaylist + URI_IN_PLAYLIST - (sequenceMediaSegment + 1); i++) {
                                 bufferedWriter.write("#EXTINF:" + DURATION + ",");
@@ -99,6 +110,11 @@ public class PlaylistCreator implements IPlaylistCreator {
 
                         bufferedWriter.write("#EXT-X-DISCONTINUITY");
                         bufferedWriter.newLine();
+
+                        if(ffmpegVcodecType == FfmpegVcodecType.HEVC_NVENC){
+                            bufferedWriter.write("#EXT-X-MAP:URI=\"" + STREAM_FILE_NAME_PREFIX + ".mp4\"");
+                            bufferedWriter.newLine();
+                        }
 
                         for (int i = 0; i < sequenceMediaSegment + 1; i++) {
                             if(canEncrypt) {
@@ -136,6 +152,11 @@ public class PlaylistCreator implements IPlaylistCreator {
                                 bufferedWriter.newLine();
                             }
                             bufferedWriter.write("#EXT-X-DISCONTINUITY");
+                            bufferedWriter.newLine();
+                        }
+
+                        if(ffmpegVcodecType == FfmpegVcodecType.HEVC_NVENC){
+                            bufferedWriter.write("#EXT-X-MAP:URI=\"" + STREAM_FILE_NAME_PREFIX + ".mp4\"");
                             bufferedWriter.newLine();
                         }
 
@@ -203,6 +224,11 @@ public class PlaylistCreator implements IPlaylistCreator {
                     bufferedWriter.newLine();
                     bufferedWriter.write("#EXT-X-MEDIA-SEQUENCE:" + sequenceInitialPlaylist);
                     bufferedWriter.newLine();
+
+                    if(ffmpegVcodecType == FfmpegVcodecType.HEVC_NVENC){
+                        bufferedWriter.write("#EXT-X-MAP:URI=\"" + initialStreamPath + "/init.mp4\"");
+                        bufferedWriter.newLine();
+                    }
 
                     if(playlistType == PlaylistType.LIVE) {
                         for (int i = sequenceInitialPlaylist; i < sequenceInitialPlaylist + URI_IN_PLAYLIST; i++) {

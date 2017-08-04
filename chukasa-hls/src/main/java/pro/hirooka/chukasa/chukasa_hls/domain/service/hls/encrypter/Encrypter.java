@@ -23,7 +23,6 @@ public class Encrypter implements Runnable {
     static final String FILE_SEPARATOR = System.getProperty("file.separator");
 
     final String STREAM_FILE_NAME_PREFIX = ChukasaConstants.STREAM_FILE_NAME_PREFIX;
-    final String STREAM_FILE_EXTENSION = ChukasaConstants.STREAM_FILE_EXTENSION;
     final int MPEG2_TS_PACKET_LENGTH = ChukasaConstants.MPEG2_TS_PACKET_LENGTH;
 
     private int adaptiveBitrateStreaming;
@@ -39,6 +38,7 @@ public class Encrypter implements Runnable {
     public void run() {
 
         ChukasaModel chukasaModel = chukasaModelManagementComponent.get(adaptiveBitrateStreaming);
+        final String STREAM_FILE_EXTENSION = chukasaModel.getStreamFileExtension();
         String streamPath = chukasaModel.getStreamPath();
         String tempEncPath = chukasaModel.getTempEncPath();
 

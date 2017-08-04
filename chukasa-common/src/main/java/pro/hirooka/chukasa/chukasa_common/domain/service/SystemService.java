@@ -10,6 +10,7 @@ import pro.hirooka.chukasa.chukasa_common.domain.configuration.EpgdumpConfigurat
 import pro.hirooka.chukasa.chukasa_common.domain.configuration.MongoDBConfiguration;
 import pro.hirooka.chukasa.chukasa_common.domain.configuration.SystemConfiguration;
 import pro.hirooka.chukasa.chukasa_common.domain.constants.ChukasaConstants;
+import pro.hirooka.chukasa.chukasa_common.domain.enums.FfmpegVcodecType;
 import pro.hirooka.chukasa.chukasa_common.domain.enums.HardwareAccelerationType;
 
 import java.io.BufferedReader;
@@ -146,5 +147,72 @@ public class SystemService implements ISystemService {
         return HardwareAccelerationType.H264_NVENC;
     }
 
+    @Override
+    public FfmpegVcodecType getFfmpegVcodecType(String userAgent) {
+        final String H264_QSV = "--enable-libmfx";
+        final String H264_X264 = "--enable-libx264";
+        final String H264_OMX = "--enable-omx-rpi";
+        final String ffmpeg = systemConfiguration.getFfmpegPath();
+        final String[] command = {ffmpeg, "-version"};
+        final ProcessBuilder processBuilder = new ProcessBuilder(command);
+        try {
+            final Process process = processBuilder.start();
+            final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String str = "";
+            while((str = bufferedReader.readLine()) != null){
+                log.info(str);
+                if(str.contains(H264_QSV)){
+                    bufferedReader.close();
+                    process.destroy();
+                    return FfmpegVcodecType.H264_QSV;
+                }
+                if(str.contains(H264_OMX)){
+                    bufferedReader.close();
+                    process.destroy();
+                    return FfmpegVcodecType.H264_OMX;
+                }
+                if(str.contains(H264_X264)){
+                    bufferedReader.close();
+                    process.destroy();
+                    return FfmpegVcodecType.H264_X264;
+                }
+            }
+            bufferedReader.close();
+            process.destroy();
+        } catch (IOException e) {
+            log.error("{} {}", e.getMessage(), e);
+        }
+        final String SAFARI = "Safari/";
+        final String CHROME = "Chrome/";
+        final String CHROMIUM = "Chromium/";
+        final String IPHONE = "iPhone; CPU iPhone OS ";
+        final String IPAD = "iPad; CPU OS ";
+        final String MAC = "Macintosh; Intel Mac OS X ";
+        if(userAgent.contains(SAFARI) && !userAgent.contains(CHROME) && !userAgent.contains(CHROMIUM)){
+            if(userAgent.contains(IPHONE)){
+                final String versionUnderscoreString = userAgent.split(IPHONE)[1].split(" ")[0];
+                final String versionString = versionUnderscoreString.replace("_", ".");
+                final double version = Double.parseDouble(versionString);
+                if(version >= 11.0){
+                    return FfmpegVcodecType.HEVC_NVENC;
+                }
+            }else if(userAgent.contains(IPAD)){
+                final String versionUnderscoreString = userAgent.split(IPAD)[1].split(" ")[0];
+                final String versionString = versionUnderscoreString.replace("_", ".");
+                final double version = Double.parseDouble(versionString);
+                if(version >= 11.0){
+                    return FfmpegVcodecType.HEVC_NVENC;
+                }
+            }else if(userAgent.contains(MAC)){
+                final String versionUnderscoreString = userAgent.split(MAC)[1].split(" ")[0];
+                final String versionString = versionUnderscoreString.replace("_", ".");
+                final double version = Double.parseDouble(versionString);
+                if(version >= 10.13){
+                    return FfmpegVcodecType.HEVC_NVENC;
+                }
+            }
+        }
+        return FfmpegVcodecType.H264_NVENC;
+    }
 }
 

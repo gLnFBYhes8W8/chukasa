@@ -13,6 +13,7 @@ import pro.hirooka.chukasa.chukasa_api.app.api.v1.helper.ChukasaUtility;
 import pro.hirooka.chukasa.chukasa_api.app.api.v1.helper.IChukasaBrowserDetector;
 import pro.hirooka.chukasa.chukasa_common.domain.configuration.ChukasaConfiguration;
 import pro.hirooka.chukasa.chukasa_common.domain.configuration.SystemConfiguration;
+import pro.hirooka.chukasa.chukasa_common.domain.enums.FfmpegVcodecType;
 import pro.hirooka.chukasa.chukasa_common.domain.enums.HardwareAccelerationType;
 import pro.hirooka.chukasa.chukasa_common.domain.enums.StreamingType;
 import pro.hirooka.chukasa.chukasa_common.domain.service.ICommonUtilityService;
@@ -60,8 +61,11 @@ public class Html5PlayerController {
             return "index";
         }
 
-        HardwareAccelerationType hardwareAccelerationType = systemService.getHardwareAccelerationType();
-        if(hardwareAccelerationType == HardwareAccelerationType.UNKNOWN){
+        String userAgent = httpServletRequest.getHeader("user-agent");
+        log.info("userAgent: {}", userAgent);
+
+        FfmpegVcodecType ffmpegVcodecType = systemService.getFfmpegVcodecType(userAgent);
+        if(ffmpegVcodecType == FfmpegVcodecType.UNKNOWN){
             return "index";
         }
 
@@ -80,7 +84,10 @@ public class Html5PlayerController {
 
         chukasaModel.setUuid(UUID.randomUUID());
         chukasaModel.setAdaptiveBitrateStreaming(0);
-        chukasaModel.setHardwareAccelerationType(hardwareAccelerationType);
+        chukasaModel.setFfmpegVcodecType(ffmpegVcodecType);
+        if(ffmpegVcodecType == FfmpegVcodecType.HEVC_NVENC){
+            chukasaModel.setStreamFileExtension(".m4s");
+        }
 
         chukasaModel = ChukasaUtility.operateEncodingSettings(chukasaModel);
         if(chukasaModel == null){
@@ -107,8 +114,6 @@ public class Html5PlayerController {
         html5PlayerModel.setPlaylistURI(playlistURI);
         model.addAttribute("html5PlayerModel", html5PlayerModel);
 
-        String userAgent = httpServletRequest.getHeader("user-agent");
-        log.info("userAgent: {}", userAgent);
         if(chukasaBrowserDetector.isNativeSupported(userAgent)){
             return "player";
         }else if(chukasaBrowserDetector.isAlternativeSupported(userAgent)){

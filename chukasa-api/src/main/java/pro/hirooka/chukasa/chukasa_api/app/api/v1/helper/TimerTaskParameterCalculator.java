@@ -3,6 +3,7 @@ package pro.hirooka.chukasa.chukasa_api.app.api.v1.helper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import pro.hirooka.chukasa.chukasa_common.domain.enums.FfmpegVcodecType;
 import pro.hirooka.chukasa.chukasa_common.domain.enums.HardwareAccelerationType;
 import pro.hirooka.chukasa.chukasa_common.domain.enums.StreamingType;
 import pro.hirooka.chukasa.chukasa_hls.domain.model.ChukasaModel;
@@ -44,7 +45,7 @@ public class TimerTaskParameterCalculator implements ITimerTaskParameterCalculat
             // timerSegmenterDelay = 0;
         }
 
-        if(chukasaModel.getHardwareAccelerationType().equals(HardwareAccelerationType.H264_OMX)){
+        if(chukasaModel.getFfmpegVcodecType().equals(FfmpegVcodecType.H264_OMX)){
             timerSegmenterDelay = timerSegmenterDelay + 3000; // todo
         }
         long timerSegmenterPeriod = (long) (duration * 1000);

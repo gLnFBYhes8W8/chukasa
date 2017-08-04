@@ -23,7 +23,6 @@ public class ChukasaHlsSegmenter implements Runnable {
 
     private final String FILE_SEPARATOR = ChukasaConstants.FILE_SEPARATOR;
     private final String STREAM_FILE_NAME_PREFIX = ChukasaConstants.STREAM_FILE_NAME_PREFIX;
-    private final String STREAM_FILE_EXTENSION = ChukasaConstants.STREAM_FILE_EXTENSION;
     private final int MPEG2_TS_PACKET_LENGTH = ChukasaConstants.MPEG2_TS_PACKET_LENGTH;
     private final String SYNC_WORD = "47";
 
@@ -61,6 +60,7 @@ public class ChukasaHlsSegmenter implements Runnable {
         Set<Integer> elementaryPIDSet = new HashSet<>();
 
         ChukasaModel chukasaModel = chukasaModelManagementComponent.get(adaptiveBitrateStreaming);
+        final String STREAM_FILE_EXTENSION = chukasaModel.getStreamFileExtension();
 
         long readByte = readByteInput;
         int seqTs = seqTsInput;
@@ -642,6 +642,7 @@ public class ChukasaHlsSegmenter implements Runnable {
     long[] readPCR(long readByteInput, int seqTsInput) {
 
         ChukasaModel chukasaModel = chukasaModelManagementComponent.get(adaptiveBitrateStreaming);
+        final String STREAM_FILE_EXTENSION = chukasaModel.getStreamFileExtension();
 
         final long readByte = readByteInput;
         int sequenceMediaSegment = seqTsInput;

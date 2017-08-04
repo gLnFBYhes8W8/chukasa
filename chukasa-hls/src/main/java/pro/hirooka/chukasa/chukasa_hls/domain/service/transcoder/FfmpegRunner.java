@@ -3,6 +3,7 @@ package pro.hirooka.chukasa.chukasa_hls.domain.service.transcoder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import pro.hirooka.chukasa.chukasa_common.domain.constants.ChukasaConstants;
+import pro.hirooka.chukasa.chukasa_common.domain.enums.FfmpegVcodecType;
 import pro.hirooka.chukasa.chukasa_common.domain.enums.HardwareAccelerationType;
 import pro.hirooka.chukasa.chukasa_common.domain.enums.StreamingType;
 import pro.hirooka.chukasa.chukasa_hls.domain.model.ChukasaModel;
@@ -23,7 +24,6 @@ public class FfmpegRunner implements Runnable {
     static final String FILE_SEPARATOR = System.getProperty("file.separator");
 
     final String STREAM_FILE_NAME_PREFIX = ChukasaConstants.STREAM_FILE_NAME_PREFIX;
-    final String STREAM_FILE_EXTENSION = ChukasaConstants.STREAM_FILE_EXTENSION;
     final String FFMPEG_HLS_M3U8_FILE_NAME = ChukasaConstants.FFMPEG_HLS_M3U8_FILE_NAME;
     final String M3U8_FILE_EXTENSION = ChukasaConstants.M3U8_FILE_EXTENSION;
 
@@ -40,10 +40,11 @@ public class FfmpegRunner implements Runnable {
     public void run() {
 
         ChukasaModel chukasaModel = chukasaModelManagementComponent.get(adaptiveBitrateStreaming);
+        final String STREAM_FILE_EXTENSION = chukasaModel.getStreamFileExtension();
 
 //        boolean isQSV = chukasaModel.getSystemConfiguration().isQuickSyncVideoEnabled();
 //        boolean isOpenMAX = chukasaModel.getSystemConfiguration().isOpenmaxEnabled();
-        HardwareAccelerationType hardwareAccelerationType = chukasaModel.getHardwareAccelerationType();
+        FfmpegVcodecType ffmpegVcodecType = chukasaModel.getFfmpegVcodecType();
 
         boolean isEncrypted = chukasaModel.getChukasaSettings().isCanEncrypt();
         String ffmpegOutputPath = chukasaModel.getStreamPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + "%d" + STREAM_FILE_EXTENSION;
@@ -59,7 +60,7 @@ public class FfmpegRunner implements Runnable {
 
         if (chukasaModel.getChukasaSettings().getStreamingType().equals(StreamingType.WEBCAM)) {
 
-            if (hardwareAccelerationType == HardwareAccelerationType.H264_OMX) {
+            if (ffmpegVcodecType == FfmpegVcodecType.H264_OMX) {
                 String[] cmdArrayTemporary = {
 
                         chukasaModel.getSystemConfiguration().getFfmpegPath(),
@@ -87,7 +88,7 @@ public class FfmpegRunner implements Runnable {
                         ffmpegOutputPath
                 };
                 cmdArray = cmdArrayTemporary;
-            } else if (hardwareAccelerationType == HardwareAccelerationType.H264_QSV) {
+            } else if (ffmpegVcodecType == FfmpegVcodecType.H264_QSV) {
                 String[] cmdArrayTemporary = {
 
                         chukasaModel.getSystemConfiguration().getFfmpegPath(),
@@ -115,7 +116,7 @@ public class FfmpegRunner implements Runnable {
                         ffmpegOutputPath
                 };
                 cmdArray = cmdArrayTemporary;
-            } else if (hardwareAccelerationType == HardwareAccelerationType.H264_X264) {
+            } else if (ffmpegVcodecType == FfmpegVcodecType.H264_X264) {
                 String[] cmdArrayTemporary = {
 
                         chukasaModel.getSystemConfiguration().getFfmpegPath(),
@@ -148,7 +149,7 @@ public class FfmpegRunner implements Runnable {
 
         } else if (chukasaModel.getChukasaSettings().getStreamingType().equals(StreamingType.FILE)) {
 
-            if (hardwareAccelerationType == HardwareAccelerationType.H264_OMX) {
+            if (ffmpegVcodecType == FfmpegVcodecType.H264_OMX) {
                 String[] cmdArrayTemporary = {
 
                         chukasaModel.getSystemConfiguration().getFfmpegPath(),
@@ -167,7 +168,7 @@ public class FfmpegRunner implements Runnable {
                         ffmpegOutputPath
                 };
                 cmdArray = cmdArrayTemporary;
-            } else if (hardwareAccelerationType == HardwareAccelerationType.H264_QSV) {
+            } else if (ffmpegVcodecType == FfmpegVcodecType.H264_QSV) {
                 String[] cmdArrayTemporary = {
 
                         chukasaModel.getSystemConfiguration().getFfmpegPath(),
@@ -188,7 +189,7 @@ public class FfmpegRunner implements Runnable {
                         ffmpegOutputPath
                 };
                 cmdArray = cmdArrayTemporary;
-            } else if (hardwareAccelerationType == HardwareAccelerationType.H264_X264) {
+            } else if (ffmpegVcodecType == FfmpegVcodecType.H264_X264) {
                 String[] cmdArrayTemporary = {
 
                         chukasaModel.getSystemConfiguration().getFfmpegPath(),
@@ -217,7 +218,7 @@ public class FfmpegRunner implements Runnable {
 
             if (chukasaModel.getChukasaSettings().isCanEncrypt()) {
 
-                if (hardwareAccelerationType == HardwareAccelerationType.H264_QSV) {
+                if (ffmpegVcodecType == FfmpegVcodecType.H264_QSV) {
                     String[] cmdArrayTemporary = {
 
                             chukasaModel.getSystemConfiguration().getFfmpegPath(),
@@ -236,7 +237,7 @@ public class FfmpegRunner implements Runnable {
                             "-y", chukasaModel.getTempEncPath() + FILE_SEPARATOR + "fileSequenceEncoded" + seqCapturedTimeShifted + STREAM_FILE_EXTENSION // TODO
                     };
                     cmdArray = cmdArrayTemporary;
-                } else if (hardwareAccelerationType == HardwareAccelerationType.H264_X264) {
+                } else if (ffmpegVcodecType == FfmpegVcodecType.H264_X264) {
                     String[] cmdArrayTemporary = {
 
                             chukasaModel.getSystemConfiguration().getFfmpegPath(),
@@ -261,7 +262,7 @@ public class FfmpegRunner implements Runnable {
 
             } else {
 
-                if (hardwareAccelerationType == HardwareAccelerationType.H264_QSV) {
+                if (ffmpegVcodecType == FfmpegVcodecType.H264_QSV) {
                     String[] cmdArrayTemporary = {
 
                             chukasaModel.getSystemConfiguration().getFfmpegPath(),
@@ -280,7 +281,7 @@ public class FfmpegRunner implements Runnable {
                             "-y", chukasaModel.getStreamPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + seqCapturedTimeShifted + STREAM_FILE_EXTENSION
                     };
                     cmdArray = cmdArrayTemporary;
-                } else if (hardwareAccelerationType == HardwareAccelerationType.H264_X264) {
+                } else if (ffmpegVcodecType == FfmpegVcodecType.H264_X264) {
                     String[] cmdArrayTemporary = {
 
                             chukasaModel.getSystemConfiguration().getFfmpegPath(),

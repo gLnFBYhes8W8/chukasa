@@ -24,7 +24,6 @@ public class ChukasaHlsEncrypter implements IChukasaHlsEncrypter {
 
     static final String FILE_SEPARATOR = ChukasaConstants.FILE_SEPARATOR;
     final String STREAM_FILE_NAME_PREFIX = ChukasaConstants.STREAM_FILE_NAME_PREFIX;
-    final String STREAM_FILE_EXTENSION = ChukasaConstants.STREAM_FILE_EXTENSION;
     final int MPEG2_TS_PACKET_LENGTH = ChukasaConstants.MPEG2_TS_PACKET_LENGTH;
 
     @Setter
@@ -40,6 +39,7 @@ public class ChukasaHlsEncrypter implements IChukasaHlsEncrypter {
     public void encrypt() {
 
         ChukasaModel chukasaModel = chukasaModelManagementComponent.get(adaptiveBitrateStreaming);
+        final String STREAM_FILE_EXTENSION = chukasaModel.getStreamFileExtension();
         String streamPath = chukasaModel.getStreamPath();
         String tempEncPath = chukasaModel.getTempEncPath();
 

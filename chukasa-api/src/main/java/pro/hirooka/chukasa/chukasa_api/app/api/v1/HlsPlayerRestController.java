@@ -14,6 +14,7 @@ import pro.hirooka.chukasa.chukasa_api.domain.model.ChukasaResponse;
 import pro.hirooka.chukasa.chukasa_api.domain.model.HlsPlaylist;
 import pro.hirooka.chukasa.chukasa_common.domain.configuration.ChukasaConfiguration;
 import pro.hirooka.chukasa.chukasa_common.domain.configuration.SystemConfiguration;
+import pro.hirooka.chukasa.chukasa_common.domain.enums.FfmpegVcodecType;
 import pro.hirooka.chukasa.chukasa_common.domain.enums.HardwareAccelerationType;
 import pro.hirooka.chukasa.chukasa_common.domain.service.ICommonUtilityService;
 import pro.hirooka.chukasa.chukasa_common.domain.service.ISystemService;
@@ -54,14 +55,14 @@ public class  HlsPlayerRestController {
     @RequestMapping(value = "/start", method = RequestMethod.POST)
     HlsPlaylist play(@RequestBody @Validated ChukasaSettings chukasaSettings) throws ChukasaBadRequestException, ChukasaInternalServerErrorException {
 
-        HardwareAccelerationType hardwareAccelerationType = systemService.getHardwareAccelerationType();
-        if(hardwareAccelerationType.equals(HardwareAccelerationType.UNKNOWN)){
-            throw new ChukasaInternalServerErrorException("FFmpeg configuration is not suitable for this application.");
-        }
-
         String userAgent = httpServletRequest.getHeader("user-agent");
         if(!userAgent.contains(USER_AGENT)){
             throw new ChukasaBadRequestException("User-Agent is invalid");
+        }
+
+        FfmpegVcodecType ffmpegVcodecType = systemService.getFfmpegVcodecType(userAgent);
+        if(ffmpegVcodecType.equals(FfmpegVcodecType.UNKNOWN)){
+            throw new ChukasaInternalServerErrorException("FFmpeg configuration is not suitable for this application.");
         }
 
         ChukasaUtility.initializeRunner(chukasaModelManagementComponent, systemConfiguration);
@@ -79,7 +80,7 @@ public class  HlsPlayerRestController {
 
         chukasaModel.setUuid(UUID.randomUUID());
         chukasaModel.setAdaptiveBitrateStreaming(0);
-        chukasaModel.setHardwareAccelerationType(hardwareAccelerationType);
+        chukasaModel.setFfmpegVcodecType(ffmpegVcodecType);
 
         chukasaModel = ChukasaUtility.operateEncodingSettings(chukasaModel);
         if(chukasaModel == null){

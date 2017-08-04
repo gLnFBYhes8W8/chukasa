@@ -1,5 +1,6 @@
 package pro.hirooka.chukasa.chukasa_common.domain.service;
 
+import pro.hirooka.chukasa.chukasa_common.domain.enums.FfmpegVcodecType;
 import pro.hirooka.chukasa.chukasa_common.domain.enums.HardwareAccelerationType;
 
 public interface ISystemService {
@@ -14,5 +15,7 @@ public interface ISystemService {
     boolean canFileStreaming();
     boolean canPTxStreaming();
     boolean canRecording();
+    @Deprecated
     HardwareAccelerationType getHardwareAccelerationType();
+    FfmpegVcodecType getFfmpegVcodecType(String userAgent);
 }

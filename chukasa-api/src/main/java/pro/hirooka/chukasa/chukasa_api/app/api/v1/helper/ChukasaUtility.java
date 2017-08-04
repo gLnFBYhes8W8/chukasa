@@ -3,6 +3,7 @@ package pro.hirooka.chukasa.chukasa_api.app.api.v1.helper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import pro.hirooka.chukasa.chukasa_common.domain.configuration.SystemConfiguration;
+import pro.hirooka.chukasa.chukasa_common.domain.enums.FfmpegVcodecType;
 import pro.hirooka.chukasa.chukasa_common.domain.enums.HardwareAccelerationType;
 import pro.hirooka.chukasa.chukasa_common.domain.enums.StreamingType;
 import pro.hirooka.chukasa.chukasa_hls.domain.model.ChukasaModel;
@@ -152,7 +153,7 @@ public class ChukasaUtility {
                 || streamingType.equals(StreamingType.WEBCAM)) {
             timerSegmenterDelay = (long) (duration * 1000);
         }
-        if(chukasaModel.getHardwareAccelerationType().equals(HardwareAccelerationType.H264_OMX)){
+        if(chukasaModel.getFfmpegVcodecType().equals(FfmpegVcodecType.H264_OMX)){
             timerSegmenterDelay = timerSegmenterDelay + 3000; // todo
         }
         long timerSegmenterPeriod = (long) (duration * 1000);

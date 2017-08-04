@@ -8,6 +8,9 @@ apply plugin: 'io.spring.dependency-management'
 
 ext {
     springBootVersion = '2.0.0.BUILD-SNAPSHOT'
+    bcprovVersion = '1.57'
+    commonsLang3Version = '3.6'
+    commonsIoVersion = '2.5'
 }
 
 sourceCompatibility = 1.8
@@ -31,9 +34,9 @@ repositories {
 
 dependencies {
     compile project(':chukasa-common')
-    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.6'
-    compile group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.57'
-    compile group: 'commons-io', name: 'commons-io', version: '2.5'
+    compile group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: bcprovVersion
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: commonsLang3Version
+    compile group: 'commons-io', name: 'commons-io', version: commonsIoVersion
 }
 
 dependencyManagement {

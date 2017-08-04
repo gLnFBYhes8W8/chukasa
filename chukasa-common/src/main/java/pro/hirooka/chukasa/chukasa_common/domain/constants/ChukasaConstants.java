@@ -8,8 +8,9 @@ public class ChukasaConstants {
     public static final String STREAM_ROOT_PATH_NAME = "stream";
     public static final String LIVE_PATH_NAME = "live";
     public static final String STREAM_FILE_NAME_PREFIX = "chukasa";
-    public static final String STREAM_FILE_EXTENSION = ".ts";
     public static final String M3U8_FILE_NAME = "chukasa";
+    public static final String FMP4_INIT_FILE_NAME = "chukasa";
+    public static final String FMP4_INIT_FILE_EXTENSION = ".mp4";
     public static final String FFMPEG_HLS_M3U8_FILE_NAME = "ffmpeg";
     public static final String M3U8_FILE_EXTENSION = ".m3u8";
     public static final String HLS_KEY_FILE_EXTENSION = ".key";

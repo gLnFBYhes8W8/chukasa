@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 import pro.hirooka.chukasa.chukasa_common.domain.constants.ChukasaConstants;
+import pro.hirooka.chukasa.chukasa_common.domain.enums.FfmpegVcodecType;
+import pro.hirooka.chukasa.chukasa_common.domain.enums.HardwareAccelerationType;
 import pro.hirooka.chukasa.chukasa_common.domain.enums.PlaylistType;
 import pro.hirooka.chukasa.chukasa_hls.domain.model.ChukasaModel;
 import pro.hirooka.chukasa.chukasa_hls.domain.service.IChukasaModelManagementComponent;
@@ -18,6 +20,10 @@ import javax.crypto.CipherOutputStream;
 import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import java.io.*;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.security.*;
 
 import static java.util.Objects.requireNonNull;
@@ -29,7 +35,6 @@ public class FfmpegHlsMediaSegmentDetector implements Runnable {
     private final String FILE_SEPARATOR = ChukasaConstants.FILE_SEPARATOR;
     private final int MPEG2_TS_PACKET_LENGTH = ChukasaConstants.MPEG2_TS_PACKET_LENGTH;
     private final String STREAM_FILE_NAME_PREFIX = ChukasaConstants.STREAM_FILE_NAME_PREFIX;
-    private final String STREAM_FILE_EXTENSION = ChukasaConstants.STREAM_FILE_EXTENSION;
     private final String HLS_IV_FILE_EXTENSION = ChukasaConstants.HLS_IV_FILE_EXTENSION;
 
     @Setter
@@ -49,6 +54,7 @@ public class FfmpegHlsMediaSegmentDetector implements Runnable {
     public void run() {
 
         final ChukasaModel chukasaModel = chukasaModelManagementComponent.get(adaptiveBitrateStreaming);
+        final String STREAM_FILE_EXTENSION = chukasaModel.getStreamFileExtension();
         final int sequenceMediaSegment = chukasaModel.getSequenceMediaSegment();
         final boolean canEncrypt = chukasaModel.getChukasaSettings().isCanEncrypt();
         final String mediaPath = chukasaModel.getStreamPath();
@@ -110,6 +116,12 @@ public class FfmpegHlsMediaSegmentDetector implements Runnable {
                         ivFileWriter.close();
 
                         chukasaModel.getIvArrayList().add(ivHex);
+
+                        if(chukasaModel.getFfmpegVcodecType() == FfmpegVcodecType.HEVC_NVENC) {
+                            Path fmp4InitFileInputPath = FileSystems.getDefault().getPath(encryptedMediaTemporaryPath + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + ".mp4");
+                            Path fmp4InitFileOutputPath = FileSystems.getDefault().getPath(mediaPath + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + ".mp4");
+                            Files.copy(fmp4InitFileInputPath, fmp4InitFileOutputPath, StandardCopyOption.REPLACE_EXISTING);
+                        }
 
                         final BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(encryptedMediaTemporaryPath + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + (sequenceMediaSegment + 1) + STREAM_FILE_EXTENSION));
                         final FileOutputStream fileOutputStream = new FileOutputStream(mediaPath + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + (sequenceMediaSegment + 1) + STREAM_FILE_EXTENSION);

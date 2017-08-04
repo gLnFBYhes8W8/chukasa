@@ -6,6 +6,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import pro.hirooka.chukasa.chukasa_common.domain.enums.ChannelType;
+import pro.hirooka.chukasa.chukasa_common.domain.enums.FfmpegVcodecType;
 import pro.hirooka.chukasa.chukasa_common.domain.enums.HardwareAccelerationType;
 import pro.hirooka.chukasa.chukasa_common.domain.model.ChannelConfiguration;
 import pro.hirooka.chukasa.chukasa_common.domain.model.TunerStatus;
@@ -43,16 +44,20 @@ public class FfmpegAndRecxxxService implements IFfmpegAndRecxxxService {
 
         // TODO: final
         ChukasaModel chukasaModel = chukasaModelManagementComponent.get(adaptiveBitrateStreaming);
+        final String STREAM_FILE_EXTENSION = chukasaModel.getStreamFileExtension();
         log.debug("StreamPath: {}", chukasaModel.getStreamPath());
 
-        final HardwareAccelerationType hardwareAccelerationType = chukasaModel.getHardwareAccelerationType();
+        final FfmpegVcodecType ffmpegVcodecType = chukasaModel.getFfmpegVcodecType();
 
         final boolean canEncrypt = chukasaModel.getChukasaSettings().isCanEncrypt();
         final String ffmpegOutputPath;
+        final String fmp4InitFileOutputPath;
         if(canEncrypt){
             ffmpegOutputPath = chukasaModel.getTempEncPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + "%d" + STREAM_FILE_EXTENSION;
+            fmp4InitFileOutputPath = chukasaModel.getTempEncPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + ".mp4";
         } else {
             ffmpegOutputPath = chukasaModel.getStreamPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + "%d" + STREAM_FILE_EXTENSION;
+            fmp4InitFileOutputPath = chukasaModel.getStreamPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + ".mp4";
         }
         final String ffmpegM3U8OutputPath;
         if(canEncrypt){
@@ -77,7 +82,7 @@ public class FfmpegAndRecxxxService implements IFfmpegAndRecxxxService {
         final String DEVICE_ARGUMENT = tunerManagementService.getDeviceArgument(tunerStatus);
         final String[] commandArray;
 
-        if(hardwareAccelerationType == HardwareAccelerationType.H264_OMX){
+        if(ffmpegVcodecType == FfmpegVcodecType.H264_OMX){
             commandArray = new String[]{
                     chukasaModel.getSystemConfiguration().getRecxxxPath(),
                     DEVICE_OPTION, DEVICE_ARGUMENT,
@@ -106,7 +111,7 @@ public class FfmpegAndRecxxxService implements IFfmpegAndRecxxxService {
 //                  "-segment_list", m3u8OutputPath,
                     ffmpegOutputPath
             };
-        } else if(hardwareAccelerationType == HardwareAccelerationType.H264_QSV){
+        } else if(ffmpegVcodecType == FfmpegVcodecType.H264_QSV){
             commandArray = new String[]{
                     chukasaModel.getSystemConfiguration().getRecxxxPath(),
                     DEVICE_OPTION, DEVICE_ARGUMENT,
@@ -133,7 +138,7 @@ public class FfmpegAndRecxxxService implements IFfmpegAndRecxxxService {
 //                    "-segment_list", m3u8OutputPath,
                     ffmpegOutputPath
             };
-        }else if(hardwareAccelerationType == HardwareAccelerationType.H264_X264) {
+        }else if(ffmpegVcodecType == FfmpegVcodecType.H264_X264) {
             commandArray = new String[]{
                     chukasaModel.getSystemConfiguration().getRecxxxPath(),
                     DEVICE_OPTION, DEVICE_ARGUMENT,
@@ -161,7 +166,7 @@ public class FfmpegAndRecxxxService implements IFfmpegAndRecxxxService {
                     "-x264opts", "keyint=10:min-keyint=10",
                     ffmpegOutputPath
             };
-        } else if(hardwareAccelerationType == HardwareAccelerationType.H264_NVENC){
+        } else if(ffmpegVcodecType == FfmpegVcodecType.H264_NVENC){
             commandArray = new String[]{
                     chukasaModel.getSystemConfiguration().getRecxxxPath(),
                     DEVICE_OPTION, DEVICE_ARGUMENT,
@@ -183,6 +188,33 @@ public class FfmpegAndRecxxxService implements IFfmpegAndRecxxxService {
                     "-f", "hls",
                     "-hls_time", Integer.toString(chukasaModel.getHlsConfiguration().getDuration()),
                     "-hls_segment_filename", ffmpegOutputPath,
+                    ffmpegM3U8OutputPath
+            };
+        } else if(ffmpegVcodecType == FfmpegVcodecType.HEVC_NVENC){
+            commandArray = new String[]{
+                    chukasaModel.getSystemConfiguration().getRecxxxPath(),
+                    DEVICE_OPTION, DEVICE_ARGUMENT,
+                    Integer.toString(chukasaModel.getChukasaSettings().getPhysicalLogicalChannel()),
+                    "-", "-",
+                    "|",
+                    chukasaModel.getSystemConfiguration().getFfmpegPath(),
+                    "-i", "-",
+                    "-acodec", "aac",
+                    "-ab", chukasaModel.getChukasaSettings().getAudioBitrate() + "k",
+                    "-ar", "48000",
+                    "-ac", "2",
+                    "-s", chukasaModel.getChukasaSettings().getVideoResolution(),
+                    "-vcodec", "hevc_nvenc",
+                    "-tag:v", "hvc1",
+                    "-vf", "yadif",
+                    "-g", "10",
+                    "-b:v", chukasaModel.getChukasaSettings().getVideoBitrate() + "k",
+                    "-threads", Integer.toString(chukasaModel.getSystemConfiguration().getFfmpegThreads()),
+                    "-f", "hls",
+                    "-hls_segment_type", "fmp4",
+                    "-hls_time", Integer.toString(chukasaModel.getHlsConfiguration().getDuration()),
+                    "-hls_fmp4_init_filename", fmp4InitFileOutputPath,
+                    //"-hls_segment_filename", ffmpegOutputPath,
                     ffmpegM3U8OutputPath
             };
         } else {

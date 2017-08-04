@@ -3,7 +3,7 @@ package pro.hirooka.chukasa.chukasa_hls.domain.model;
 import lombok.Data;
 import pro.hirooka.chukasa.chukasa_common.domain.configuration.ChukasaConfiguration;
 import pro.hirooka.chukasa.chukasa_common.domain.configuration.SystemConfiguration;
-import pro.hirooka.chukasa.chukasa_common.domain.enums.HardwareAccelerationType;
+import pro.hirooka.chukasa.chukasa_common.domain.enums.FfmpegVcodecType;
 import pro.hirooka.chukasa.chukasa_common.domain.enums.PlaylistType;
 import pro.hirooka.chukasa.chukasa_hls.domain.configuration.HlsConfiguration;
 
@@ -35,6 +35,8 @@ public class ChukasaModel {
     private long timerPlaylisterPeriod;
 
     private ChukasaSettings chukasaSettings;
+
+    private String streamFileExtension;
 
     // Segmenter
     private long readBytes;
@@ -77,7 +79,7 @@ public class ChukasaModel {
 
     private UUID uuid;
 
-    private HardwareAccelerationType hardwareAccelerationType;
+    private FfmpegVcodecType ffmpegVcodecType;
 
     private int sequenceMediaSegment;
     private int sequenceLastMediaSegment;
@@ -105,6 +107,8 @@ public class ChukasaModel {
         this.timerPlaylisterPeriod = 0;
 
         this.chukasaSettings = null;
+
+        this.streamFileExtension = ".ts";
 
         // Segmenter
         this.readBytes = 0;
@@ -147,7 +151,7 @@ public class ChukasaModel {
 
         this.uuid = null;
 
-        this.hardwareAccelerationType = HardwareAccelerationType.UNKNOWN;
+        this.ffmpegVcodecType = FfmpegVcodecType.UNKNOWN;
 
         this.sequenceMediaSegment = -1;
         this.sequenceLastMediaSegment = -1;

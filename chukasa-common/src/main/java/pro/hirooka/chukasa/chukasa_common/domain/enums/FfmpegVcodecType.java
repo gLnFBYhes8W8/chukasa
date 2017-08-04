@@ -1,7 +1,6 @@
 package pro.hirooka.chukasa.chukasa_common.domain.enums;
 
-@Deprecated
-public enum HardwareAccelerationType {
+public enum FfmpegVcodecType {
     HEVC_NVENC,
     H264_QSV,
     H264_NVENC,

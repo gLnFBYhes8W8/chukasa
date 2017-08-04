@@ -8,6 +8,7 @@ apply plugin: 'io.spring.dependency-management'
 
 ext {
     springBootVersion = '2.0.0.BUILD-SNAPSHOT'
+    bootstrapVersion = '3.3.7-1'
 }
 
 sourceCompatibility = 1.8
@@ -42,7 +43,7 @@ dependencies {
     }
     compile 'org.springframework.boot:spring-boot-starter-jetty'
     compile 'org.springframework.boot:spring-boot-starter-security'
-    compile 'org.webjars:bootstrap:3.3.7-1'
+    compile group: 'org.webjars', name: 'bootstrap', version: bootstrapVersion
 }
 
 dependencyManagement {

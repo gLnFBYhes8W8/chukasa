@@ -6,6 +6,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import pro.hirooka.chukasa.chukasa_common.domain.constants.ChukasaConstants;
+import pro.hirooka.chukasa.chukasa_common.domain.enums.FfmpegVcodecType;
 import pro.hirooka.chukasa.chukasa_common.domain.enums.HardwareAccelerationType;
 import pro.hirooka.chukasa.chukasa_common.domain.enums.StreamingType;
 import pro.hirooka.chukasa.chukasa_hls.domain.model.ChukasaModel;
@@ -30,7 +31,6 @@ public class FfmpegService implements IFfmpegService {
 
     final String FILE_SEPARATOR = ChukasaConstants.FILE_SEPARATOR;
     final String STREAM_FILE_NAME_PREFIX = ChukasaConstants.STREAM_FILE_NAME_PREFIX;
-    final String STREAM_FILE_EXTENSION = ChukasaConstants.STREAM_FILE_EXTENSION;
 
     private final IChukasaModelManagementComponent chukasaModelManagementComponent;
 
@@ -50,7 +50,8 @@ public class FfmpegService implements IFfmpegService {
 
         // TODO: chukasaModel final
         ChukasaModel chukasaModel = chukasaModelManagementComponent.get(adaptiveBitrateStreaming);
-        final HardwareAccelerationType hardwareAccelerationType = chukasaModel.getHardwareAccelerationType();
+        final String STREAM_FILE_EXTENSION = chukasaModel.getStreamFileExtension();
+        final FfmpegVcodecType ffmpegVcodecType = chukasaModel.getFfmpegVcodecType();
         final boolean canEncrypt = chukasaModel.getChukasaSettings().isCanEncrypt();
         final String ffmpegOutputPath;
         if (canEncrypt) {
@@ -73,7 +74,7 @@ public class FfmpegService implements IFfmpegService {
 
         if (chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.WEBCAM) {
 
-            if (hardwareAccelerationType == HardwareAccelerationType.H264_OMX) {
+            if (ffmpegVcodecType == FfmpegVcodecType.H264_OMX) {
                 commandArray = new String[]{
 
                         chukasaModel.getSystemConfiguration().getFfmpegPath(),
@@ -100,7 +101,7 @@ public class FfmpegService implements IFfmpegService {
 //                        "-segment_list", m3u8OutputPath,
                         ffmpegOutputPath
                 };
-            } else if (hardwareAccelerationType == HardwareAccelerationType.H264_QSV) {
+            } else if (ffmpegVcodecType == FfmpegVcodecType.H264_QSV) {
                 commandArray = new String[]{
 
                         chukasaModel.getSystemConfiguration().getFfmpegPath(),
@@ -129,7 +130,7 @@ public class FfmpegService implements IFfmpegService {
 //                        "-segment_list", m3u8OutputPath,
                         ffmpegOutputPath
                 };
-            } else if (hardwareAccelerationType == HardwareAccelerationType.H264_X264) {
+            } else if (ffmpegVcodecType == FfmpegVcodecType.H264_X264) {
                 commandArray = new String[]{
 
                         chukasaModel.getSystemConfiguration().getFfmpegPath(),
@@ -157,7 +158,7 @@ public class FfmpegService implements IFfmpegService {
                         "-segment_time", Integer.toString(chukasaModel.getHlsConfiguration().getDuration()),
                         ffmpegOutputPath
                 };
-            } else if(hardwareAccelerationType == HardwareAccelerationType.H264_NVENC){
+            } else if(ffmpegVcodecType == FfmpegVcodecType.H264_NVENC){
                 commandArray = new String[]{
 
                         chukasaModel.getSystemConfiguration().getFfmpegPath(),
@@ -189,7 +190,7 @@ public class FfmpegService implements IFfmpegService {
 
         } else if (chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.FILE) {
 
-            if (hardwareAccelerationType == HardwareAccelerationType.H264_OMX) {
+            if (ffmpegVcodecType == ffmpegVcodecType.H264_OMX) {
                 String[] cmdArrayTemporary = {
 
                         chukasaModel.getSystemConfiguration().getFfmpegPath(),
@@ -208,7 +209,7 @@ public class FfmpegService implements IFfmpegService {
                         ffmpegOutputPath
                 };
                 commandArray = cmdArrayTemporary;
-            } else if (hardwareAccelerationType == HardwareAccelerationType.H264_QSV) {
+            } else if (ffmpegVcodecType == FfmpegVcodecType.H264_QSV) {
                 commandArray = new String[]{
 
                         chukasaModel.getSystemConfiguration().getFfmpegPath(),
@@ -228,7 +229,7 @@ public class FfmpegService implements IFfmpegService {
                         "-segment_time", Integer.toString(chukasaModel.getHlsConfiguration().getDuration()),
                         ffmpegOutputPath
                 };
-            } else if (hardwareAccelerationType == HardwareAccelerationType.H264_X264) {
+            } else if (ffmpegVcodecType == FfmpegVcodecType.H264_X264) {
                 commandArray = new String[]{
 
                         chukasaModel.getSystemConfiguration().getFfmpegPath(),
@@ -250,7 +251,7 @@ public class FfmpegService implements IFfmpegService {
                         "-segment_time", Integer.toString(chukasaModel.getHlsConfiguration().getDuration()),
                         ffmpegOutputPath
                 };
-            } else if(hardwareAccelerationType == HardwareAccelerationType.H264_NVENC){
+            } else if(ffmpegVcodecType == FfmpegVcodecType.H264_NVENC){
                 commandArray = new String[]{
 
                         chukasaModel.getSystemConfiguration().getFfmpegPath(),
@@ -278,7 +279,7 @@ public class FfmpegService implements IFfmpegService {
 
             if (chukasaModel.getChukasaSettings().isCanEncrypt()) {
 
-                if (hardwareAccelerationType == HardwareAccelerationType.H264_QSV) {
+                if (ffmpegVcodecType == FfmpegVcodecType.H264_QSV) {
                     commandArray = new String[]{
 
                             chukasaModel.getSystemConfiguration().getFfmpegPath(),
@@ -296,7 +297,7 @@ public class FfmpegService implements IFfmpegService {
                             "-f", "mpegts",
                             "-y", chukasaModel.getTempEncPath() + FILE_SEPARATOR + "fileSequenceEncoded" + sequenceMediaSegment + STREAM_FILE_EXTENSION // TODO
                     };
-                } else if (hardwareAccelerationType == HardwareAccelerationType.H264_X264) {
+                } else if (ffmpegVcodecType == FfmpegVcodecType.H264_X264) {
                     commandArray = new String[]{
 
                             chukasaModel.getSystemConfiguration().getFfmpegPath(),
@@ -322,7 +323,7 @@ public class FfmpegService implements IFfmpegService {
 
             } else {
 
-                if (hardwareAccelerationType == HardwareAccelerationType.H264_QSV) {
+                if (ffmpegVcodecType == FfmpegVcodecType.H264_QSV) {
                     commandArray = new String[]{
 
                             chukasaModel.getSystemConfiguration().getFfmpegPath(),
@@ -340,7 +341,7 @@ public class FfmpegService implements IFfmpegService {
                             "-f", "mpegts",
                             "-y", chukasaModel.getStreamPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + sequenceMediaSegment + STREAM_FILE_EXTENSION
                     };
-                } else if (hardwareAccelerationType == HardwareAccelerationType.H264_X264) {
+                } else if (ffmpegVcodecType == FfmpegVcodecType.H264_X264) {
                     commandArray = new String[]{
 
                             chukasaModel.getSystemConfiguration().getFfmpegPath(),
@@ -436,9 +437,9 @@ public class FfmpegService implements IFfmpegService {
                         log.info(file.getName());
                         String fileName = file.getName();
                         if(fileName.startsWith(ChukasaConstants.STREAM_FILE_NAME_PREFIX)
-                                && fileName.endsWith(ChukasaConstants.STREAM_FILE_EXTENSION)){
+                                && fileName.endsWith(STREAM_FILE_EXTENSION)){
                             log.info("... {}", fileName.split(ChukasaConstants.M3U8_FILE_NAME)[1]);
-                            String sequenceString = fileName.split(ChukasaConstants.M3U8_FILE_NAME)[1].split(ChukasaConstants.STREAM_FILE_EXTENSION)[0];
+                            String sequenceString = fileName.split(ChukasaConstants.M3U8_FILE_NAME)[1].split(STREAM_FILE_EXTENSION)[0];
                             log.info(sequenceString);
                             int sequence = Integer.parseInt(sequenceString);
                             if(sequence > sequenceLastMediaSegment){
