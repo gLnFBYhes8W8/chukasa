@@ -9,10 +9,10 @@ import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
-import pro.hirooka.chukasa.chukasa_common.domain.configuration.ChukasaConfiguration;
 import pro.hirooka.chukasa.chukasa_common.domain.configuration.MongoDBConfiguration;
 import pro.hirooka.chukasa.chukasa_common.domain.configuration.SystemConfiguration;
 import pro.hirooka.chukasa.chukasa_common.domain.service.ISystemService;
+import pro.hirooka.chukasa.chukasa_recorder.domain.configuration.RecorderConfiguration;
 import pro.hirooka.chukasa.chukasa_recorder.domain.model.RecordingProgramModel;
 import pro.hirooka.chukasa.chukasa_recorder.domain.model.ReservedProgram;
 import pro.hirooka.chukasa.chukasa_recorder.domain.repository.IReservedProgramRepository;
@@ -28,9 +28,9 @@ import java.util.stream.Collectors;
 public class RecorderService implements IRecorderService {
 
     @Autowired
-    SystemConfiguration systemConfiguration;
+    RecorderConfiguration recorderConfiguration;
     @Autowired
-    ChukasaConfiguration chukasaConfiguration;
+    SystemConfiguration systemConfiguration;
     @Autowired
     IReservedProgramRepository reservedProgramRepository;
     @Autowired
@@ -45,7 +45,7 @@ public class RecorderService implements IRecorderService {
     @PostConstruct
     public void init(){
 
-        if(systemService.isTuner() && systemService.isRecxxx() && systemService.isFFmpeg() && systemService.isEpgdump() && systemService.isMongoDB()){
+        if(systemService.isTuner() && systemService.isRecxxx() && systemService.isFFmpeg() && systemService.isMongoDB()){
             List<ReservedProgram> reservedProgramList = read();
             for(ReservedProgram reservedProgram : reservedProgramList){
                 if(true){ // TODO: checker
@@ -107,8 +107,8 @@ public class RecorderService implements IRecorderService {
             reservedProgram.setId(0);
         }
 
-        long startRecording = reservedProgram.getBegin() - chukasaConfiguration.getRecorderStartMargin() * 1000;
-        long stopRecording = reservedProgram.getEnd() + chukasaConfiguration.getRecorderStopMargin() * 1000;
+        long startRecording = reservedProgram.getBegin() - recorderConfiguration.getStartMargin() * 1000;
+        long stopRecording = reservedProgram.getEnd() + recorderConfiguration.getStopMargin() * 1000;
         long durationRecording = (stopRecording - startRecording) / 1000;
         long recordingDuration = (stopRecording - startRecording) / 1000;
         reservedProgram.setStartRecording(startRecording);

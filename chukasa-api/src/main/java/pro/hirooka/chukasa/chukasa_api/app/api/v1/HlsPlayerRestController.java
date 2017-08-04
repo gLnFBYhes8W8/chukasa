@@ -12,10 +12,8 @@ import pro.hirooka.chukasa.chukasa_api.app.api.v1.exception.ChukasaInternalServe
 import pro.hirooka.chukasa.chukasa_api.app.api.v1.helper.ChukasaUtility;
 import pro.hirooka.chukasa.chukasa_api.domain.model.ChukasaResponse;
 import pro.hirooka.chukasa.chukasa_api.domain.model.HlsPlaylist;
-import pro.hirooka.chukasa.chukasa_common.domain.configuration.ChukasaConfiguration;
 import pro.hirooka.chukasa.chukasa_common.domain.configuration.SystemConfiguration;
 import pro.hirooka.chukasa.chukasa_common.domain.enums.FfmpegVcodecType;
-import pro.hirooka.chukasa.chukasa_common.domain.enums.HardwareAccelerationType;
 import pro.hirooka.chukasa.chukasa_common.domain.service.ICommonUtilityService;
 import pro.hirooka.chukasa.chukasa_common.domain.service.ISystemService;
 import pro.hirooka.chukasa.chukasa_hls.domain.configuration.HlsConfiguration;
@@ -34,8 +32,6 @@ import static pro.hirooka.chukasa.chukasa_common.domain.constants.ChukasaConstan
 @RequestMapping("api/v1/hls")
 public class  HlsPlayerRestController {
 
-    @Autowired
-    ChukasaConfiguration chukasaConfiguration;
     @Autowired
     SystemConfiguration systemConfiguration;
     @Autowired
@@ -73,7 +69,6 @@ public class  HlsPlayerRestController {
         log.info("ChukasaSettings -> {}", chukasaSettings.toString());
 
         ChukasaModel chukasaModel = new ChukasaModel();
-        chukasaModel.setChukasaConfiguration(chukasaConfiguration);
         chukasaModel.setSystemConfiguration(systemConfiguration);
         chukasaModel.setHlsConfiguration(hlsConfiguration);
         chukasaModel.setChukasaSettings(chukasaSettings);

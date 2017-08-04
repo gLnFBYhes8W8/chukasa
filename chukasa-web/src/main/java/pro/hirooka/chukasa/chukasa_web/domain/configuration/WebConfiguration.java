@@ -1,4 +1,4 @@
-package pro.hirooka.chukasa.chukasa_hls.domain.configuration;
+package pro.hirooka.chukasa.chukasa_web.domain.configuration;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -7,9 +7,6 @@ import org.springframework.context.annotation.PropertySource;
 
 @Data
 @Configuration
-@PropertySource(value = {"classpath:hls.properties"})
-@ConfigurationProperties(prefix = "hls")
-public class HlsConfiguration {
-    int duration;
-    int uriInPlaylist;
+@PropertySource(value = {"classpath:web.properties"})
+public class WebConfiguration {
 }

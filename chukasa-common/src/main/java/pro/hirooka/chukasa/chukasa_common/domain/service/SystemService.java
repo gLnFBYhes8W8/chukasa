@@ -6,7 +6,6 @@ import com.mongodb.ServerAddress;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pro.hirooka.chukasa.chukasa_common.domain.configuration.EpgdumpConfiguration;
 import pro.hirooka.chukasa.chukasa_common.domain.configuration.MongoDBConfiguration;
 import pro.hirooka.chukasa.chukasa_common.domain.configuration.SystemConfiguration;
 import pro.hirooka.chukasa.chukasa_common.domain.constants.ChukasaConstants;
@@ -27,8 +26,6 @@ public class SystemService implements ISystemService {
 
     @Autowired
     SystemConfiguration systemConfiguration;
-    @Autowired
-    EpgdumpConfiguration epgdumpConfiguration;
     @Autowired
     MongoDBConfiguration mongoDBConfiguration;
 
@@ -62,11 +59,11 @@ public class SystemService implements ISystemService {
         return recpt1.exists();
     }
 
-    @Override
-    public boolean isEpgdump() {
-        File epgdump = new File(epgdumpConfiguration.getPath());
-        return epgdump.exists();
-    }
+//    @Override
+//    public boolean isEpgdump() {
+//        File epgdump = new File(epgdumpConfiguration.getPath());
+//        return epgdump.exists();
+//    }
 
     @Override
     public boolean isMongoDB() {
@@ -106,7 +103,7 @@ public class SystemService implements ISystemService {
 
     @Override
     public boolean canRecording() {
-        return isFFmpeg() && isTuner() && isRecxxx() && isEpgdump() && isMongoDB();
+        return isFFmpeg() && isTuner() && isRecxxx() && isMongoDB();
     }
 
     @Override
@@ -145,6 +142,44 @@ public class SystemService implements ISystemService {
             log.error("{} {}", e.getMessage(), e);
         }
         return HardwareAccelerationType.H264_NVENC;
+    }
+
+    @Override
+    public FfmpegVcodecType getFfmpegVcodecType() {
+        final String H264_QSV = "--enable-libmfx";
+        final String H264_X264 = "--enable-libx264";
+        final String H264_OMX = "--enable-omx-rpi";
+        final String ffmpeg = systemConfiguration.getFfmpegPath();
+        final String[] command = {ffmpeg, "-version"};
+        final ProcessBuilder processBuilder = new ProcessBuilder(command);
+        try {
+            final Process process = processBuilder.start();
+            final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String str = "";
+            while((str = bufferedReader.readLine()) != null){
+                log.info(str);
+                if(str.contains(H264_QSV)){
+                    bufferedReader.close();
+                    process.destroy();
+                    return FfmpegVcodecType.H264_QSV;
+                }
+                if(str.contains(H264_OMX)){
+                    bufferedReader.close();
+                    process.destroy();
+                    return FfmpegVcodecType.H264_OMX;
+                }
+                if(str.contains(H264_X264)){
+                    bufferedReader.close();
+                    process.destroy();
+                    return FfmpegVcodecType.H264_X264;
+                }
+            }
+            bufferedReader.close();
+            process.destroy();
+        } catch (IOException e) {
+            log.error("{} {}", e.getMessage(), e);
+        }
+        return FfmpegVcodecType.H264_NVENC;
     }
 
     @Override

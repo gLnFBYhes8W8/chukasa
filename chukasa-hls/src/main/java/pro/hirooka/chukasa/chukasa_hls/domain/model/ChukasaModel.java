@@ -1,7 +1,6 @@
 package pro.hirooka.chukasa.chukasa_hls.domain.model;
 
 import lombok.Data;
-import pro.hirooka.chukasa.chukasa_common.domain.configuration.ChukasaConfiguration;
 import pro.hirooka.chukasa.chukasa_common.domain.configuration.SystemConfiguration;
 import pro.hirooka.chukasa.chukasa_common.domain.enums.FfmpegVcodecType;
 import pro.hirooka.chukasa.chukasa_common.domain.enums.PlaylistType;
@@ -19,7 +18,6 @@ public class ChukasaModel {
 
     private int adaptiveBitrateStreaming;
 
-    private ChukasaConfiguration chukasaConfiguration;
     private SystemConfiguration systemConfiguration;
     private HlsConfiguration hlsConfiguration;
 
@@ -91,7 +89,6 @@ public class ChukasaModel {
 
         adaptiveBitrateStreaming = 0;
 
-        this.chukasaConfiguration = null;
         this.systemConfiguration = null;
         this.hlsConfiguration = null;
 

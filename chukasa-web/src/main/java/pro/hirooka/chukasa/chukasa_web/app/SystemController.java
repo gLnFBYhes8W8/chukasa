@@ -6,6 +6,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import pro.hirooka.chukasa.chukasa_common.domain.service.SystemService;
+import pro.hirooka.chukasa.chukasa_epg.domain.configuration.EpgConfiguration;
+import pro.hirooka.chukasa.chukasa_epg.domain.service.IEpgdumpService;
 import pro.hirooka.chukasa.chukasa_hls.domain.service.IChukasaModelManagementComponent;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,6 +23,8 @@ public class SystemController {
     HttpServletRequest httpServletRequest;
     @Autowired
     SystemService systemService;
+    @Autowired
+    IEpgdumpService epgdumpService;
 
     @RequestMapping("/")
     String index(Model model){
@@ -28,7 +32,7 @@ public class SystemController {
         boolean isFFmpeg = systemService.isFFmpeg();
         boolean isPTx = systemService.isTuner();
         boolean isRecpt1 = systemService.isRecxxx();
-        boolean isEpgdump = systemService.isEpgdump();
+        boolean isEpgdump = epgdumpService.isEpgdump();
         boolean isMongoDB = systemService.isMongoDB();
         boolean isWebCamera = systemService.isWebCamera();
 

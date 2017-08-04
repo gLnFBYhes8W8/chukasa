@@ -11,10 +11,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import pro.hirooka.chukasa.chukasa_api.app.api.v1.helper.ChukasaUtility;
 import pro.hirooka.chukasa.chukasa_api.app.api.v1.helper.IChukasaBrowserDetector;
-import pro.hirooka.chukasa.chukasa_common.domain.configuration.ChukasaConfiguration;
 import pro.hirooka.chukasa.chukasa_common.domain.configuration.SystemConfiguration;
 import pro.hirooka.chukasa.chukasa_common.domain.enums.FfmpegVcodecType;
-import pro.hirooka.chukasa.chukasa_common.domain.enums.HardwareAccelerationType;
 import pro.hirooka.chukasa.chukasa_common.domain.enums.StreamingType;
 import pro.hirooka.chukasa.chukasa_common.domain.service.ICommonUtilityService;
 import pro.hirooka.chukasa.chukasa_common.domain.service.ISystemService;
@@ -35,8 +33,6 @@ import static pro.hirooka.chukasa.chukasa_common.domain.constants.ChukasaConstan
 @RequestMapping("video")
 public class Html5PlayerController {
 
-    @Autowired
-    ChukasaConfiguration chukasaConfiguration;
     @Autowired
     SystemConfiguration systemConfiguration;
     @Autowired
@@ -77,7 +73,6 @@ public class Html5PlayerController {
         log.info("ChukasaSettings -> {}", chukasaSettings.toString());
 
         ChukasaModel chukasaModel = new ChukasaModel();
-        chukasaModel.setChukasaConfiguration(chukasaConfiguration);
         chukasaModel.setSystemConfiguration(systemConfiguration);
         chukasaModel.setHlsConfiguration(hlsConfiguration);
         chukasaModel.setChukasaSettings(chukasaSettings);

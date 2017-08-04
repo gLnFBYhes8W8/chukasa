@@ -7,7 +7,6 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
-import pro.hirooka.chukasa.chukasa_common.domain.configuration.ChukasaConfiguration;
 import pro.hirooka.chukasa.chukasa_common.domain.configuration.CommonConfiguration;
 import pro.hirooka.chukasa.chukasa_common.domain.enums.ChannelType;
 import pro.hirooka.chukasa.chukasa_common.domain.model.ChannelConfiguration;
@@ -28,34 +27,15 @@ public class CommonUtilityService implements ICommonUtilityService {
 
     @Autowired
     private CommonConfiguration commonConfiguration;
-    @Autowired
-    private ChukasaConfiguration chukasaConfiguration;
 
     @Override
     public List<ChannelConfiguration> getChannelConfigurationList() {
         List<ChannelConfiguration> channelConfigurationList = new ArrayList<>();
         try {
-            Resource resource = new ClassPathResource(chukasaConfiguration.getChannelConfiguration());
+            Resource resource = new ClassPathResource(commonConfiguration.getChannelConfiguration());
             ObjectMapper objectMapper = new ObjectMapper();
             channelConfigurationList = objectMapper.readValue(resource.getInputStream(), ChannelConfigurationWrapper.class).getChannelConfigurationList();
             log.info("channelConfigurationList = {}", channelConfigurationList.toString());
-
-            // for haryuka
-            final String CHANNEL_FREQUENCY_JSON = "channel_frequency.json";
-            final Resource resourceChannelFrequencyJSON = new ClassPathResource(CHANNEL_FREQUENCY_JSON);
-            final List<ChannelConfiguration> channelConfigurationListFromChannelFrequencyJSON = objectMapper.readValue(resourceChannelFrequencyJSON.getInputStream(), ChannelConfigurationWrapper.class).getChannelConfigurationList();
-            log.info("channelConfigurationListFromChannelFrequencyJSON = {}", channelConfigurationListFromChannelFrequencyJSON.toString());
-            for(ChannelConfiguration channelConfiguration : channelConfigurationList){
-                for(ChannelConfiguration channelConfigurationFromChannelFrequencyJSON : channelConfigurationListFromChannelFrequencyJSON){
-                    if(channelConfiguration.getChannelType() == channelConfigurationFromChannelFrequencyJSON.getChannelType()
-                            && channelConfiguration.getPhysicalLogicalChannel() == channelConfigurationFromChannelFrequencyJSON.getPhysicalLogicalChannel()
-                            && channelConfiguration.getRemoteControllerChannel() == channelConfigurationFromChannelFrequencyJSON.getRemoteControllerChannel()){
-                        channelConfiguration.setFrequency(channelConfigurationFromChannelFrequencyJSON.getFrequency());
-                    }
-                }
-            }
-            log.info("updated channelConfigurationList = {}", channelConfigurationList.toString());
-
         } catch (IOException e) {
             log.error("invalid channel_settings.json: {} {}", e.getMessage(), e);
         }

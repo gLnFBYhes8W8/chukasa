@@ -8,6 +8,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
 import pro.hirooka.chukasa.chukasa_common.domain.configuration.SystemConfiguration;
 import pro.hirooka.chukasa.chukasa_common.domain.enums.ChannelType;
+import pro.hirooka.chukasa.chukasa_common.domain.enums.FfmpegVcodecType;
 import pro.hirooka.chukasa.chukasa_common.domain.enums.HardwareAccelerationType;
 import pro.hirooka.chukasa.chukasa_common.domain.model.ChannelConfiguration;
 import pro.hirooka.chukasa.chukasa_common.domain.model.TunerStatus;
@@ -81,15 +82,15 @@ public class RecorderRunnerService implements IRecorderRunnerService {
                 // TODO: separate sh into recoding and transcoding
 //                bw.write(systemConfiguration.getFfmpegPath() +  " -i " + "\"" + systemConfiguration.getFilePath() + FILE_SEPARATOR + fileName + "\"" + " -ss " + thumbnailPoint + " -vframes 1 -f image2 " + "\"" + systemConfiguration.getFilePath() + FILE_SEPARATOR + fileName + ".jpg\"" + " >/dev/null");
 //                bw.newLine();
-                final HardwareAccelerationType hardwareAccelerationType = systemService.getHardwareAccelerationType();
+                final FfmpegVcodecType ffmpegVcodecType = systemService.getFfmpegVcodecType();
                 final String SPECIFIC_OPTIONS;
-                if(hardwareAccelerationType == HardwareAccelerationType.H264_QSV){
+                if(ffmpegVcodecType == FfmpegVcodecType.H264_QSV){
                     SPECIFIC_OPTIONS = "h264_qsv";
-                }else if(hardwareAccelerationType == HardwareAccelerationType.H264_NVENC){
+                }else if(ffmpegVcodecType == FfmpegVcodecType.H264_NVENC){
                     SPECIFIC_OPTIONS = "h264_nvenc";
-                }else if(hardwareAccelerationType == HardwareAccelerationType.H264_OMX){
+                }else if(ffmpegVcodecType == FfmpegVcodecType.H264_OMX){
                     SPECIFIC_OPTIONS = "h264_omx";
-                }else if(hardwareAccelerationType == HardwareAccelerationType.H264_X264){
+                }else if(ffmpegVcodecType == FfmpegVcodecType.H264_X264){
                     SPECIFIC_OPTIONS = "libx264";
                 }else{
                     SPECIFIC_OPTIONS = "";

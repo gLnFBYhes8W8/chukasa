@@ -1,0 +1,24 @@
+## chukasa
+#chukasa-core:
+#  video-file-extension: ts,m2t,mp4,mov,mpg,mpeg,vob,avi,divx,wmv,flv,ogg,ogm,iso
+#  channel-configuration: channel_configuration.json
+#  recorder-start-margin: 30
+#  recorder-stop-margin: 0
+##  epgdump-execute-schedule-cron: 0 0 7 * * *
+##  epgdump-execute-on-boot-ignore-interval: 86400000
+#
+## HLS
+##hls:
+##  duration: 2
+##  uri-in-playlist: 3
+#
+## MongoDB
+## if want to use this application on Docker, change ex. "spring.data.mongodb.host=mongo"
+## spring.data.mongodb.host=mongo
+#spring:
+#  data:
+#    mongodb:
+#      host: localhost
+#      port: 27017
+#      database: chukasa
+#      server-selection-timeout: 500

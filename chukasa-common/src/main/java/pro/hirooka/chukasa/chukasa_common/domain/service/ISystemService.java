@@ -9,7 +9,7 @@ public interface ISystemService {
     String getWebCameraDeviceName();
     boolean isTuner();
     boolean isRecxxx();
-    boolean isEpgdump();
+//    boolean isEpgdump();
     boolean isMongoDB();
     boolean canWebCameraStreaming();
     boolean canFileStreaming();
@@ -17,5 +17,6 @@ public interface ISystemService {
     boolean canRecording();
     @Deprecated
     HardwareAccelerationType getHardwareAccelerationType();
+    FfmpegVcodecType getFfmpegVcodecType();
     FfmpegVcodecType getFfmpegVcodecType(String userAgent);
 }

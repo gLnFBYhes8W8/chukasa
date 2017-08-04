@@ -66,7 +66,7 @@ public class FfmpegAndRecxxxService implements IFfmpegAndRecxxxService {
             ffmpegM3U8OutputPath = chukasaModel.getStreamPath() + FILE_SEPARATOR + M3U8_FILE_NAME + M3U8_FILE_EXTENSION;
         }
 
-        final List<ChannelConfiguration> channelConfigurationList = commonUtilityService.getChannelConfigurationList();
+        //final List<ChannelConfiguration> channelConfigurationList = commonUtilityService.getChannelConfigurationList();
         final ChannelType channelType = commonUtilityService.getChannelType(chukasaModel.getChukasaSettings().getPhysicalLogicalChannel());
         TunerStatus tunerStatus = tunerManagementService.findOne(channelType);
         if(tunerStatus != null) {

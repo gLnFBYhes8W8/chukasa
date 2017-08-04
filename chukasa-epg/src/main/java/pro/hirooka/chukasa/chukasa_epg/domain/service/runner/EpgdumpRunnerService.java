@@ -13,7 +13,7 @@ import pro.hirooka.chukasa.chukasa_common.domain.enums.ChannelType;
 import pro.hirooka.chukasa.chukasa_common.domain.model.ChannelConfiguration;
 import pro.hirooka.chukasa.chukasa_common.domain.model.TunerStatus;
 import pro.hirooka.chukasa.chukasa_common.domain.service.ITunerManagementService;
-import pro.hirooka.chukasa.chukasa_common.domain.configuration.EpgdumpConfiguration;
+import pro.hirooka.chukasa.chukasa_epg.domain.configuration.EpgConfiguration;
 import pro.hirooka.chukasa.chukasa_epg.domain.model.LastEpgdumpExecuted;
 import pro.hirooka.chukasa.chukasa_epg.domain.service.ILastEpgdumpExecutedService;
 import pro.hirooka.chukasa.chukasa_epg.domain.service.parser.IEpgdumpParser;
@@ -34,9 +34,9 @@ public class EpgdumpRunnerService implements IEpgdumpRunnerService {
     private final String FILE_SEPARATOR = ChukasaConstants.FILE_SEPARATOR;
 
     @Autowired
-    private SystemConfiguration systemConfiguration;
+    private EpgConfiguration epgConfiguration;
     @Autowired
-    private EpgdumpConfiguration epgdumpConfiguration;
+    private SystemConfiguration systemConfiguration;
     @Autowired
     private IEpgdumpParser epgdumpParser;
     @Autowired
@@ -58,7 +58,7 @@ public class EpgdumpRunnerService implements IEpgdumpRunnerService {
             tunerStatusBS = tunerManagementService.update(tunerStatusBS, false);
         }
 
-        final File temporaryEpgdumpPathFile = new File(epgdumpConfiguration.getTemporaryPath());
+        final File temporaryEpgdumpPathFile = new File(epgConfiguration.getEpgdumpTemporaryPath());
 
         cleanupTemporaryEpgdumpPath(temporaryEpgdumpPathFile);
         if(temporaryEpgdumpPathFile.mkdirs()){
@@ -69,7 +69,7 @@ public class EpgdumpRunnerService implements IEpgdumpRunnerService {
             if(tunerStatusBS != null) releaseTuner(tunerStatusBS);
             return new AsyncResult<>(-1);
         }
-        final String epgdumpShellPath = epgdumpConfiguration.getTemporaryPath() + FILE_SEPARATOR + "epgdump.sh";
+        final String epgdumpShellPath = epgConfiguration.getEpgdumpTemporaryPath() + FILE_SEPARATOR + "epgdump.sh";
 
         final File epgdumpShellFile = new File(epgdumpShellPath);
         try {
@@ -86,17 +86,17 @@ public class EpgdumpRunnerService implements IEpgdumpRunnerService {
                         final String recxxxCommand;
                         if(channelConfiguration.getChannelType() == ChannelType.GR) {
                             final String DEVICE_ARGUMENT = tunerManagementService.getDeviceArgument(tunerStatusGR);
-                            recxxxCommand = systemConfiguration.getRecxxxPath() + " " + DEVICE_OPTION + " " + DEVICE_ARGUMENT + " " + physicalLogicalChannel + " " + epgdumpConfiguration.getRecordingDuration() + " " + epgdumpConfiguration.getTemporaryPath() + FILE_SEPARATOR + "epgdump" + physicalLogicalChannel + ".ts";
+                            recxxxCommand = systemConfiguration.getRecxxxPath() + " " + DEVICE_OPTION + " " + DEVICE_ARGUMENT + " " + physicalLogicalChannel + " " + epgConfiguration.getEpgdumpRecordingDuration() + " " + epgConfiguration.getEpgdumpTemporaryPath() + FILE_SEPARATOR + "epgdump" + physicalLogicalChannel + ".ts";
                         }else if(channelConfiguration.getChannelType() == ChannelType.BS){
                             final String DEVICE_ARGUMENT = tunerManagementService.getDeviceArgument(tunerStatusBS);
-                            recxxxCommand = systemConfiguration.getRecxxxPath() + " " + DEVICE_OPTION + " " + DEVICE_ARGUMENT + " " + physicalLogicalChannel + " " + epgdumpConfiguration.getRecordingDuration() + " " + epgdumpConfiguration.getTemporaryPath() + FILE_SEPARATOR + "epgdump" + physicalLogicalChannel + ".ts";
+                            recxxxCommand = systemConfiguration.getRecxxxPath() + " " + DEVICE_OPTION + " " + DEVICE_ARGUMENT + " " + physicalLogicalChannel + " " + epgConfiguration.getEpgdumpRecordingDuration() + " " + epgConfiguration.getEpgdumpTemporaryPath() + FILE_SEPARATOR + "epgdump" + physicalLogicalChannel + ".ts";
                         }else{
                             log.error("unknown ChannelType");
                             if(tunerStatusGR != null) releaseTuner(tunerStatusGR);
                             if(tunerStatusBS != null) releaseTuner(tunerStatusBS);
                             return new AsyncResult<>(-1);
                         }
-                        final String epgdumpCommand = epgdumpConfiguration.getPath() + " json " + epgdumpConfiguration.getTemporaryPath()+ FILE_SEPARATOR + "epgdump" + physicalLogicalChannel + ".ts " + epgdumpConfiguration.getTemporaryPath() + FILE_SEPARATOR + "epgdump" + physicalLogicalChannel + ".json";
+                        final String epgdumpCommand = epgConfiguration.getEpgdumpPath() + " json " + epgConfiguration.getEpgdumpTemporaryPath() + FILE_SEPARATOR + "epgdump" + physicalLogicalChannel + ".ts " + epgConfiguration.getEpgdumpTemporaryPath() + FILE_SEPARATOR + "epgdump" + physicalLogicalChannel + ".json";
                         bufferedWriter.write(recxxxCommand);
                         bufferedWriter.newLine();
                         bufferedWriter.write(epgdumpCommand);
@@ -122,7 +122,7 @@ public class EpgdumpRunnerService implements IEpgdumpRunnerService {
 
             for(ChannelConfiguration channelConfiguration : channelConfigurationList) {
                 if(epgdumpChannelSet.contains(channelConfiguration.getPhysicalLogicalChannel())) {
-                    final String jsonStringPath = epgdumpConfiguration.getTemporaryPath() + FILE_SEPARATOR + "epgdump" + channelConfiguration.getPhysicalLogicalChannel() + ".json";
+                    final String jsonStringPath = epgConfiguration.getEpgdumpTemporaryPath() + FILE_SEPARATOR + "epgdump" + channelConfiguration.getPhysicalLogicalChannel() + ".json";
                     if (new File(jsonStringPath).exists() && new File(jsonStringPath).length() > 0) {
                         try {
                             epgdumpParser.parse(jsonStringPath, channelConfiguration.getPhysicalLogicalChannel(), channelConfiguration.getRemoteControllerChannel());

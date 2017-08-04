@@ -4,11 +4,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import pro.hirooka.chukasa.chukasa_common.domain.configuration.ChukasaConfiguration;
 import pro.hirooka.chukasa.chukasa_common.domain.configuration.SystemConfiguration;
 import pro.hirooka.chukasa.chukasa_common.domain.service.ICommonUtilityService;
-import pro.hirooka.chukasa.chukasa_common.domain.configuration.EpgdumpConfiguration;
 import pro.hirooka.chukasa.chukasa_common.domain.service.ISystemService;
+import pro.hirooka.chukasa.chukasa_epg.domain.configuration.EpgConfiguration;
 import pro.hirooka.chukasa.chukasa_epg.domain.enums.EpgdumpStatus;
 import pro.hirooka.chukasa.chukasa_epg.domain.model.LastEpgdumpExecuted;
 import pro.hirooka.chukasa.chukasa_epg.domain.service.parser.IEpgdumpParser;
@@ -16,6 +15,7 @@ import pro.hirooka.chukasa.chukasa_epg.domain.service.runner.IEpgdumpRunnerServi
 
 import javax.annotation.PostConstruct;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.time.Instant;
@@ -29,23 +29,17 @@ import java.util.Date;
 public class EpgdumpService implements IEpgdumpService {
 
     @Autowired
+    EpgConfiguration epgConfiguration;
+    @Autowired
     SystemConfiguration systemConfiguration;
-    @Autowired
-    ChukasaConfiguration chukasaConfiguration;
-    @Autowired
-    EpgdumpConfiguration epgdumpConfiguration;
     @Autowired
     IEpgdumpParser epgDumpParser;
     @Autowired
     ILastEpgdumpExecutedService lastEPGDumpExecutedService;
     @Autowired
     ISystemService systemService;
-    //@Autowired
-    //EpgdumpAsyncConfigurer epgdumpAsyncConfigurer;
     @Autowired
     ICommonUtilityService commonUtilityService;
-    //@Autowired
-    //EPGDumpRunner epgdumpRunner;
     @Autowired
     private IEpgdumpRunnerService epgdumpRunnerService;
 
@@ -55,7 +49,7 @@ public class EpgdumpService implements IEpgdumpService {
         // epgdump へのパスが存在していて，
         // 一度も情報を取得していない，あるいは前回情報を取得してから一定期間経過している場合，
         // アプリケーション起動時に別スレッドで情報を取得する．
-        if(systemService.isMongoDB() && systemService.isEpgdump() && !isEpgdumpExecuted()) {
+        if(systemService.isMongoDB() && isEpgdump() && !isEpgdumpExecuted()) {
             LastEpgdumpExecuted lastEpgdumpExecuted = lastEPGDumpExecutedService.read(1);
             if (lastEpgdumpExecuted == null) {
                 log.info("lastEpgdumpExecuted == null -> runEPGDump()");
@@ -67,7 +61,7 @@ public class EpgdumpService implements IEpgdumpService {
                 long last = lastEpgdumpExecuted.getDate();
                 long diff = last - now;
                 log.info("now = {}, last epgdump executed = {}, diff = {}", convertMilliToDate(now), convertMilliToDate(last), diff);
-                if (now - last > chukasaConfiguration.getEpgdumpExecuteOnBootIgnoreInterval()) {
+                if (now - last > epgConfiguration.getEpgdumpExecuteOnBootIgnoreInterval()) {
                     //runEPGDump();
                     epgdumpRunnerService.submit(commonUtilityService.getChannelConfigurationList());
                 }else{
@@ -79,6 +73,12 @@ public class EpgdumpService implements IEpgdumpService {
         }
     }
 
+    @Override
+    public boolean isEpgdump() {
+        File epgdump = new File(epgConfiguration.getEpgdumpPath());
+        return epgdump.exists();
+    }
+
     String convertMilliToDate(long milli){
         Instant instant = Instant.ofEpochMilli(milli);
         ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(instant, ZoneId.systemDefault());
@@ -86,10 +86,10 @@ public class EpgdumpService implements IEpgdumpService {
         return zonedDateTime.format(dateTimeFormatter);
     }
 
-    @Scheduled(cron = "${chukasa.epgdump-execute-schedule-cron}")
+    @Scheduled(cron = "${epg.epgdump-execute-schedule-cron}")
     void execute(){
 
-        if(systemService.isEpgdump() && systemService.isMongoDB() ) {
+        if(isEpgdump() && systemService.isMongoDB() ) {
             log.info("cheduled cron -> runEPGDump()");
             //runEPGDump();
             epgdumpRunnerService.submit(commonUtilityService.getChannelConfigurationList());

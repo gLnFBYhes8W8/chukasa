@@ -11,8 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import pro.hirooka.chukasa.chukasa_aaa.domain.entity.UserDetailsEntity;
 import pro.hirooka.chukasa.chukasa_api.app.api.v1.helper.IChukasaBrowserDetector;
-import pro.hirooka.chukasa.chukasa_common.domain.configuration.ChukasaConfiguration;
-import pro.hirooka.chukasa.chukasa_common.domain.configuration.EpgdumpConfiguration;
+import pro.hirooka.chukasa.chukasa_common.domain.configuration.CommonConfiguration;
 import pro.hirooka.chukasa.chukasa_common.domain.configuration.SystemConfiguration;
 import pro.hirooka.chukasa.chukasa_common.domain.model.ChannelConfiguration;
 import pro.hirooka.chukasa.chukasa_common.domain.service.ICommonUtilityService;
@@ -41,11 +40,9 @@ import static pro.hirooka.chukasa.chukasa_common.domain.constants.ChukasaConstan
 public class MenuController {
 
     @Autowired
+    CommonConfiguration commonConfiguration;
+    @Autowired
     SystemConfiguration systemConfiguration;
-    @Autowired
-    ChukasaConfiguration chukasaConfiguration;
-    @Autowired
-    EpgdumpConfiguration epgdumpConfiguration;
     @Autowired
     ISystemService systemService;
     @Autowired
@@ -99,7 +96,7 @@ public class MenuController {
         boolean isFFmpeg = systemService.isFFmpeg();
         boolean isPTx = systemService.isTuner();
         boolean isRecpt1 = systemService.isRecxxx();
-        boolean isEpgdump = systemService.isEpgdump();
+        boolean isEpgdump = epgdumpService.isEpgdump();
         boolean isMongoDB = systemService.isMongoDB();
         boolean isWebCamera = systemService.isWebCamera();
 
@@ -165,7 +162,7 @@ public class MenuController {
         File fileDirectory = new File(systemConfiguration.getFilePath());
         File[] fileArray = fileDirectory.listFiles();
         if(fileArray != null) {
-            String[] videoFileExtensionArray = chukasaConfiguration.getVideoFileExtension();
+            String[] videoFileExtensionArray = commonConfiguration.getVideoFileExtension();
             List<String> videoFileExtensionList = Arrays.asList(videoFileExtensionArray);
             for (File file : fileArray) {
                 for(String videoFileExtension : videoFileExtensionList){
