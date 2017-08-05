@@ -75,7 +75,7 @@ public class EpgdumpService implements IEpgdumpService {
 
     @Override
     public boolean isEpgdump() {
-        File epgdump = new File(epgConfiguration.getEpgdumpPath());
+        File epgdump = new File(systemConfiguration.getEpgdumpPath());
         return epgdump.exists();
     }
 

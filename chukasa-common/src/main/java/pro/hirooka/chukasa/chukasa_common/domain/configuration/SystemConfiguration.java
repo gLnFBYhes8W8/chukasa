@@ -12,6 +12,7 @@ import org.springframework.context.annotation.PropertySource;
 public class SystemConfiguration {
     String ffmpegPath;
     String recxxxPath;
+    String epgdumpPath;
     String webcamDeviceName;
     int webcamAudioChannel;
     String temporaryPath;

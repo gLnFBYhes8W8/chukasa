@@ -1,0 +1,78 @@
+server:
+  port: 8080
+
+logging:
+  path: logs
+  level:
+    root: INFO
+    org:
+      springframework:
+        web: INFO
+      hibernate: ERROR
+
+spring:
+  profiles:
+    active: localhost-mongodb
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+---
+spring:
+  profiles: localhost-no-database
+server:
+  port: 8080
+---
+spring:
+  profiles: localhost-mongodb
+  # MongoDB
+  # if want to use this application on Docker, change -> ex. "spring.data.mongodb.host=mongo"
+  # spring.data.mongodb.host=mongo
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: chukasa
+      server-selection-timeout: 500
+---
+spring:
+  profiles: localhost-hsqldb
+---
+spring:
+  profiles: localhost-postgresql
+  datasource:
+    url: jdbc:postgresql://localhost:5432/chukasa
+    username: chukasa
+    password: chukasa
+---
+spring:
+  profiles: localhost-mongodb-postgresql
+  datasource:
+    url: jdbc:postgresql://localhost:5432/chukasa
+    username: chukasa
+    password: chukasa
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: chukasa
+      server-selection-timeout: 500
+---
+spring:
+  profiles: localhost-mysql
+  datasource:
+    url: jdbc:mysql://localhost:3306/chukasa # TODO: not working...
+    username: chukasa
+    password: chukasa
+---
+spring:
+  profiles: localhost-mongodb-mysql
+  datasource:
+    url: jdbc:mysql://localhost:3306/chukasa # TODO: not working...
+    username: chukasa
+    password: chukasa
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: chukasa
+      server-selection-timeout: 500

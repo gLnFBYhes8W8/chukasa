@@ -96,7 +96,7 @@ public class EpgdumpRunnerService implements IEpgdumpRunnerService {
                             if(tunerStatusBS != null) releaseTuner(tunerStatusBS);
                             return new AsyncResult<>(-1);
                         }
-                        final String epgdumpCommand = epgConfiguration.getEpgdumpPath() + " json " + epgConfiguration.getEpgdumpTemporaryPath() + FILE_SEPARATOR + "epgdump" + physicalLogicalChannel + ".ts " + epgConfiguration.getEpgdumpTemporaryPath() + FILE_SEPARATOR + "epgdump" + physicalLogicalChannel + ".json";
+                        final String epgdumpCommand = systemConfiguration.getEpgdumpPath() + " json " + epgConfiguration.getEpgdumpTemporaryPath() + FILE_SEPARATOR + "epgdump" + physicalLogicalChannel + ".ts " + epgConfiguration.getEpgdumpTemporaryPath() + FILE_SEPARATOR + "epgdump" + physicalLogicalChannel + ".json";
                         bufferedWriter.write(recxxxCommand);
                         bufferedWriter.newLine();
                         bufferedWriter.write(epgdumpCommand);

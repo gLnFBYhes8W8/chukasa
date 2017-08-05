@@ -22,11 +22,11 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
-        if(aaaConfiguration.getProfiles().equals("localhost-hsqldb")
-                || aaaConfiguration.getProfiles().equals("localhost-postgresql")
-                || aaaConfiguration.getProfiles().equals("localhost-mysql")){
+        if(aaaConfiguration.getProfiles().contains("postgresql")
+                || aaaConfiguration.getProfiles().contains("mysql")
+                || aaaConfiguration.getProfiles().contains("hsqldb")){
             authenticationManagerBuilder.userDetailsService(this.chukasaUserDetailsService);//.passwordEncoder(passwordEncoder()); // TODO:
-        }else if(aaaConfiguration.getProfiles().equals("inmemory")) {
+        }else{
             authenticationManagerBuilder.inMemoryAuthentication().withUser("admin").password("admin").roles("ADMIN");
             authenticationManagerBuilder.inMemoryAuthentication().withUser("user").password("user").roles("USER");
             authenticationManagerBuilder.inMemoryAuthentication().withUser("guest").password("guest").roles("GUEST");

@@ -59,14 +59,17 @@ public class SystemService implements ISystemService {
         return recpt1.exists();
     }
 
-//    @Override
-//    public boolean isEpgdump() {
-//        File epgdump = new File(epgdumpConfiguration.getPath());
-//        return epgdump.exists();
-//    }
+    @Override
+    public boolean isEpgdump() {
+        File epgdump = new File(systemConfiguration.getEpgdumpPath());
+        return epgdump.exists();
+    }
 
     @Override
     public boolean isMongoDB() {
+        if(mongoDBConfiguration.getHost() == null){
+            return false;
+        }
         if(mongoDBConfiguration.getHost().equals("mongo")){
             return true;
         }

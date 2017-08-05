@@ -9,7 +9,7 @@ public interface ISystemService {
     String getWebCameraDeviceName();
     boolean isTuner();
     boolean isRecxxx();
-//    boolean isEpgdump();
+    boolean isEpgdump();
     boolean isMongoDB();
     boolean canWebCameraStreaming();
     boolean canFileStreaming();

@@ -1,26 +1,26 @@
-spring:
-  profiles:
-    active: inmemory
-  jpa:
-    hibernate:
-      ddl-auto: create-drop
----
-spring:
-  profiles: inmemory
----
-spring:
-  profiles: localhost-hsqldb
----
-spring:
-  profiles: localhost-postgresql
-  datasource:
-    url: jdbc:postgresql://localhost:5432/chukasa
-    username: chukasa
-    password: chukasa
----
-spring:
-  profiles: localhost-mysql
-  datasource:
-    url: jdbc:mysql://localhost:3306/chukasa # TODO: not working...
-    username: chukasa
-    password: chukasa
+#spring:
+#  profiles:
+#    active: inmemory
+#  jpa:
+#    hibernate:
+#      ddl-auto: create-drop
+#---
+#spring:
+#  profiles: inmemory
+#---
+#spring:
+#  profiles: localhost-hsqldb
+#---
+#spring:
+#  profiles: localhost-postgresql
+#  datasource:
+#    url: jdbc:postgresql://localhost:5432/chukasa
+#    username: chukasa
+#    password: chukasa
+#---
+#spring:
+#  profiles: localhost-mysql
+#  datasource:
+#    url: jdbc:mysql://localhost:3306/chukasa # TODO: not working...
+#    username: chukasa
+#    password: chukasa

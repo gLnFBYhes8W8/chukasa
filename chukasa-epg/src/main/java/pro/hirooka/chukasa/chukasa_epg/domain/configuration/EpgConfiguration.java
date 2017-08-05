@@ -12,7 +12,6 @@ import org.springframework.context.annotation.PropertySource;
 public class EpgConfiguration {
     private String epgdumpExecuteScheduleCron;
     private long epgdumpExecuteOnBootIgnoreInterval;
-    String epgdumpPath;
     String epgdumpTemporaryPath;
     int epgdumpRecordingDuration;
 }

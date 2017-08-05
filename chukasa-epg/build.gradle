@@ -8,6 +8,7 @@ apply plugin: 'io.spring.dependency-management'
 
 ext {
     springBootVersion = '2.0.0.BUILD-SNAPSHOT'
+    commonsIoVersion = '2.5'
 }
 
 sourceCompatibility = 1.8
@@ -33,7 +34,7 @@ dependencies {
     compile project(':chukasa-common')
     compile project(':chukasa-recorder')
     compile 'org.springframework.data:spring-data-mongodb'
-    compile group: 'commons-io', name: 'commons-io', version: '2.5'
+    compile group: 'commons-io', name: 'commons-io', version: commonsIoVersion
 }
 
 dependencyManagement {

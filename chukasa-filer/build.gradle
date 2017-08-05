@@ -8,7 +8,6 @@ apply plugin: 'io.spring.dependency-management'
 
 ext {
     springBootVersion = '2.0.0.BUILD-SNAPSHOT'
-    bootstrapVersion = '3.3.7-1'
 }
 
 sourceCompatibility = 1.8
@@ -31,20 +30,7 @@ repositories {
 }
 
 dependencies {
-
     compile project(':chukasa-common')
-    compile project(':chukasa-aaa')
-    compile project(':chukasa-hls')
-    compile project(':chukasa-recorder')
-    compile project(':chukasa-epg')
-    compile project(':chukasa-api')
-    compile project(':chukasa-filer')
-    compile ('org.springframework.boot:spring-boot-starter-web') {
-        exclude module: 'spring-boot-starter-tomcat'
-    }
-    compile 'org.springframework.boot:spring-boot-starter-jetty'
-    compile 'org.springframework.boot:spring-boot-starter-security'
-    compile group: 'org.webjars', name: 'bootstrap', version: bootstrapVersion
 }
 
 dependencyManagement {

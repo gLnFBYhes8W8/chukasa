@@ -6,10 +6,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Data
 @Configuration
-@ConfigurationProperties(prefix = "spring.data.mongodb")
-public class MongoDBConfiguration {
-    String host;
-    int port;
-    String database;
-    int serverSelectionTimeout;
+@ConfigurationProperties(prefix = "spring")
+public class SpringProfilesConfiguration {
+    private String profiles;
 }
