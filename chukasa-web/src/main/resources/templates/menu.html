@@ -10,8 +10,8 @@
     <div th:replace="header :: header"></div>
 
     <ul class="nav nav-tabs">
-        <li class="active" th:if="${isPTxByProgram == true}"><a href="#tabNow" data-toggle="tab">PT3</a></li>
-        <li class="active" th:if="${isPTxByChannel == true}"><a href="#tabCapture" data-toggle="tab">PT3</a></li>
+        <li class="active" th:if="${isPTxByProgram == true}"><a href="#tabNow" data-toggle="tab">Tuner</a></li>
+        <li class="active" th:if="${isPTxByChannel == true}"><a href="#tabCapture" data-toggle="tab">Tuner</a></li>
         <li th:if="${isPTxByChannel == true or isPTxByProgram == true}"><a href="#tabFile" data-toggle="tab">Video File</a></li>
         <li class="active" th:if="${isPTxByChannel == false and isPTxByProgram == false}"><a href="#tabFile" data-toggle="tab">Video File</a></li>
         <li th:if="${isWebCamera == true}"><a href="#tabWebCamera" data-toggle="tab">Web Camera</a></li>

@@ -35,6 +35,7 @@ dependencies {
         exclude module: 'spring-boot-starter-tomcat'
     }
     compile 'org.springframework.boot:spring-boot-starter-jetty'
+    compile 'org.springframework.boot:spring-boot-starter-security'
     compile project(':chukasa-common')
     compile project(':chukasa-hls')
     compile project(':chukasa-recorder')
