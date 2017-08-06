@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import pro.hirooka.chukasa.chukasa_common.domain.configuration.SystemConfiguration;
 import pro.hirooka.chukasa.chukasa_common.domain.enums.ChannelType;
 import pro.hirooka.chukasa.chukasa_common.domain.enums.FfmpegVcodecType;
-import pro.hirooka.chukasa.chukasa_common.domain.enums.HardwareAccelerationType;
 import pro.hirooka.chukasa.chukasa_common.domain.model.ChannelConfiguration;
 import pro.hirooka.chukasa.chukasa_common.domain.model.TunerStatus;
 import pro.hirooka.chukasa.chukasa_common.domain.service.ICommonUtilityService;
@@ -20,6 +19,7 @@ import pro.hirooka.chukasa.chukasa_recorder.domain.model.ReservedProgram;
 import java.io.*;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.Future;
 
 import static pro.hirooka.chukasa.chukasa_common.domain.constants.ChukasaConstants.FILE_SEPARATOR;
@@ -75,13 +75,26 @@ public class RecorderRunnerService implements IRecorderRunnerService {
             if (!doRecordFile.exists()) {
                 doRecordFile.createNewFile();
                 final BufferedWriter bw = new BufferedWriter(new FileWriter(doRecordFile));
+
                 bw.write("#!/bin/bash");
                 bw.newLine();
-                bw.write(systemConfiguration.getRecxxxPath() + " " + DEVICE_OPTION + " " + DEVICE_ARGUMENT + " " + physicalLogicalChannel + " " + duration + " \"" + systemConfiguration.getFilePath() + FILE_SEPARATOR + fileName + "\"" + " >/dev/null");
+
+                final String commandRecording = systemConfiguration.getRecxxxPath() + " " + DEVICE_OPTION + " "
+                        + DEVICE_ARGUMENT + " " + physicalLogicalChannel + " " + duration + " \""
+                        + systemConfiguration.getFilePath() + FILE_SEPARATOR + fileName + "\"" + " >/dev/null";
+                log.info(commandRecording);
+                bw.write(commandRecording);
                 bw.newLine();
+
                 // TODO: separate sh into recoding and transcoding
-//                bw.write(systemConfiguration.getFfmpegPath() +  " -i " + "\"" + systemConfiguration.getFilePath() + FILE_SEPARATOR + fileName + "\"" + " -ss " + thumbnailPoint + " -vframes 1 -f image2 " + "\"" + systemConfiguration.getFilePath() + FILE_SEPARATOR + fileName + ".jpg\"" + " >/dev/null");
-//                bw.newLine();
+                final String commandThumbnail = systemConfiguration.getFfmpegPath() +  " -i " + "\""
+                        + systemConfiguration.getFilePath() + FILE_SEPARATOR + fileName + "\"" + " -ss "
+                        + thumbnailPoint + " -vframes 1 -f image2 " + "\"" + systemConfiguration.getFilePath()
+                        + FILE_SEPARATOR + fileName + ".jpg\"" + " >/dev/null";
+                log.info(commandThumbnail);
+                bw.write(commandThumbnail);
+                bw.newLine();
+
                 final FfmpegVcodecType ffmpegVcodecType = systemService.getFfmpegVcodecType();
                 final String SPECIFIC_OPTIONS;
                 if(ffmpegVcodecType == FfmpegVcodecType.H264_QSV){
@@ -96,9 +109,41 @@ public class RecorderRunnerService implements IRecorderRunnerService {
                     SPECIFIC_OPTIONS = "";
                 }
                 // TODO: separate sh into recoding and transcoding
-//                bw.write(systemConfiguration.getFfmpegPath() + " -i " + "\"" + systemConfiguration.getFilePath() + FILE_SEPARATOR + fileName + "\"" + " -acodec aac -ab 160k -ar 44100 -ac 2 -s 1280x720 -vcodec " + SPECIFIC_OPTIONS + " -profile:v high -level 4.2 -b:v 2400k -threads 1 -y " + "\"" + systemConfiguration.getFilePath() + FILE_SEPARATOR + fileName + ".m4v\"" + " >/dev/null");
-//                bw.newLine();
-//                bw.write(systemConfiguration.getFfmpegPath() + " -i " + "\"" + systemConfiguration.getFilePath() + FILE_SEPARATOR + fileName + "\"" + " -acodec aac -ab 32k -ar 44100 -ac 2 -s 320x180 -vcodec " + SPECIFIC_OPTIONS + " -profile:v high -level 4.1 -b:v 160k -threads 1 -y " + "\"" + systemConfiguration.getFilePath() + FILE_SEPARATOR + fileName + ".watch.m4v\"" + " >/dev/null");
+                final String commandTranscodingM4v = systemConfiguration.getFfmpegPath() + " -i " + "\""
+                        + systemConfiguration.getFilePath() + FILE_SEPARATOR + fileName + "\""
+                        + " -acodec aac -ab 160k -ar 44100 -ac 2 -s 1280x720 -vcodec " + SPECIFIC_OPTIONS
+                        + " -profile:v high -level 4.2 -b:v 2400k -threads 1 -y " + "\""
+                        + systemConfiguration.getFilePath() + FILE_SEPARATOR + fileName + ".m4v\"" + " >/dev/null";
+                log.info(commandTranscodingM4v);
+                bw.write(commandTranscodingM4v);
+                bw.newLine();
+
+                final String commandTranscodingWatchM4v = systemConfiguration.getFfmpegPath() + " -i " + "\""
+                        + systemConfiguration.getFilePath() + FILE_SEPARATOR + fileName + "\""
+                        + " -acodec aac -ab 32k -ar 44100 -ac 2 -s 320x180 -vcodec " + SPECIFIC_OPTIONS
+                        + " -profile:v high -level 4.1 -b:v 160k -threads 1 -y " + "\""
+                        + systemConfiguration.getFilePath() + FILE_SEPARATOR + fileName + ".watch.m4v\"" + " >/dev/null";
+                log.info(commandTranscodingWatchM4v);
+                bw.write(commandTranscodingWatchM4v);
+                bw.newLine();
+
+                //final String encodedFileName = URLEncoder.encode(fileName, "UTF-8");
+                final String encodedFileName = UUID.randomUUID().toString();
+                final String hlsDirectory = systemConfiguration.getFilePath() + FILE_SEPARATOR + "hls"
+                        + FILE_SEPARATOR + encodedFileName + FILE_SEPARATOR + "640x360-1200-128";
+                log.info(hlsDirectory);
+                final String commandCreateHlsDirectory = "mkdir -p " + hlsDirectory;
+                log.info(commandCreateHlsDirectory);
+                bw.write(commandCreateHlsDirectory);
+                bw.newLine();
+
+                // TODO: -> transcoding service
+                final String commandTranscodingHls = systemConfiguration.getFfmpegPath() + " -i " + "\""
+                        + systemConfiguration.getFilePath() + FILE_SEPARATOR + fileName + "\""
+                        + " -acodec aac -ab 128k -ar 48000 -ac 2 -s 640x360 -vcodec h264_nvenc -vf yadif -g 10 -b:v 1200k -threads 1 -f hls -hls_time 2 "
+                        + hlsDirectory + FILE_SEPARATOR + "chukasa.m3u8";
+                log.info(commandTranscodingHls);
+                bw.write(commandTranscodingHls);
                 bw.close();
             }
 

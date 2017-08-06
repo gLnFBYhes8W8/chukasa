@@ -66,11 +66,8 @@ public class RecorderService implements IRecorderService {
                         // start recording immediately
                         log.info("no reservation, direct recording");
 
-                        long duration = (stopRecording - now) / 1000;
-                        reservedProgram.setDuration(duration);
-//                        SimpleAsyncTaskExecutor simpleAsyncTaskExecutor = new SimpleAsyncTaskExecutor();
-//                        RecorderRunner recorderRunner = new RecorderRunner(systemConfiguration, reservedProgram);
-//                        simpleAsyncTaskExecutor.execute(recorderRunner);
+                        long recordingDuration = (stopRecording - now) / 1000;
+                        reservedProgram.setRecordingDuration(recordingDuration);
                         recorderRunnerService.submit(reservedProgram);
 
                         RecordingProgramModel recordingProgramModel = new RecordingProgramModel();
@@ -109,11 +106,9 @@ public class RecorderService implements IRecorderService {
 
         long startRecording = reservedProgram.getBegin() - recorderConfiguration.getStartMargin() * 1000;
         long stopRecording = reservedProgram.getEnd() + recorderConfiguration.getStopMargin() * 1000;
-        long durationRecording = (stopRecording - startRecording) / 1000;
         long recordingDuration = (stopRecording - startRecording) / 1000;
         reservedProgram.setStartRecording(startRecording);
         reservedProgram.setStopRecording(stopRecording);
-        reservedProgram.setDurationRecording(durationRecording);
         reservedProgram.setRecordingDuration(recordingDuration);
 
         String fileName = reservedProgram.getPhysicalLogicalChannel() + "_" + reservedProgram.getBegin() + "_" + reservedProgram.getTitle()  + ".ts";
@@ -134,13 +129,9 @@ public class RecorderService implements IRecorderService {
             // start recording immediately
             log.info("no reservation, direct recording");
 
-            durationRecording = (stopRecording - now) / 1000;
-            reservedProgram.setDurationRecording(durationRecording);
-//            SimpleAsyncTaskExecutor simpleAsyncTaskExecutor = new SimpleAsyncTaskExecutor();
-//            RecorderRunner recorderRunner = new RecorderRunner(systemConfiguration, reservedProgram, tunerManagementService);
-//            simpleAsyncTaskExecutor.execute(recorderRunner);
+            recordingDuration = (stopRecording - now) / 1000;
+            reservedProgram.setRecordingDuration(recordingDuration);
             recorderRunnerService.submit(reservedProgram);
-
 
             RecordingProgramModel recordingProgramModel = new RecordingProgramModel();
             recordingProgramModel.setFileName(reservedProgram.getFileName());

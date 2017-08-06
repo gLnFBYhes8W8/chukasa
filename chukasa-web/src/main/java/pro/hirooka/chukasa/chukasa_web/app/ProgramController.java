@@ -16,6 +16,7 @@ import pro.hirooka.chukasa.chukasa_recorder.domain.model.ReservedProgram;
 import pro.hirooka.chukasa.chukasa_recorder.domain.service.IProgramTableService;
 import pro.hirooka.chukasa.chukasa_recorder.domain.service.IRecorderService;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
 
@@ -28,6 +29,8 @@ public class ProgramController {
     IProgramTableService programTableService;
     @Autowired
     IRecorderService recorderService;
+    @Autowired
+    private HttpServletRequest httpServletRequest;
 
     @RequestMapping(method = RequestMethod.GET)
     String read(Model model){
@@ -88,7 +91,9 @@ public class ProgramController {
 
         log.info("createdReservedProgram -> {}", createdReservedProgram.toString());
         recorderService.create(createdReservedProgram);
-        return "redirect:/programs";
+
+        String referer = httpServletRequest.getHeader("Referer");
+        return "redirect:"+ referer;
     }
 }
 
