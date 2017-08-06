@@ -62,6 +62,8 @@ public class MenuController {
     @Autowired
     ICommonUtilityService commonUtilityService;
 
+    // TODO: logic -> service
+
     @RequestMapping
     String manu(@AuthenticationPrincipal UserDetailsEntity userDetailsEntity, Model model){
 
@@ -106,15 +108,6 @@ public class MenuController {
 
         List<ChannelConfiguration> channelConfigurationList = commonUtilityService.getChannelConfigurationList();
 
-//        Map<String, String> epgdumpChannelMap = new HashMap<>();
-//        Resource resource = new ClassPathResource(epgdumpConfiguration.getPhysicalChannelMap());
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        try {
-//            epgdumpChannelMap = objectMapper.readValue(resource.getInputStream(), HashMap.class);
-//            log.info(epgdumpChannelMap.toString());
-//        } catch (IOException e) {
-//            log.error("invalid epgdump_channel_map.json: {} {}", e.getMessage(), e);
-//        }
         if(isMongoDB && isEpgdump){
             programList = programTableService.readByNow(new Date().getTime());
             programList = programList.stream().sorted(Comparator.comparing(Program::getPhysicalLogicalChannel)).collect(Collectors.toList());
@@ -144,18 +137,9 @@ public class MenuController {
                     log.error("invalid value {} {}", e.getMessage(), e);
                 }
             }
-            //if(epgDumpProgramInformationList.size() == 0) {
-//                for (Map.Entry<String, String> entry : epgdumpChannelMap.entrySet()) {
-//                    try {
-//                        Program program = new Program();
-//                        program.setPhysicalChannel(Integer.parseInt(entry.getKey()));
-//                        programList.add(program);
-//                    }catch (NumberFormatException e){
-//                        log.error("invalid value {} {}", e.getMessage(), e);
-//                    }
-//                }
-            //}
         }
+        assert programList != null;
+        programList.sort(Comparator.comparingInt(Program::getRemoteControllerChannel));
 
         // FILE
         List<VideoFile> videoFileModelList = new ArrayList<>();
@@ -176,6 +160,7 @@ public class MenuController {
         }else{
             log.warn("'{}' does not exist.", fileDirectory);
         }
+        videoFileModelList.sort(Comparator.comparing(VideoFile::getName));
 
         // Okkake
         List<VideoFile> okkakeVideoFileModelList = new ArrayList<>();
@@ -212,20 +197,6 @@ public class MenuController {
                 }
             }
         }
-
-//        File okkakeVideoFileDirectory = new File(systemConfiguration.getFilePath());
-//        File[] okkakeVideoFileArray = okkakeVideoFileDirectory.listFiles();
-//        if(okkakeVideoFileArray != null) {
-//            for (File file : fileArray) {
-//                if(file.getName().endsWith(".ts")){
-//                    VideoFile okkakeVideoFileModel = new VideoFile();
-//                    okkakeVideoFileModel.setName(file.getName());
-//                    okkakeVideoFileModelList.add(okkakeVideoFileModel);
-//                }
-//            }
-//        }else{
-//            log.warn("'{}' does not exist.", okkakeVideoFileDirectory);
-//        }
 
         model.addAttribute("isSupported", isSupported);
         model.addAttribute("isPTxByChannel", isPTxByChannel);

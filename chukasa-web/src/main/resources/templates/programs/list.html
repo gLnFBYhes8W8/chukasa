@@ -8,17 +8,17 @@
 <table class="table">
     <tr th:each="program : ${programList}">
         <form th:action="@{/programs/create}" method="post" th:object="${reservedProgram}">
-            <input th:value="${program.channel}" type = "hidden" id = "channel" name = "channel"/>
-            <input th:value="${program.title}" type = "hidden" id = "title" name = "title"/>
-            <input th:value="${program.detail}" type = "hidden" id = "detail" name = "detail"/>
-            <input th:value="${program.start}" type = "hidden" id = "start" name = "start"/>
-            <input th:value="${program.end}" type = "hidden" id = "end" name = "end"/>
-            <input th:value="${program.duration}" type = "hidden" id = "duration" name = "duration"/>
             <input th:value="${program.physicalLogicalChannel}" type = "hidden" id = "physicalLogicalChannel" name = "physicalLogicalChannel"/>
             <input th:value="${program.remoteControllerChannel}" type = "hidden" id = "remoteControllerChannel" name = "remoteControllerChannel"/>
             <input th:value="${program.channelName}" type = "hidden" id = "channelName" name = "channelName"/>
+            <input th:value="${program.start}" type = "hidden" id = "start" name = "start"/>
+            <input th:value="${program.end}" type = "hidden" id = "end" name = "end"/>
             <input th:value="${program.beginDate}" type = "hidden" id = "beginDate" name = "beginDate"/>
             <input th:value="${program.endDate}" type = "hidden" id = "endDate" name = "endDate"/>
+            <input th:value="${program.duration}" type = "hidden" id = "duration" name = "duration"/>
+            <input th:value="${program.title}" type = "hidden" id = "title" name = "title"/>
+            <input th:value="${program.detail}" type = "hidden" id = "detail" name = "detail"/>
+            <input th:value="${program.channel}" type = "hidden" id = "channel" name = "channel"/>
             <td th:text="${program.physicalLogicalChannel}">physicalLogicalChannel</td>
             <td th:text="${program.remoteControllerChannel}">remoteControllerChannel</td>
             <td th:text="${program.channelName}">channelName</td>
