@@ -2,7 +2,7 @@ package pro.hirooka.chukasa.chukasa_hls.domain.service.hls.encrypter;
 
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.text.RandomStringGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pro.hirooka.chukasa.chukasa_common.domain.constants.ChukasaConstants;
@@ -71,7 +71,9 @@ public class ChukasaHlsEncrypter implements IChukasaHlsEncrypter {
             c.init(Cipher.ENCRYPT_MODE, sKey);
 
             // Set Key File Name at random
-            String keyPre = RandomStringUtils.randomAlphabetic(10);
+            final RandomStringGenerator randomStringGenerator = new RandomStringGenerator.Builder()
+                    .withinRange('a', 'z').build();
+            String keyPre = randomStringGenerator.generate(10);
             keyOut = new FileOutputStream(streamPath + FILE_SEPARATOR + keyPre + seqTsEnc + ".key");
 
             chukasaModel.getKeyArrayList().add(keyPre);
@@ -89,7 +91,7 @@ public class ChukasaHlsEncrypter implements IChukasaHlsEncrypter {
                 ivHex = ivHex + ivHexTmp;
             }
 
-            String ivPre = RandomStringUtils.randomAlphabetic(10);
+            String ivPre = randomStringGenerator.generate(10);
             ivOut = new FileWriter(streamPath + FILE_SEPARATOR + ivPre + seqTsEnc + ".iv");
             ivOut.write(ivHex);
             ivOut.close();

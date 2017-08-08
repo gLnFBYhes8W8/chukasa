@@ -2,13 +2,12 @@ package pro.hirooka.chukasa.chukasa_hls.domain.service.hls.detector;
 
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.text.RandomStringGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 import pro.hirooka.chukasa.chukasa_common.domain.constants.ChukasaConstants;
 import pro.hirooka.chukasa.chukasa_common.domain.enums.FfmpegVcodecType;
-import pro.hirooka.chukasa.chukasa_common.domain.enums.HardwareAccelerationType;
 import pro.hirooka.chukasa.chukasa_common.domain.enums.PlaylistType;
 import pro.hirooka.chukasa.chukasa_hls.domain.model.ChukasaModel;
 import pro.hirooka.chukasa.chukasa_hls.domain.service.IChukasaModelManagementComponent;
@@ -91,7 +90,9 @@ public class FfmpegHlsMediaSegmentDetector implements Runnable {
                         final Cipher cipher = Cipher.getInstance("AES/CBC/PKCS7Padding", "BC");
                         cipher.init(Cipher.ENCRYPT_MODE, key);
 
-                        final String keyPrefix = RandomStringUtils.randomAlphabetic(10);
+                        final RandomStringGenerator randomStringGenerator = new RandomStringGenerator.Builder()
+                                .withinRange('a', 'z').build();
+                        final String keyPrefix = randomStringGenerator.generate(10);
                         final String HLS_KEY_FILE_EXTENSION = ChukasaConstants.HLS_KEY_FILE_EXTENSION;
                         final FileOutputStream keyFileOutputStream = new FileOutputStream(mediaPath + FILE_SEPARATOR + keyPrefix + (sequenceMediaSegment + 1) + HLS_KEY_FILE_EXTENSION);
 
@@ -110,7 +111,7 @@ public class FfmpegHlsMediaSegmentDetector implements Runnable {
                             ivHex = ivHex + ivHexTmp;
                         }
 
-                        final String ivPrefix = RandomStringUtils.randomAlphabetic(10);
+                        final String ivPrefix = randomStringGenerator.generate(10);
                         final FileWriter ivFileWriter = new FileWriter(mediaPath + FILE_SEPARATOR + ivPrefix + (sequenceMediaSegment + 1) + HLS_IV_FILE_EXTENSION);
                         ivFileWriter.write(ivHex);
                         ivFileWriter.close();
