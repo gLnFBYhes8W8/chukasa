@@ -229,21 +229,24 @@ public class SystemService implements ISystemService {
         if(userAgent.contains(SAFARI) && !userAgent.contains(CHROME) && !userAgent.contains(CHROMIUM)){
             if(userAgent.contains(IPHONE)){
                 final String versionUnderscoreString = userAgent.split(IPHONE)[1].split(" ")[0];
-                final String versionString = versionUnderscoreString.replace("_", ".");
+                final String versionString = versionUnderscoreString.split("_")[0]
+                        + "." + versionUnderscoreString.split("_")[1];
                 final double version = Double.parseDouble(versionString);
                 if(version >= 11.0){
                     return FfmpegVcodecType.HEVC_NVENC;
                 }
             }else if(userAgent.contains(IPAD)){
                 final String versionUnderscoreString = userAgent.split(IPAD)[1].split(" ")[0];
-                final String versionString = versionUnderscoreString.replace("_", ".");
+                final String versionString = versionUnderscoreString.split("_")[0]
+                        + "." + versionUnderscoreString.split("_")[1];
                 final double version = Double.parseDouble(versionString);
                 if(version >= 11.0){
                     return FfmpegVcodecType.HEVC_NVENC;
                 }
             }else if(userAgent.contains(MAC)){
                 final String versionUnderscoreString = userAgent.split(MAC)[1].split(" ")[0];
-                final String versionString = versionUnderscoreString.replace("_", ".");
+                final String versionString = versionUnderscoreString.split("_")[0]
+                        + "." + versionUnderscoreString.split("_")[1];
                 final double version = Double.parseDouble(versionString);
                 if(version >= 10.13){
                     return FfmpegVcodecType.HEVC_NVENC;
