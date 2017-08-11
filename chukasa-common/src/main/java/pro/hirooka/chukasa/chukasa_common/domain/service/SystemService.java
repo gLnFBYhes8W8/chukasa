@@ -224,6 +224,7 @@ public class SystemService implements ISystemService {
         final String CHROME = "Chrome/";
         final String CHROMIUM = "Chromium/";
         final String IPHONE = "iPhone; CPU iPhone OS ";
+        final String IPOD = "iPod touch; CPU iPhone OS ";
         final String IPAD = "iPad; CPU OS ";
         final String MAC = "Macintosh; Intel Mac OS X ";
         if(userAgent.contains(SAFARI) && !userAgent.contains(CHROME) && !userAgent.contains(CHROMIUM)){
@@ -233,6 +234,14 @@ public class SystemService implements ISystemService {
                         + "." + versionUnderscoreString.split("_")[1];
                 final double version = Double.parseDouble(versionString);
                 if(version >= 11.0){
+                    return FfmpegVcodecType.HEVC_NVENC;
+                }
+            }else if(userAgent.contains(IPOD)){
+                final String versionUnderscoreString = userAgent.split(IPOD)[1].split(" ")[0];
+                final String versionString = versionUnderscoreString.split("_")[0]
+                        + "." + versionUnderscoreString.split("_")[1];
+                final double version = Double.parseDouble(versionString);
+                if (version >= 11.0) {
                     return FfmpegVcodecType.HEVC_NVENC;
                 }
             }else if(userAgent.contains(IPAD)){
