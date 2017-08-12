@@ -202,7 +202,12 @@ public class SystemService implements ISystemService {
                 if(str.contains(H264_QSV)){
                     bufferedReader.close();
                     process.destroy();
-                    return FfmpegVcodecType.H264_QSV;
+                    if(canHevc(userAgent)){
+                        //return FfmpegVcodecType.HEVC_QSV;
+                        return FfmpegVcodecType.H264_QSV; // TODO: check FFmpeg
+                    }else{
+                        return FfmpegVcodecType.H264_QSV;
+                    }
                 }
                 if(str.contains(H264_OMX)){
                     bufferedReader.close();
@@ -220,6 +225,14 @@ public class SystemService implements ISystemService {
         } catch (IOException e) {
             log.error("{} {}", e.getMessage(), e);
         }
+        if(canHevc(userAgent)){
+            return FfmpegVcodecType.HEVC_NVENC;
+        }else{
+            return FfmpegVcodecType.H264_NVENC;
+        }
+    }
+
+    private boolean canHevc(String userAgent){
         final String SAFARI = "Safari/";
         final String CHROME = "Chrome/";
         final String CHROMIUM = "Chromium/";
@@ -234,7 +247,7 @@ public class SystemService implements ISystemService {
                         + "." + versionUnderscoreString.split("_")[1];
                 final double version = Double.parseDouble(versionString);
                 if(version >= 11.0){
-                    return FfmpegVcodecType.HEVC_NVENC;
+                    return true;
                 }
             }else if(userAgent.contains(IPOD)){
                 final String versionUnderscoreString = userAgent.split(IPOD)[1].split(" ")[0];
@@ -242,7 +255,7 @@ public class SystemService implements ISystemService {
                         + "." + versionUnderscoreString.split("_")[1];
                 final double version = Double.parseDouble(versionString);
                 if (version >= 11.0) {
-                    return FfmpegVcodecType.HEVC_NVENC;
+                    return true;
                 }
             }else if(userAgent.contains(IPAD)){
                 final String versionUnderscoreString = userAgent.split(IPAD)[1].split(" ")[0];
@@ -250,7 +263,7 @@ public class SystemService implements ISystemService {
                         + "." + versionUnderscoreString.split("_")[1];
                 final double version = Double.parseDouble(versionString);
                 if(version >= 11.0){
-                    return FfmpegVcodecType.HEVC_NVENC;
+                    return true;
                 }
             }else if(userAgent.contains(MAC)){
                 final String versionUnderscoreString = userAgent.split(MAC)[1].split(" ")[0];
@@ -258,11 +271,11 @@ public class SystemService implements ISystemService {
                         + "." + versionUnderscoreString.split("_")[1];
                 final double version = Double.parseDouble(versionString);
                 if(version >= 10.13){
-                    return FfmpegVcodecType.HEVC_NVENC;
+                    return true;
                 }
             }
         }
-        return FfmpegVcodecType.H264_NVENC;
+        return false;
     }
 }
 

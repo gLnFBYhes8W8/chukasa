@@ -111,7 +111,7 @@ public class FfmpegAndRecxxxService implements IFfmpegAndRecxxxService {
 //                  "-segment_list", m3u8OutputPath,
                     ffmpegOutputPath
             };
-        } else if(ffmpegVcodecType == FfmpegVcodecType.H264_QSV){
+        } else if(ffmpegVcodecType == FfmpegVcodecType.H264_QSV) {
             commandArray = new String[]{
                     chukasaModel.getSystemConfiguration().getRecxxxPath(),
                     DEVICE_OPTION, DEVICE_ARGUMENT,
@@ -126,17 +126,49 @@ public class FfmpegAndRecxxxService implements IFfmpegAndRecxxxService {
                     "-ac", "2",
                     "-s", chukasaModel.getChukasaSettings().getVideoResolution(),
                     "-vcodec", "h264_qsv",
+                    "-init_hw_device", "qsv:hw",
                     "-vf", "yadif",
                     "-g", "60",
                     "-profile:v", "high",
                     "-level", "4.2",
-                    "-b:v", chukasaModel.getChukasaSettings().getVideoBitrate()+"k",
+                    "-b:v", chukasaModel.getChukasaSettings().getVideoBitrate() + "k",
                     "-threads", Integer.toString(chukasaModel.getSystemConfiguration().getFfmpegThreads()),
                     "-f", "segment",
                     "-segment_format", "mpegts",
                     "-segment_time", Integer.toString(chukasaModel.getHlsConfiguration().getDuration()),
 //                    "-segment_list", m3u8OutputPath,
                     ffmpegOutputPath
+            };
+        }else if(ffmpegVcodecType == FfmpegVcodecType.HEVC_QSV){
+            // TODO: not working
+            commandArray = new String[]{
+                    chukasaModel.getSystemConfiguration().getRecxxxPath(),
+                    DEVICE_OPTION, DEVICE_ARGUMENT,
+                    Integer.toString(chukasaModel.getChukasaSettings().getPhysicalLogicalChannel()),
+                    "-", "-",
+                    "|",
+                    chukasaModel.getSystemConfiguration().getFfmpegPath(),
+                    "-i", "-",
+                    "-acodec", "aac",
+                    "-ab", chukasaModel.getChukasaSettings().getAudioBitrate() + "k",
+                    "-ar", "48000",
+                    "-ac", "2",
+                    "-s", chukasaModel.getChukasaSettings().getVideoResolution(),
+                    "-vcodec", "hevc_qsv",
+                    "-init_hw_device", "qsv:hw",
+                    "-load_plugin", "hevc_hw",
+                    "-maxrate", "50000k",
+                    "-tag:v", "hvc1",
+                    "-vf", "yadif",
+                    "-g", "60",
+                    "-b:v", chukasaModel.getChukasaSettings().getVideoBitrate() + "k",
+                    "-threads", Integer.toString(chukasaModel.getSystemConfiguration().getFfmpegThreads()),
+                    "-f", "hls",
+                    "-hls_segment_type", "fmp4",
+                    "-hls_time", Integer.toString(chukasaModel.getHlsConfiguration().getDuration()),
+                    "-hls_fmp4_init_filename", fmp4InitFileOutputPath,
+                    //"-hls_segment_filename", ffmpegOutputPath,
+                    ffmpegM3U8OutputPath
             };
         }else if(ffmpegVcodecType == FfmpegVcodecType.H264_X264) {
             commandArray = new String[]{

@@ -80,7 +80,8 @@ public class Html5PlayerController {
         chukasaModel.setUuid(UUID.randomUUID());
         chukasaModel.setAdaptiveBitrateStreaming(0);
         chukasaModel.setFfmpegVcodecType(ffmpegVcodecType);
-        if(ffmpegVcodecType == FfmpegVcodecType.HEVC_NVENC){
+        // TODO: -> system service
+        if(ffmpegVcodecType == FfmpegVcodecType.HEVC_NVENC || ffmpegVcodecType == FfmpegVcodecType.HEVC_QSV){
             chukasaModel.setStreamFileExtension(".m4s");
         }
 

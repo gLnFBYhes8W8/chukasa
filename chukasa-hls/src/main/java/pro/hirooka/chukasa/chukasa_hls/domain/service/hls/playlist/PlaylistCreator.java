@@ -87,7 +87,7 @@ public class PlaylistCreator implements IPlaylistCreator {
 
                         // TODO: HardwareAccelerationType -> hls_segment_type
                         // /usr/local/bin/ffmpeg -i now_transcoding.ts -acodec aac -ab 160k -ar 48000 -ac 2 -s 1280x720 -vcodec hevc_nvenc -tag:v hvc1 -g 60 -b:v 2560k -threads 1 -f hls -hls_segment_type fmp4 -segment_time 2 i.m3u8
-                        if(ffmpegVcodecType == FfmpegVcodecType.HEVC_NVENC){
+                        if(ffmpegVcodecType == FfmpegVcodecType.HEVC_NVENC || ffmpegVcodecType == FfmpegVcodecType.HEVC_QSV){
                             bufferedWriter.write("#EXT-X-MAP:URI=\"" + initialStreamPath + "/init.mp4\"");
                             bufferedWriter.newLine();
                         }
@@ -111,7 +111,7 @@ public class PlaylistCreator implements IPlaylistCreator {
                         bufferedWriter.write("#EXT-X-DISCONTINUITY");
                         bufferedWriter.newLine();
 
-                        if(ffmpegVcodecType == FfmpegVcodecType.HEVC_NVENC){
+                        if(ffmpegVcodecType == FfmpegVcodecType.HEVC_NVENC || ffmpegVcodecType == FfmpegVcodecType.HEVC_QSV){ //TODO: service
                             bufferedWriter.write("#EXT-X-MAP:URI=\"" + STREAM_FILE_NAME_PREFIX + ".mp4\"");
                             bufferedWriter.newLine();
                         }
@@ -155,7 +155,7 @@ public class PlaylistCreator implements IPlaylistCreator {
                             bufferedWriter.newLine();
                         }
 
-                        if(ffmpegVcodecType == FfmpegVcodecType.HEVC_NVENC){
+                        if(ffmpegVcodecType == FfmpegVcodecType.HEVC_NVENC || ffmpegVcodecType == FfmpegVcodecType.HEVC_QSV){
                             bufferedWriter.write("#EXT-X-MAP:URI=\"" + STREAM_FILE_NAME_PREFIX + ".mp4\"");
                             bufferedWriter.newLine();
                         }
@@ -225,7 +225,7 @@ public class PlaylistCreator implements IPlaylistCreator {
                     bufferedWriter.write("#EXT-X-MEDIA-SEQUENCE:" + sequenceInitialPlaylist);
                     bufferedWriter.newLine();
 
-                    if(ffmpegVcodecType == FfmpegVcodecType.HEVC_NVENC){
+                    if(ffmpegVcodecType == FfmpegVcodecType.HEVC_NVENC || ffmpegVcodecType == FfmpegVcodecType.HEVC_QSV){
                         bufferedWriter.write("#EXT-X-MAP:URI=\"" + initialStreamPath + "/init.mp4\"");
                         bufferedWriter.newLine();
                     }

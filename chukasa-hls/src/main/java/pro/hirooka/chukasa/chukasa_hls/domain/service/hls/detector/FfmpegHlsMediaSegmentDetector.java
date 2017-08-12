@@ -118,7 +118,7 @@ public class FfmpegHlsMediaSegmentDetector implements Runnable {
 
                         chukasaModel.getIvArrayList().add(ivHex);
 
-                        if(chukasaModel.getFfmpegVcodecType() == FfmpegVcodecType.HEVC_NVENC) {
+                        if(chukasaModel.getFfmpegVcodecType() == FfmpegVcodecType.HEVC_NVENC || chukasaModel.getFfmpegVcodecType() == FfmpegVcodecType.HEVC_QSV) {
                             Path fmp4InitFileInputPath = FileSystems.getDefault().getPath(encryptedMediaTemporaryPath + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + ".mp4");
                             Path fmp4InitFileOutputPath = FileSystems.getDefault().getPath(mediaPath + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + ".mp4");
                             Files.copy(fmp4InitFileInputPath, fmp4InitFileOutputPath, StandardCopyOption.REPLACE_EXISTING);

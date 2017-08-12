@@ -1,0 +1,10 @@
+# CentOS 7.3
+
+sudo yum -y install http://li.nux.ro/download/nux/dextop/el7/x86_64/nux-dextop-release-0-5.el7.nux.noarch.rpm
+sudo yum -y install vlc
+
+# h264_qsv
+/usr/local/bin/recpt1 --device /dev/pt3video2 01 - - | /usr/local/bin/ffmpeg -i - -acodec aac -ab 160k -ar 48000 -ac 2 -s 1920x1080 -vcodec h264_qsv -init_hw_device qsv:hw -vf yadif -g 60 -profile:v high -level 4.2 -b:v 11000k -threads 1 -f segment -segment_format mpegts -segment_time 2 /tmp/chukasa%d.ts
+
+# hevc_qsv
+/usr/local/bin/recpt1 --device /dev/pt3video2 01 - - | /usr/local/bin/ffmpeg -i - -acodec aac -ab 160k -ar 48000 -ac 2 -s 1920x1080 -vcodec hevc_qsv -init_hw_device qsv:hw -load_plugin hevc_hw -maxrate 50000k -tag:v hvc1 -vf yadif -g 10 -b:v 11000k -threads 1 -f hls -hls_segment_type fmp4 -hls_time 2 /tmp/chukasa.m3u8
