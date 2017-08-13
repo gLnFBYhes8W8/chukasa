@@ -1,0 +1,200 @@
+# procedure_raspberry_pi_3_raspbian_july_2017.txt
+
+# Raspberry Pi 3 Model B, PX-S1UD V2.0, PX-BCUD
+
+# unzip 2017-07-05-raspbian-jessie.zip
+# sudo dd bs=4M if=2017-07-05-raspbian-jessie.img of=/dev/sdXXX
+#     1111+1 records in
+#     1111+1 records out
+#     4661483821 bytes (4.7 GB, 4.3 GiB) copied, 391.851 s, 11.9 MB/s
+# sudo sync
+
+# Raspbian Jessie 2017-07-05
+# uname -a
+# Linux raspberrypi 4.9.35-v7+ #1014 SMP Fri Jun 30 14:47:43 BST 2017 armv7l GNU/L
+
+/*******************************************************
+Preferences - Raspberry Pi Configuration
+System
+  Password: Change Password...
+  Hostname:
+  Auto Login: uncheck
+Interfaces
+  SSH: Enabled
+Localisation
+  Locale: en(English), US(USA), UTF-8
+  Timezone: Japan
+  Keyboard: United States, English(US)
+  WiFi Country: JP(Japan)
+/*******************************************************
+
+# sudo adduser XXX
+# sudo gpasswd -a XXX sudo
+
+/*******************************************************
+cat /etc/os-release
+PRETTY_NAME="Raspbian GNU/Linux 8 (jessie)"
+NAME="Raspbian GNU/Linux"
+VERSION_ID="8"
+VERSION="8 (jessie)"
+ID=raspbian
+ID_LIKE=debian
+HOME_URL="http://www.raspbian.org/"
+SUPPORT_URL="http://www.raspbian.org/RaspbianForums"
+BUG_REPORT_URL="http://www.raspbian.org/RaspbianBugs"
+
+df -h
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/root        30G  3.9G   25G  14% /
+devtmpfs        458M     0  458M   0% /dev
+tmpfs           462M     0  462M   0% /dev/shm
+tmpfs           462M   13M  450M   3% /run
+tmpfs           5.0M  4.0K  5.0M   1% /run/lock
+tmpfs           462M     0  462M   0% /sys/fs/cgroup
+/dev/mmcblk0p1   42M   21M   21M  51% /boot
+tmpfs            93M     0   93M   0% /run/user/1000
+*******************************************************/
+
+########## Begin ##########
+
+#*******************************************************************************************************************
+# Apt
+#*******************************************************************************************************************
+sudo apt-get update
+#sudo apt-get -y upgrade
+#sudo apt-get -y dist-upgrade
+
+#sudo reboot
+
+sudo BRANCH=next rpi-update
+
+sudo reboot
+
+#*******************************************************************************************************************
+# Package
+#*******************************************************************************************************************
+sudo apt-get -y install autoconf libpcsclite-dev pcsc-tools pcscd cmake libasound2-dev
+sudo apt-get -y install ttf-kochi-gothic xfonts-intl-japanese xfonts-intl-japanese-big xfonts-kaname jfbterm
+
+#*******************************************************************************************************************
+# Temprary Directory
+#*******************************************************************************************************************
+mkdir ~/chukasa_temporary
+
+#*******************************************************************************************************************
+# Video / Audio
+#*******************************************************************************************************************
+sudo gpasswd -a $USER video
+sudo gpasswd -a $USER audio
+
+#*******************************************************************************************************************
+# Webcam (Audio)
+#*******************************************************************************************************************
+#cat /proc/asound/modules
+sudo touch /etc/modprobe.d/alsa-base.conf
+sudo sh -c "echo 'options snd slots=snd_usb_audio,snd_bcm2835' >> /etc/modprobe.d/alsa-base.conf"
+sudo sh -c "echo 'options snd_usb_audio index=0' >> /etc/modprobe.d/alsa-base.conf"
+sudo sh -c "echo 'options snd_bcm2835 index=1' >> /etc/modprobe.d/alsa-base.conf"
+
+#*******************************************************************************************************************
+# DVB Tuber (PX-S1UD V2.0)
+#*******************************************************************************************************************
+cd ~/chukasa_temporary && \
+    wget http://plex-net.co.jp/plex/px-s1ud/PX-S1UD_driver_Ver.1.0.1.zip && \
+    unzip PX-S1UD_driver_Ver.1.0.1.zip && \
+    sudo cp PX-S1UD_driver_Ver.1.0.1/x64/amd64/isdbt_rio.inp /lib/firmware/
+
+#*******************************************************************************************************************
+# recdvb
+#*******************************************************************************************************************
+cd ~/chukasa_temporary && \
+    git clone https://github.com/dogeel/recdvb && \
+    cd recdvb && \
+    chmod a+x autogen.sh && \
+    ./autogen.sh && \
+    ./configure && \
+    make -j$(nproc) && \
+    sudo make install
+
+#*******************************************************************************************************************
+# epgdump
+#*******************************************************************************************************************
+cd ~/chukasa_temporary && \
+    git clone https://github.com/Piro77/epgdump.git && \
+    cd epgdump && \
+    ./autogen.sh && \
+    make -j$(nproc) && \
+    sudo make install
+
+#*******************************************************************************************************************
+# FFmpeg
+#*******************************************************************************************************************
+cd ~/chukasa_temporary && \
+    wget https://ffmpeg.org/releases/ffmpeg-snapshot.tar.bz2 && \
+    tar jxvf ffmpeg-* && \
+    cd ffmpeg && \
+    ./configure --disable-shared --enable-static --enable-omx-rpi --enable-mmal && \
+    make -j$(nproc) && \
+    sudo make install
+
+#*******************************************************************************************************************
+# nginx
+#*******************************************************************************************************************
+cd ~/chukasa_temporary && \
+    sudo apt-get -y install libpcre3-dev libpcre++-dev libssl-dev && \
+    wget http://nginx.org/download/nginx-1.13.4.tar.gz && \
+    tar zxvf nginx-*.tar.gz && \
+    cd nginx-* && \
+    ./configure --with-http_ssl_module --with-ipv6 --with-http_v2_module && \
+    make -j$(nproc) && \
+    sudo make install
+
+#*******************************************************************************************************************
+# MongoDB
+#*******************************************************************************************************************
+sudo apt-get -y install mongodb
+
+#*******************************************************************************************************************
+# PostgreSQL
+#*******************************************************************************************************************
+sudo apt-get -y install postgresql
+# TODO: change password
+sudo -u postgres bash -c "psql -c \"CREATE USER chukasa WITH PASSWORD 'chukasa';\""
+sudo -u postgres bash -c "psql -c \"CREATE DATABASE chukasa ENCODING 'UTF8' OWNER chukasa;\""
+
+#*******************************************************************************************************************
+# 環境が整ったところでいったん reboot
+#*******************************************************************************************************************
+sudo reboot
+
+#*******************************************************************************************************************
+# chukasa
+#*******************************************************************************************************************
+sudo mkdir /opt/chukasa
+sudo chown $USER:$USER /opt/chukasa
+mkdir /opt/chukasa/video
+
+# clone project and edit configuration file
+cd ~/chukasa_temporary
+git clone https://github.com/hirooka/chukasa.git
+cd chukasa
+
+# build chukasa application
+./gradlew build
+cp build/libs/chukasa-0.0.1-SNAPSHOT.jar /opt/chukasa/
+
+#　chukasa service
+sudo cp ubuntu/systemd/chukasa.service /etc/systemd/system/
+sudo sh -c "sed -i -e 's/chukasa/$USER/g' /etc/systemd/system/chukasa.service"
+sudo systemctl enable chukasa
+
+#　nginx service
+sudo cp ubuntu/nginx/nginx.conf /usr/local/nginx/conf/nginx.conf
+sudo cp ubuntu/systemd/nginx.service /etc/systemd/system/
+sudo systemctl enable nginx
+
+sudo reboot
+
+#*******************************************************************************************************************
+# End Of File
+#*******************************************************************************************************************
