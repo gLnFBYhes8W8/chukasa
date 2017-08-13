@@ -1,3 +1,8 @@
+# Ubuntu 16.04.3
+
+ffmpeg -f video4linux2 -s 400x224 -i /dev/video0 -f alsa -ac 2 -i hw:3,0 -acodec aac -ab 32k -ar 44100 -s 400x224 -vcodec h264_nvenc -vf yadif -g 10 -b:v 110k -pix_fmt yuv420p -threads 1 -f hls -hls_time 2 -hls_segment_filename /tmp/mokyu%d.ts /tmp/mokyu.m3u8
+
+
 # CentOS 7.3
 
 sudo yum -y install http://li.nux.ro/download/nux/dextop/el7/x86_64/nux-dextop-release-0-5.el7.nux.noarch.rpm

@@ -14,6 +14,7 @@ public class SystemConfiguration {
     String recxxxPath;
     String epgdumpPath;
     String webcamDeviceName;
+    String webcamAudioName;
     int webcamAudioChannel;
     String temporaryPath;
     String filePath;
