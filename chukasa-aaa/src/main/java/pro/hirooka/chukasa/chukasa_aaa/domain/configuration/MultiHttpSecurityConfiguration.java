@@ -46,7 +46,9 @@ public class MultiHttpSecurityConfiguration {
                     .anyRequest()
                     .authenticated()
                     .and()
-                    .httpBasic();
+                    .httpBasic()
+                    .and()
+                    .csrf().disable();
         }
 
         @Override
