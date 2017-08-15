@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import pro.hirooka.chukasa.chukasa_common.domain.configuration.SystemConfiguration;
 import pro.hirooka.chukasa.chukasa_common.domain.model.M4vFile;
@@ -18,8 +19,8 @@ public class M4vRestController {
     @Autowired
     SystemConfiguration systemConfiguration;
 
-    @RequestMapping(value = "/", method = RequestMethod.POST)
-    Resource downloadFile(@RequestBody M4vFile m4vFile){
+    @RequestMapping(value = "/", method = RequestMethod.POST, produces = "video/mp4")
+    Resource downloadFile(@RequestBody @Validated M4vFile m4vFile){
 
         String filePath = "";
 
