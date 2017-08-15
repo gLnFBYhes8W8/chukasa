@@ -21,3 +21,9 @@ curl -u admin:admin http://localhost:8080/api/v1/hello
 curl -i -u admin:admin --header "User-Agent: chukasa-ios" --header "Content-type: application/json" --request POST --data '{"adaptiveBitrateStreaming" : 0, "streamingType" : "FILE", "playlistType" : "LIVE", "transcodingSettings" : "WIFI_MID", "canEncrypt" : true, "physicalLogicalChannel" : 0, "fileName" : "sintel_trailer-1080p.mp4", "videoResolution" : null, "videoBitrate" : 0, "audioBitrate" : 0 }' http://localhost:8080/api/v1/hls/start
 
 curl -i -u admin:admin --header "User-Agent: chukasa-ios" http://localhost:8080/api/v1/hls/stop
+
+curl -i -u admin:admin --header "User-Agent: chukasa-ios" --header "Content-type: application/json" --request POST --data '{"type": "WATCH", "name": "すもも" }' http://localhost:8080/api/v1/m4v/
+
+
+# m4v for Apple Watch
+ffmpeg -i "すもも.ts" -acodec aac -ab 32k -ar 44100 -ac 2 -s 320x180 -vcodec h264_nvenc -profile:v high -level 4.1 -b:v 160k -threads 1 -y "/opt/chukasa/video/すもも.ts.watch.m4v"
