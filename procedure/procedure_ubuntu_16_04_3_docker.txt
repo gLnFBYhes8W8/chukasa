@@ -1,16 +1,16 @@
-# procedure_ubuntu_16_04_2_docker.txt
+# procedure_ubuntu_16_04_3_docker.txt
 
-# Ubuntu 16.04.2
+# Ubuntu 16.04.3 Server
 
 # uname -a
-# Linux localhost 4.8.0-46-generic #49~16.04.1-Ubuntu SMP Fri Mar 31 14:51:03 UTC 2017 x86_64 x86_64 x86_64 GNU/Linux
+# Linux localhost 4.4.0-87-generic #110-Ubuntu SMP Tue Jul 18 12:55:35 UTC 2017 x86_64 x86_64 x86_64 GNU/Linux
 
 /*******************************************************
 cat /etc/lsb-release
 DISTRIB_ID=Ubuntu
 DISTRIB_RELEASE=16.04
 DISTRIB_CODENAME=xenial
-DISTRIB_DESCRIPTION="Ubuntu 16.04.2 LTS"
+DISTRIB_DESCRIPTION="Ubuntu 16.04.3 LTS"
 /*******************************************************
 
 ########## Begin ##########
@@ -26,7 +26,8 @@ sudo timedatectl set-ntp 1
 #sudo apt-get update
 #sudo apt-get -y upgrade
 #sudo apt-get -y dist-upgrade
-#sudo apt-get install --install-recommends xserver-xorg-hwe-16.04 // Ubuntu 16.04.2 Server
+#sudo apt-get install --install-recommends linux-generic-hwe-16.04 // Ubuntu 16.04.3 Server
+#  --> Linux localhost 4.10.0-32-generic #36~16.04.1-Ubuntu SMP Wed Aug 9 09:19:02 UTC 2017 x86_64 x86_64 x86_64 GNU/Linux
 
 #sudo reboot
 
