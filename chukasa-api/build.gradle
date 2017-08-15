@@ -39,6 +39,7 @@ dependencies {
     compile project(':chukasa-common')
     compile project(':chukasa-hls')
     compile project(':chukasa-recorder')
+    compile project(':chukasa-filer')
     compile group: 'io.springfox', name: 'springfox-swagger2', version: springfoxSwaggerVersion
     compile group: 'io.springfox', name: 'springfox-swagger-ui', version: springfoxSwaggerVersion
 }

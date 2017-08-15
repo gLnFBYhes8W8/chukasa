@@ -5,7 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pro.hirooka.chukasa.chukasa_common.domain.configuration.CommonConfiguration;
 import pro.hirooka.chukasa.chukasa_common.domain.configuration.SystemConfiguration;
+import pro.hirooka.chukasa.chukasa_common.domain.model.M4vFile;
 import pro.hirooka.chukasa.chukasa_common.domain.model.VideoFile;
+import pro.hirooka.chukasa.chukasa_common.domain.model.enums.M4vType;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -56,5 +58,27 @@ public class VideoFileService implements IVideoFileService {
             }
         }
         return videoFileList;
+    }
+
+    @Override
+    public List<M4vFile> getAllM4v(M4vType m4vType) {
+        List<M4vFile> m4vFileList = new ArrayList<>();
+        File videoFileDirectory = new File(systemConfiguration.getFilePath());
+        File[] fileArray = videoFileDirectory.listFiles();
+        if(fileArray != null) {
+            for (File file : fileArray) {
+                if(m4vType == M4vType.WATCH) {
+                    if (file.getName().endsWith(".watch.m4v")) {
+                        M4vFile m4vFile = new M4vFile();
+                        m4vFile.setName(file.getName().split(".watch.m4v")[0]);
+                        m4vFile.setType(m4vType);
+                        m4vFileList.add(m4vFile);
+                    }
+                }
+            }
+        }else{
+            log.warn("'{}' does not exist.", videoFileDirectory);
+        }
+        return m4vFileList;
     }
 }

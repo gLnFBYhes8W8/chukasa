@@ -8,6 +8,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import pro.hirooka.chukasa.chukasa_common.domain.configuration.SystemConfiguration;
 import pro.hirooka.chukasa.chukasa_common.domain.model.M4vFile;
+import pro.hirooka.chukasa.chukasa_common.domain.model.enums.M4vType;
+import pro.hirooka.chukasa.chukasa_filer.domain.service.IVideoFileService;
+
+import java.util.List;
 
 import static pro.hirooka.chukasa.chukasa_common.domain.constants.ChukasaConstants.FILE_SEPARATOR;
 
@@ -18,6 +22,8 @@ public class M4vRestController {
 
     @Autowired
     SystemConfiguration systemConfiguration;
+    @Autowired
+    IVideoFileService videoFileService;
 
     @RequestMapping(value = "/", method = RequestMethod.POST, produces = "video/mp4")
     Resource downloadFile(@RequestBody @Validated M4vFile m4vFile){
@@ -27,10 +33,10 @@ public class M4vRestController {
         switch (m4vFile.getType()){
             case PHONE:
             case PAD:
-                filePath = systemConfiguration.getFilePath() + FILE_SEPARATOR + m4vFile.getName() + ".ts.m4v";
+                filePath = systemConfiguration.getFilePath() + FILE_SEPARATOR + m4vFile.getName() + ".m4v";
                 break;
             case WATCH:
-                filePath = systemConfiguration.getFilePath() + FILE_SEPARATOR + m4vFile.getName() + ".ts.watch.m4v";
+                filePath = systemConfiguration.getFilePath() + FILE_SEPARATOR + m4vFile.getName() + ".watch.m4v";
                 break;
             default:
                 break;
@@ -41,7 +47,19 @@ public class M4vRestController {
 
     @RequestMapping(value = "/{name}", method = RequestMethod.GET)
     Resource downloadFile(@PathVariable String name){
-        String filePath = systemConfiguration.getFilePath() + FILE_SEPARATOR + name + ".ts.watch.m4v";
+        String filePath = systemConfiguration.getFilePath() + FILE_SEPARATOR + name + ".watch.m4v";
+        return new FileSystemResource(filePath);
+    }
+
+    @RequestMapping(value = "/watch", method = RequestMethod.GET)
+    List<M4vFile> readAllWatchM4v(){
+        List<M4vFile> m4vFileList = videoFileService.getAllM4v(M4vType.WATCH);
+        return m4vFileList;
+    }
+
+    @RequestMapping(value = "/watch/{name}", method = RequestMethod.GET)
+    Resource downloadWatchM4v(@PathVariable String name){
+        String filePath = systemConfiguration.getFilePath() + FILE_SEPARATOR + name + ".watch.m4v";
         return new FileSystemResource(filePath);
     }
 }
