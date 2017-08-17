@@ -52,12 +52,13 @@ public class  HlsPlayerRestController {
     HlsPlaylist play(@RequestBody @Validated ChukasaSettings chukasaSettings) throws ChukasaBadRequestException, ChukasaInternalServerErrorException {
 
         String userAgent = httpServletRequest.getHeader("user-agent");
+        log.info("user-agent: {}", userAgent);
         if(!userAgent.contains(USER_AGENT)){
             throw new ChukasaBadRequestException("User-Agent is invalid");
         }
 
         FfmpegVcodecType ffmpegVcodecType = systemService.getFfmpegVcodecType(userAgent);
-        if(ffmpegVcodecType.equals(FfmpegVcodecType.UNKNOWN)){
+        if(ffmpegVcodecType == FfmpegVcodecType.UNKNOWN){
             throw new ChukasaInternalServerErrorException("FFmpeg configuration is not suitable for this application.");
         }
 
@@ -76,6 +77,10 @@ public class  HlsPlayerRestController {
         chukasaModel.setUuid(UUID.randomUUID());
         chukasaModel.setAdaptiveBitrateStreaming(0);
         chukasaModel.setFfmpegVcodecType(ffmpegVcodecType);
+        // TODO: -> system service
+        if(ffmpegVcodecType == FfmpegVcodecType.HEVC_NVENC || ffmpegVcodecType == FfmpegVcodecType.HEVC_QSV){
+            chukasaModel.setStreamFileExtension(".m4s");
+        }
 
         chukasaModel = ChukasaUtility.operateEncodingSettings(chukasaModel);
         if(chukasaModel == null){

@@ -240,6 +240,7 @@ public class SystemService implements ISystemService {
         final String IPOD = "iPod touch; CPU iPhone OS ";
         final String IPAD = "iPad; CPU OS ";
         final String MAC = "Macintosh; Intel Mac OS X ";
+        final String DARWIN = "Darwin/";
         if(userAgent.contains(SAFARI) && !userAgent.contains(CHROME) && !userAgent.contains(CHROMIUM)){
             if(userAgent.contains(IPHONE)){
                 final String versionUnderscoreString = userAgent.split(IPHONE)[1].split(" ")[0];
@@ -273,6 +274,13 @@ public class SystemService implements ISystemService {
                 if(version >= 10.13){
                     return true;
                 }
+            }
+        }else if(userAgent.contains(DARWIN)){
+            final String versionUnderscoreString = userAgent.split(DARWIN)[1];
+            final String versionString = versionUnderscoreString.split("\\.")[0];
+            final int version = Integer.parseInt(versionString);
+            if(version >= 17){
+                return true;
             }
         }
         return false;

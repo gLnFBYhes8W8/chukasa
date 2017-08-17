@@ -69,6 +69,7 @@ public class ProgramController {
             return read(model);
         }
         log.info("reservation -> {}", reservedProgram.toString());
+        // TODO: ->  service
         ReservedProgram createdReservedProgram = new ReservedProgram();
         createdReservedProgram.setChannel(reservedProgram.getChannel());
         createdReservedProgram.setTitle(reservedProgram.getTitle());

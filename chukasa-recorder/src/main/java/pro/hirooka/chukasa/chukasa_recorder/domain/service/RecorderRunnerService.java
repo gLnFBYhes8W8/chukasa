@@ -138,12 +138,12 @@ public class RecorderRunnerService implements IRecorderRunnerService {
                 bw.newLine();
 
                 // TODO: -> transcoding service
-                final String commandTranscodingHls = systemConfiguration.getFfmpegPath() + " -i " + "\""
-                        + systemConfiguration.getFilePath() + FILE_SEPARATOR + fileName + "\""
-                        + " -acodec aac -ab 128k -ar 48000 -ac 2 -s 640x360 -vcodec h264_nvenc -vf yadif -g 10 -b:v 1200k -threads 1 -f hls -hls_time 2 "
-                        + hlsDirectory + FILE_SEPARATOR + "chukasa.m3u8";
-                log.info(commandTranscodingHls);
-                bw.write(commandTranscodingHls);
+//                final String commandTranscodingHls = systemConfiguration.getFfmpegPath() + " -i " + "\""
+//                        + systemConfiguration.getFilePath() + FILE_SEPARATOR + fileName + "\""
+//                        + " -acodec aac -ab 128k -ar 48000 -ac 2 -s 640x360 -vcodec h264_nvenc -vf yadif -g 10 -b:v 1200k -threads 1 -f hls -hls_time 2 "
+//                        + hlsDirectory + FILE_SEPARATOR + "chukasa.m3u8";
+//                log.info(commandTranscodingHls);
+//                bw.write(commandTranscodingHls);
                 bw.close();
             }
 

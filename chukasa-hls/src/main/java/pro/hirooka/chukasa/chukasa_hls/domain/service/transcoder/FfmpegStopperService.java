@@ -33,7 +33,13 @@ public class FfmpegStopperService implements IFfmpegStopperService {
                 log.debug("{}", str);
                 final String trimmedString = str.trim();
                 // TODO: マズー
-                if ((trimmedString.matches(".*libx264.*") && trimmedString.matches(".*mpegts.*")) || (trimmedString.matches(".*h264_qsv.*") && trimmedString.matches(".*mpegts.*")) || (trimmedString.matches(".*h264_omx.*") && trimmedString.matches(".*mpegts.*")) || (trimmedString.matches(".*h264_nvenc.*") && trimmedString.matches(".*hls.*"))) {
+                if ((trimmedString.matches(".*libx264.*") && trimmedString.matches(".*mpegts.*"))
+                        || (trimmedString.matches(".*h264_qsv.*") && trimmedString.matches(".*mpegts.*"))
+                        || (trimmedString.matches(".*h264_omx.*") && trimmedString.matches(".*mpegts.*"))
+                        || (trimmedString.matches(".*h264_nvenc.*") && trimmedString.matches(".*hls.*"))
+                        || (trimmedString.matches(".*hevc_nvenc.*") && trimmedString.matches(".*hls.*"))
+                        || (trimmedString.matches(".*hevc_qsv.*") && trimmedString.matches(".*hls.*"))
+                        ) {
                     final String[] trimmedStringArray = trimmedString.split(" ");
                     final List<String> pidList = new ArrayList<>();
                     for(int i = 0; i < trimmedStringArray.length; i++) {
