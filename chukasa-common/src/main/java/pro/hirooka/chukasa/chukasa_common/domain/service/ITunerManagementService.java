@@ -22,4 +22,5 @@ public interface ITunerManagementService {
     String getDeviceOption();
     String getDeviceArgument(TunerStatus tunerStatus);
     String getDeviceArgument(TunerUseType tunerUseType, int physicalLogicalChannel, List<ChannelConfiguration> channelConfigurationList);
+    void releaseAll();
 }

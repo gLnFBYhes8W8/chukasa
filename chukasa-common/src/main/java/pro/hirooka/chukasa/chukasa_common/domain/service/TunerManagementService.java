@@ -3,6 +3,7 @@ package pro.hirooka.chukasa.chukasa_common.domain.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pro.hirooka.chukasa.chukasa_common.domain.configuration.SystemConfiguration;
 import pro.hirooka.chukasa.chukasa_common.domain.constants.ChukasaConstants;
 import pro.hirooka.chukasa.chukasa_common.domain.enums.ChannelType;
 import pro.hirooka.chukasa.chukasa_common.domain.enums.RecxxxDriverType;
@@ -12,6 +13,9 @@ import pro.hirooka.chukasa.chukasa_common.domain.model.Tuner;
 import pro.hirooka.chukasa.chukasa_common.domain.model.TunerStatus;
 
 import javax.annotation.PostConstruct;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
@@ -26,6 +30,8 @@ public class TunerManagementService implements ITunerManagementService {
 
     private List<TunerStatus> tunerStatusList = new ArrayList<>(); //Collections.synchronizedList(new ArrayList<>());
 
+    @Autowired
+    private SystemConfiguration systemConfiguration;
     @Autowired
     private CommonUtilityService commonUtilityService;
 
@@ -179,6 +185,56 @@ public class TunerManagementService implements ITunerManagementService {
             return getDeviceArgument(tunerStatus);
         }
         return null;
+    }
+
+    @Override
+    public void releaseAll() {
+        // TODO: common process killer
+        final String[] commandArray = {"ps", "aux"};
+        final ProcessBuilder processBuilder = new ProcessBuilder(commandArray);
+        try {
+            final Process process = processBuilder.start();
+            final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String str;
+            while((str = bufferedReader.readLine()) != null){
+                log.debug("{}", str);
+                final String trimmedString = str.trim();
+                if(trimmedString.contains(systemConfiguration.getRecxxxPath())){
+                    final String[] trimmedStringArray = trimmedString.split(" ");
+                    final List<String> pidList = new ArrayList<>();
+                    for(int i = 0; i < trimmedStringArray.length; i++) {
+                        if (!(trimmedStringArray[i].equals(""))) {
+                            pidList.add(trimmedStringArray[i]);
+                        }
+                    }
+                    String pid = pidList.get(1);
+                    log.debug("{}", pid);
+                    stopPID(pid);
+                }
+            }
+            bufferedReader.close();
+            process.getInputStream().close();
+            process.getErrorStream().close();
+            process.getOutputStream().close();
+            process.destroy();
+            tunerStatusList.forEach(tunerStatus -> {
+                update(tunerStatus, true);
+            });
+        } catch (IOException e) {
+            // TODO:
+        }
+    }
+
+    private void stopPID(String pid){
+
+        final String[] commandArray = {"kill", "-KILL", pid };
+        final ProcessBuilder processBuilder = new ProcessBuilder(commandArray);
+        try {
+            final Process process = processBuilder.start();
+            log.info("{} stopped ffmpeg (PID: {}).", this.getClass().getName(), pid);
+        } catch (IOException e) {
+            log.error("{} {}", e.getMessage(), e);
+        }
     }
 }
 
