@@ -32,6 +32,8 @@ public class M4vRestController {
 
         switch (m4vFile.getType()){
             case PHONE:
+                filePath = systemConfiguration.getFilePath() + FILE_SEPARATOR + m4vFile.getName() + ".m4v";
+                break;
             case PAD:
                 filePath = systemConfiguration.getFilePath() + FILE_SEPARATOR + m4vFile.getName() + ".m4v";
                 break;
@@ -54,6 +56,12 @@ public class M4vRestController {
     @RequestMapping(value = "/watch", method = RequestMethod.GET)
     List<M4vFile> readAllWatchM4v(){
         List<M4vFile> m4vFileList = videoFileService.getAllM4v(M4vType.WATCH);
+        return m4vFileList;
+    }
+
+    @RequestMapping(value = "/phone", method = RequestMethod.GET)
+    List<M4vFile> readAllPhoneM4v(){
+        List<M4vFile> m4vFileList = videoFileService.getAllM4v(M4vType.PHONE);
         return m4vFileList;
     }
 

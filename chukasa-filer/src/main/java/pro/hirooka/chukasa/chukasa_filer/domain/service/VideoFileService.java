@@ -74,6 +74,20 @@ public class VideoFileService implements IVideoFileService {
                         m4vFile.setType(m4vType);
                         m4vFileList.add(m4vFile);
                     }
+                }else if(m4vType == M4vType.PHONE){
+                    if (file.getName().endsWith(".m4v") && !file.getName().endsWith(".watch.m4v")) {
+                        M4vFile m4vFile = new M4vFile();
+                        m4vFile.setName(file.getName().split(".m4v")[0]);
+                        m4vFile.setType(m4vType);
+                        m4vFileList.add(m4vFile);
+                    }
+                }else if(m4vType == M4vType.PAD){
+                    if (file.getName().endsWith(".m4v") && !file.getName().endsWith(".watch.m4v")) {
+                        M4vFile m4vFile = new M4vFile();
+                        m4vFile.setName(file.getName().split(".m4v")[0]);
+                        m4vFile.setType(m4vType);
+                        m4vFileList.add(m4vFile);
+                    }
                 }
             }
         }else{
