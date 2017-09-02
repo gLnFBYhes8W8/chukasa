@@ -34,7 +34,6 @@ ext {
     commonsIoVersion = '2.5'
 
     // GCP
-    googleApiClientAppengineVersion = '1.22.0'
     postgresSocketFactoryVersion = '1.0.4'
     mysqlSocketFactoryConnectorJ6Version = '1.0.4'
 }
@@ -50,7 +49,6 @@ targetCompatibility = 1.8
 
 buildscript {
     repositories {
-        jcenter()
         mavenCentral()
         maven { url "http://repo.spring.io/release" }
         maven { url "http://repo.spring.io/milestone" }
@@ -68,7 +66,6 @@ repositories {
     maven { url "http://repo.spring.io/release" }
     maven { url "http://repo.spring.io/milestone" }
     maven { url "http://repo.spring.io/snapshot" }
-    maven { url 'https://maven-central.storage.googleapis.com' }
 }
 
 dependencies {
@@ -112,7 +109,6 @@ dependencies {
     compile group: 'commons-io', name: 'commons-io', version: commonsIoVersion
 
     // GCP
-    compile group: 'com.google.api-client', name: 'google-api-client-appengine', version: googleApiClientAppengineVersion
     compile group: 'com.google.cloud.sql', name: 'postgres-socket-factory', version: postgresSocketFactoryVersion
     compile group: 'com.google.cloud.sql', name: 'mysql-socket-factory-connector-j-6', version: mysqlSocketFactoryConnectorJ6Version
 }
