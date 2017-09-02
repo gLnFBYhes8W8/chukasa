@@ -173,7 +173,7 @@ public class PlaylistCreator implements IPlaylistCreator {
                                 bufferedWriter.newLine();
                             }
                         } else if (playlistType == PlaylistType.EVENT) {
-                            for (int i = 0; i < sequenceMediaSegment + URI_IN_PLAYLIST; i++) {
+                            for (int i = 0; i < sequenceMediaSegment - 1; i++) {
                                 if(canEncrypt) {
                                     bufferedWriter.write("#EXT-X-KEY:METHOD=AES-128,URI=");
                                     bufferedWriter.write("\"" + "" + chukasaModel.getKeyArrayList().get(i) + i + ".key\"" + ",IV=0x");
