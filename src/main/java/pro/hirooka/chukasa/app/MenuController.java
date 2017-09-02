@@ -176,23 +176,25 @@ public class MenuController {
                 }
             }
         }
-        List<ReservedProgram> reservedProgramList = recorderService.read();
-        for(ReservedProgram reservedProgram : reservedProgramList){
-            Date now = new Date();
-            if(reservedProgram.getStopRecording() > now.getTime() && now.getTime() > reservedProgram.getStartRecording()){
-                String file = systemConfiguration.getFilePath() + FILE_SEPARATOR + reservedProgram.getFileName();
-                if(new File(file).exists()){
-                    boolean isDuplicated = false;
-                    for(RecordingProgramModel recordingProgramModel : recordingProgramModelList){
-                        if(recordingProgramModel.getFileName().equals(reservedProgram.getFileName())){
-                            isDuplicated = true;
-                            break;
+        if(isMongoDB) {
+            List<ReservedProgram> reservedProgramList = recorderService.read();
+            for (ReservedProgram reservedProgram : reservedProgramList) {
+                Date now = new Date();
+                if (reservedProgram.getStopRecording() > now.getTime() && now.getTime() > reservedProgram.getStartRecording()) {
+                    String file = systemConfiguration.getFilePath() + FILE_SEPARATOR + reservedProgram.getFileName();
+                    if (new File(file).exists()) {
+                        boolean isDuplicated = false;
+                        for (RecordingProgramModel recordingProgramModel : recordingProgramModelList) {
+                            if (recordingProgramModel.getFileName().equals(reservedProgram.getFileName())) {
+                                isDuplicated = true;
+                                break;
+                            }
                         }
-                    }
-                    if(!isDuplicated) {
-                        VideoFile videoFileModel = new VideoFile();
-                        videoFileModel.setName(reservedProgram.getFileName());
-                        okkakeVideoFileModelList.add(videoFileModel);
+                        if (!isDuplicated) {
+                            VideoFile videoFileModel = new VideoFile();
+                            videoFileModel.setName(reservedProgram.getFileName());
+                            okkakeVideoFileModelList.add(videoFileModel);
+                        }
                     }
                 }
             }
