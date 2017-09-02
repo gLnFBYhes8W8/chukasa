@@ -1,3 +1,34 @@
+system:
+  ffmpeg-path: /usr/local/bin/ffmpeg
+  recxxx-path: /usr/local/bin/recdvb
+  epgdump-path: /usr/local/bin/epgdump
+  webcam-device-name: /dev/video0
+  webcam-audio-name: hw:0,0
+  webcam-audio-channel: 2
+  temporary-path: /tmp/chukasa
+  file-path: /opt/chukasa/video
+  ffmpeg-threads: 1
+
+common:
+  tuner: tuner.json
+  channel-configuration: channel_configuration.json
+  video-file-extension: ts,m2t,mp4,mov,mpg,mpeg,vob,avi,divx,wmv,flv,ogg,ogm,iso
+
+epg:
+ epgdump-temporary-path: /tmp/chukasa_epgdump
+ epgdump-recording-duration: 32
+ epgdump-execute-schedule-cron: 0 0 7 * * *
+ epgdump-execute-on-boot-ignore-interval: 86400000
+
+hls:
+  duration: 2
+  uri-in-playlist: 3
+
+recorder:
+  start-margin: 30
+  stop-margin: 0
+
+
 server:
   port: 8080
 
@@ -12,10 +43,16 @@ logging:
 
 spring:
   profiles:
-    active: localhost-mongodb
+    active: localhost-mongodb-postgresql
   jpa:
     hibernate:
       ddl-auto: create-drop
+  thymeleaf:
+    cache: false
+      # m3u8, ts の Content-Type に ; charset=UTF-8 が付くのを防ぐ
+  http:
+    encoding:
+      force: false
 ---
 spring:
   profiles: localhost-no-database
@@ -76,3 +113,13 @@ spring:
       port: 27017
       database: chukasa
       server-selection-timeout: 500
+---
+spring:
+  profiles: gae-flexible-postgresql
+  datasource:
+    url: jdbc:postgresql://google/chukasa?socketFactory=com.google.cloud.sql.postgres.SocketFactory&socketFactoryArg=hirooka-2017-09-01:us-central1:hirooka-postgresql-2017-09-01
+    username: chukasa
+    password: chukasa
+  jpa:
+     hibernate:
+       ddl-auto: create

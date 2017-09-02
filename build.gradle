@@ -8,12 +8,35 @@ apply plugin: 'io.spring.dependency-management'
 apply plugin: 'com.google.cloud.tools.appengine'
 
 ext {
+    // Spring
     springBootVersion = '2.0.0.BUILD-SNAPSHOT'
+
+    // database
     postgresqlVersion = '42.1.3'
     mysqlVersion = '6.0.6'
-    gcpPostgresqlVersion = '1.0.3'
-    gcpMysqlVersion = '1.0.3'
+    hsqldbVersion = '2.4.0'
+
+    // Lombok
     lombokVersion = '1.16.18'
+
+    // api
+    springfoxSwaggerVersion = '2.7.0'
+
+    // app
+    bootstrapVersion = '3.3.7-1'
+
+    // epg
+    commonsIoVersion = '2.5'
+
+    // HLS
+    bcprovVersion = '1.57'
+    commonsTextVersion = '1.1'
+    commonsIoVersion = '2.5'
+
+    // GCP
+    googleApiClientAppengineVersion = '1.22.0'
+    postgresSocketFactoryVersion = '1.0.4'
+    mysqlSocketFactoryConnectorJ6Version = '1.0.4'
 }
 
 bootJar {
@@ -27,15 +50,16 @@ targetCompatibility = 1.8
 
 buildscript {
     repositories {
+        jcenter()
         mavenCentral()
         maven { url "http://repo.spring.io/release" }
         maven { url "http://repo.spring.io/milestone" }
         maven { url "http://repo.spring.io/snapshot" }
-        jcenter()
+
     }
     dependencies {
-        classpath 'org.springframework.boot:spring-boot-gradle-plugin:2.0.0.BUILD-SNAPSHOT'
-        classpath 'com.google.cloud.tools:appengine-gradle-plugin:+'
+        classpath group: 'org.springframework.boot', name: 'spring-boot-gradle-plugin', version: '2.0.0.BUILD-SNAPSHOT'
+        classpath group: 'com.google.cloud.tools', name: 'appengine-gradle-plugin', version: '1.3.2'
     }
 }
 
@@ -44,29 +68,52 @@ repositories {
     maven { url "http://repo.spring.io/release" }
     maven { url "http://repo.spring.io/milestone" }
     maven { url "http://repo.spring.io/snapshot" }
+    maven { url 'https://maven-central.storage.googleapis.com' }
 }
 
 dependencies {
+    // Spring
+
     compile ('org.springframework.boot:spring-boot-starter-web') {
         exclude module: 'spring-boot-starter-tomcat'
     }
     compile 'org.springframework.boot:spring-boot-starter-jetty'
+    compile group: 'javax.servlet', name: 'javax.servlet-api', version: '3.1.0' // for Jetty
     compile 'org.springframework.boot:spring-boot-starter-security'
     compile 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    compile 'org.thymeleaf.extras:thymeleaf-extras-springsecurity4'
+    compile 'org.springframework.boot:spring-boot-starter-data-jpa'
+    compile 'org.springframework.boot:spring-boot-starter-jdbc'
     compile 'org.springframework.data:spring-data-mongodb'
     compile 'org.springframework.boot:spring-boot-devtools'
     testCompile 'org.springframework.boot:spring-boot-starter-test'
-    compile 'org.thymeleaf.extras:thymeleaf-extras-springsecurity4'
-    compile project(':chukasa-aaa')
-    compile project(':chukasa-web')
-    compile 'com.google.appengine:appengine:+'
-}
 
-allprojects {
-    plugins.withType(JavaPlugin) {
-        dependencies {
-            compileOnly group: 'org.projectlombok', name: 'lombok', version: lombokVersion
-            testCompileOnly group: 'org.projectlombok', name: 'lombok', version: lombokVersion
-        }
-    }
+    // database
+    compile group: 'org.hsqldb', name: 'hsqldb', version: hsqldbVersion
+    compile group: 'org.postgresql', name: 'postgresql', version: postgresqlVersion
+    compile group: 'mysql', name: 'mysql-connector-java', version: mysqlVersion
+
+    // lombok
+    compileOnly group: 'org.projectlombok', name: 'lombok', version: lombokVersion
+    testCompileOnly group: 'org.projectlombok', name: 'lombok', version: lombokVersion
+
+    // api
+    compile group: 'io.springfox', name: 'springfox-swagger2', version: springfoxSwaggerVersion
+    compile group: 'io.springfox', name: 'springfox-swagger-ui', version: springfoxSwaggerVersion
+
+    // app
+    compile group: 'org.webjars', name: 'bootstrap', version: bootstrapVersion
+
+    // epg
+    compile group: 'commons-io', name: 'commons-io', version: commonsIoVersion
+
+    // HLS
+    compile group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: bcprovVersion
+    compile group: 'org.apache.commons', name: 'commons-text', version: commonsTextVersion
+    compile group: 'commons-io', name: 'commons-io', version: commonsIoVersion
+
+    // GCP
+    compile group: 'com.google.api-client', name: 'google-api-client-appengine', version: googleApiClientAppengineVersion
+    compile group: 'com.google.cloud.sql', name: 'postgres-socket-factory', version: postgresSocketFactoryVersion
+    compile group: 'com.google.cloud.sql', name: 'mysql-socket-factory-connector-j-6', version: mysqlSocketFactoryConnectorJ6Version
 }
