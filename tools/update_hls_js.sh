@@ -9,4 +9,4 @@ wget https://github.com/video-dev/hls.js/archive/v$1.tar.gz -O v$1.tar.gz
 tar zxvf v$1.tar.gz
 cd hls.js-$1/dist
 #cp hls.min.js $2
-cp hls.min.js $HOME/IdeaProjects/chukasa/chukasa-web/src/main/resources/static/js/hlsjs/
+cp hls.min.js $HOME/IdeaProjects/chukasa/src/main/resources/static/js/hlsjs/
