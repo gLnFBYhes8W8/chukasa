@@ -43,7 +43,7 @@ logging:
 
 spring:
   profiles:
-    active: localhost-mongodb-postgresql
+    active: localhost-no-database
   jpa:
     hibernate:
       ddl-auto: create-drop

@@ -138,6 +138,16 @@ sudo -u postgres bash -c "psql -c \"CREATE USER chukasa WITH PASSWORD 'chukasa';
 sudo -u postgres bash -c "psql -c \"CREATE DATABASE chukasa ENCODING 'UTF8' OWNER chukasa;\""
 
 #*******************************************************************************************************************
+# MySQL
+#*******************************************************************************************************************
+sudo apt-get -y install mysql-server
+mysql -u root -p
+# TODO: change password
+# mysql> CREATE DATABASE chukasa;
+# mysql> GRANT ALL ON chukasa.* to chukasa@localhost IDENTIFIED BY 'chukasa';
+# mysql> FLUSH PRIVILEGES;
+
+#*******************************************************************************************************************
 # OpenJDK 8
 #*******************************************************************************************************************
 sudo apt-get -y install openjdk-8-jdk
@@ -157,12 +167,8 @@ cd chukasa
 ./gradlew build
 
 # deploy chukasa application
-#sudo useradd -s /sbin/nologin -M chukasa
-#sudo gpasswd -a chukasa video
-#sudo gpasswd -a chukasa audio
 sudo mkdir -p /opt/chukasa/video
 sudo cp build/libs/chukasa-0.0.1-SNAPSHOT.jar /opt/chukasa/
-#sudo chown chukasa:chukasa -R /opt/chukasa
 sudo chown $USER:$USER -R /opt/chukasa
 
 #　nginx service
