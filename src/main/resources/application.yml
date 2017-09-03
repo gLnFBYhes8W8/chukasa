@@ -117,7 +117,7 @@ spring:
 spring:
   profiles: gae-flexible-postgresql
   datasource:
-    url: jdbc:postgresql://google/chukasa?socketFactory=com.google.cloud.sql.postgres.SocketFactory&socketFactoryArg=example20170902:us-central1:example20170902postgresql
+    url: jdbc:postgresql://google/chukasa?socketFactory=com.google.cloud.sql.postgres.SocketFactory&socketFactoryArg=
     username: chukasa
     password: chukasa
   jpa:
@@ -127,7 +127,7 @@ spring:
 spring:
   profiles: gae-standard-postgresql
   datasource:
-    url: jdbc:postgresql://google/chukasa?socketFactory=com.google.cloud.sql.postgres.SocketFactory&socketFactoryArg=example20170902:us-central1:example20170902postgresql
+    url: jdbc:postgresql://google/chukasa?socketFactory=com.google.cloud.sql.postgres.SocketFactory&socketFactoryArg=
     username: chukasa
     password: chukasa
   jpa:
