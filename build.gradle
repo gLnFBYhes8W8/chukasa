@@ -6,6 +6,7 @@ apply plugin: 'idea'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 apply plugin: 'com.google.cloud.tools.appengine'
+apply plugin: 'war'
 
 ext {
     // Spring
@@ -36,6 +37,7 @@ ext {
     // GCP
     postgresSocketFactoryVersion = '1.0.4'
     mysqlSocketFactoryConnectorJ6Version = '1.0.4'
+    googleApiClientAppengineVersion = '1.22.0'
 }
 
 bootJar {
@@ -73,8 +75,8 @@ dependencies {
     compile ('org.springframework.boot:spring-boot-starter-web') {
         exclude module: 'spring-boot-starter-tomcat'
     }
-    compile 'org.springframework.boot:spring-boot-starter-jetty'
-    compile group: 'javax.servlet', name: 'javax.servlet-api', version: '3.1.0' // for Jetty
+    providedRuntime 'org.springframework.boot:spring-boot-starter-jetty'
+    compileOnly group: 'javax.servlet', name: 'javax.servlet-api', version: '3.1.0' // for Jetty
     compile 'org.springframework.boot:spring-boot-starter-security'
     compile 'org.springframework.boot:spring-boot-starter-thymeleaf'
     compile 'org.thymeleaf.extras:thymeleaf-extras-springsecurity4'
@@ -111,4 +113,5 @@ dependencies {
     // GCP
     compile group: 'com.google.cloud.sql', name: 'postgres-socket-factory', version: postgresSocketFactoryVersion
     compile group: 'com.google.cloud.sql', name: 'mysql-socket-factory-connector-j-6', version: mysqlSocketFactoryConnectorJ6Version
+    compile group: 'com.google.api-client', name: 'google-api-client-appengine', version: googleApiClientAppengineVersion
 }
