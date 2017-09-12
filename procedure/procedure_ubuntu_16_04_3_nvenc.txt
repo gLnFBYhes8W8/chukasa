@@ -3,7 +3,7 @@
 # Ubuntu 16.04.3
 
 # uname -a
-# Linux ubuntu 4.10.0-32-generic #36~16.04.1-Ubuntu SMP Wed Aug 9 09:19:02 UTC 2017 x86_64 x86_64 x86_64 GNU/Linux
+# Linux ubuntu 4.10.0-28-generic #32~16.04.2-Ubuntu SMP Thu Jul 20 10:19:48 UTC 2017 x86_64 x86_64 x86_64 GNU/Linux
 
 /*******************************************************
 cat /etc/lsb-release
@@ -16,6 +16,25 @@ DISTRIB_DESCRIPTION="Ubuntu 16.04.3 LTS"
 ########## Begin ##########
 
 #*******************************************************************************************************************
+# NVIDIA Driver
+#*******************************************************************************************************************
+sudo touch /etc/modprobe.d/blacklist-nouveau.conf
+sudo sh -c "echo 'blacklist nouveau' >> /etc/modprobe.d/blacklist-nouveau.conf"
+sudo sh -c "echo 'blacklist lbm-nouveau' >> /etc/modprobe.d/blacklist-nouveau.conf"
+sudo sh -c "echo 'options nouveau modeset=0' >> /etc/modprobe.d/blacklist-nouveau.conf"
+sudo sh -c "echo 'alias nouveau off' >> /etc/modprobe.d/blacklist-nouveau.conf"
+sudo sh -c "echo 'alias lbm-nouveau off' >> /etc/modprobe.d/blacklist-nouveau.conf"
+sudo touch /etc/modprobe.d/nouveau-kms.conf
+sudo sh -c "echo 'options nouveau modeset=0' >> /etc/modprobe.d/nouveau-kms.conf"
+sudo update-initramfs -u
+sudo systemctl set-default multi-user.target
+sudo reboot
+chmod 755 NVIDIA-Linux-x86_64-384.69.run
+sudo ./NVIDIA-Linux-x86_64-384.69.run
+sudo systemctl set-default graphical.target
+sudo reboot
+
+#*******************************************************************************************************************
 # Time
 #*******************************************************************************************************************
 sudo timedatectl set-ntp 1
@@ -23,7 +42,7 @@ sudo timedatectl set-ntp 1
 #*******************************************************************************************************************
 # Apt
 #*******************************************************************************************************************
-#sudo apt-get update
+sudo apt-get update
 #sudo apt-get -y upgrade
 #sudo apt-get -y dist-upgrade
 #sudo reboot
@@ -109,7 +128,7 @@ cd ~/chukasa_temporary && \
 #*******************************************************************************************************************
 cd ~/chukasa_temporary && \
     sudo apt-get -y install libpcre3-dev libpcre++-dev libssl-dev && \
-    wget http://nginx.org/download/nginx-1.13.4.tar.gz && \
+    wget http://nginx.org/download/nginx-1.13.5.tar.gz && \
     tar zxvf nginx-*.tar.gz && \
     cd nginx-* && \
     ./configure --with-http_ssl_module --with-ipv6 --with-http_v2_module && \
