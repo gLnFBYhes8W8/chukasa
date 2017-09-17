@@ -171,8 +171,8 @@ public class FfmpegHlsMediaSegmentDetector implements Runnable {
                     }
                 }else{
                     if(chukasaModel.getChukasaSettings().getPlaylistType() == PlaylistType.LIVE) {
-                        final long URI_IN_PLAYLIST = chukasaModel.getHlsConfiguration().getUriInPlaylist();
-                        for (int i = 0; i < sequenceMediaSegment - URI_IN_PLAYLIST - URI_IN_PLAYLIST; i++) {
+                        final int URI_IN_PLAYLIST = chukasaModel.getHlsConfiguration().getUriInPlaylist();
+                        for (int i = 0; i < sequenceMediaSegment - 3 * URI_IN_PLAYLIST; i++) {
                             final File oldMediaSegmentFile = new File(mediaPath + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + i + STREAM_FILE_EXTENSION);
                             if (oldMediaSegmentFile.exists()) {
                                 oldMediaSegmentFile.delete();

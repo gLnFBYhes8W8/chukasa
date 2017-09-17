@@ -58,7 +58,6 @@ public class ChukasaModel {
     private ArrayList<String> ivArrayList;
 
     // Playlister
-    private PlaylistType playlistType;
     private int seqPl;
     private String namePl;
     private boolean flagLastPl;
@@ -129,7 +128,6 @@ public class ChukasaModel {
         ivArrayList = new ArrayList<>();
 
         // Playlister
-        this.playlistType = PlaylistType.LIVE;
         this.seqPl = -1;
         this.namePl = "playlist.m3u8";
         this.flagLastPl = false;

@@ -62,8 +62,7 @@ public class CoordinatorService implements ICoordinatorService {
         chukasaModelManagementComponent.get().forEach(chukasaModel -> {
             final StreamingType streamingType = chukasaModel.getChukasaSettings().getStreamingType();
             final int adaptiveBitrateStreaming = chukasaModel.getAdaptiveBitrateStreaming();
-            if(streamingType == StreamingType.WEBCAM
-                    || chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.FILE) {
+            if(streamingType == StreamingType.WEBCAM || streamingType == StreamingType.FILE) {
                 ffmpegHlsMediaSegmentDetectorService.schedule(adaptiveBitrateStreaming, new Date(), 2000);
                 if(future != null){
                     future.cancel(true);
