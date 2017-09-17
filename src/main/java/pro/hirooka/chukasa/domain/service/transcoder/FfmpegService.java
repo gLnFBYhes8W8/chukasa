@@ -21,8 +21,9 @@ import java.lang.reflect.Field;
 import java.util.concurrent.Future;
 
 import static java.util.Objects.requireNonNull;
-import static pro.hirooka.chukasa.domain.config.ChukasaConstants.M3U8_FILE_EXTENSION;
-import static pro.hirooka.chukasa.domain.config.ChukasaConstants.M3U8_FILE_NAME;
+import static pro.hirooka.chukasa.domain.config.ChukasaConstants.*;
+import static pro.hirooka.chukasa.domain.config.ChukasaConstants.FILE_SEPARATOR;
+import static pro.hirooka.chukasa.domain.config.ChukasaConstants.STREAM_FILE_NAME_PREFIX;
 
 @Slf4j
 @Service
@@ -53,10 +54,13 @@ public class FfmpegService implements IFfmpegService {
         final FfmpegVcodecType ffmpegVcodecType = chukasaModel.getFfmpegVcodecType();
         final boolean canEncrypt = chukasaModel.getChukasaSettings().isCanEncrypt();
         final String ffmpegOutputPath;
+        final String fmp4InitFileOutputPath;
         if (canEncrypt) {
             ffmpegOutputPath = chukasaModel.getTempEncPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + "%d" + STREAM_FILE_EXTENSION;
+            fmp4InitFileOutputPath = chukasaModel.getTempEncPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + ".mp4";
         } else {
             ffmpegOutputPath = chukasaModel.getStreamPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + "%d" + STREAM_FILE_EXTENSION;
+            fmp4InitFileOutputPath = chukasaModel.getStreamPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + ".mp4";
         }
         final String ffmpegM3U8OutputPath;
         if(canEncrypt){
@@ -251,7 +255,7 @@ public class FfmpegService implements IFfmpegService {
                         "-segment_time", Integer.toString(chukasaModel.getHlsConfiguration().getDuration()),
                         ffmpegOutputPath
                 };
-            } else if(ffmpegVcodecType == FfmpegVcodecType.H264_NVENC){
+            } else if(ffmpegVcodecType == FfmpegVcodecType.H264_NVENC) {
                 commandArray = new String[]{
 
                         chukasaModel.getSystemConfiguration().getFfmpegPath(),
@@ -269,6 +273,29 @@ public class FfmpegService implements IFfmpegService {
                         "-f", "hls",
                         "-hls_time", Integer.toString(chukasaModel.getHlsConfiguration().getDuration()),
                         "-hls_segment_filename", ffmpegOutputPath,
+                        ffmpegM3U8OutputPath
+                };
+            } else if(ffmpegVcodecType == FfmpegVcodecType.HEVC_NVENC){
+                commandArray = new String[]{
+
+                        chukasaModel.getSystemConfiguration().getFfmpegPath(),
+                        "-i", chukasaModel.getSystemConfiguration().getFilePath() + FILE_SEPARATOR + chukasaModel.getChukasaSettings().getFileName(),
+                        "-acodec", "aac",
+                        "-ab", chukasaModel.getChukasaSettings().getAudioBitrate() + "k",
+                        "-ac", "2",
+                        "-ar", "48000",
+                        "-s", chukasaModel.getChukasaSettings().getVideoResolution(),
+                        "-vcodec", "hevc_nvenc",
+                        "-tag:v", "hvc1",
+                        "-vf", "yadif",
+                        "-g", "10",
+                        "-b:v", chukasaModel.getChukasaSettings().getVideoBitrate() + "k",
+                        "-threads", Integer.toString(chukasaModel.getSystemConfiguration().getFfmpegThreads()),
+                        "-f", "hls",
+                        "-hls_segment_type", "fmp4",
+                        "-hls_time", Integer.toString(chukasaModel.getHlsConfiguration().getDuration()),
+                        "-hls_fmp4_init_filename", fmp4InitFileOutputPath,
+                        //"-hls_segment_filename", ffmpegOutputPath,
                         ffmpegM3U8OutputPath
                 };
             } else {
