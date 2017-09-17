@@ -45,7 +45,14 @@ public class PlaylistCreator implements IPlaylistCreator {
             final int TARGET_DURATION = chukasaModel.getHlsConfiguration().getDuration() + 1;
             final double DURATION = (double) chukasaModel.getHlsConfiguration().getDuration();
             final PlaylistType playlistType = chukasaModel.getChukasaSettings().getPlaylistType();
-            final String playlistPath = chukasaModel.getStreamPath() + FILE_SEPARATOR + M3U8_FILE_NAME + M3U8_FILE_EXTENSION;
+            final boolean isHevc = chukasaModel.getFfmpegVcodecType() == FfmpegVcodecType.HEVC_NVENC || chukasaModel.getFfmpegVcodecType() == FfmpegVcodecType.HEVC_QSV;
+            final String hevc;
+            if(isHevc){
+                hevc = "hevc";
+            }else{
+                hevc = "h264";
+            }
+            final String playlistPath = chukasaModel.getStreamPath() + FILE_SEPARATOR + M3U8_FILE_NAME + hevc + M3U8_FILE_EXTENSION;
             final boolean canEncrypt = chukasaModel.getChukasaSettings().isCanEncrypt();
 
             final FfmpegVcodecType ffmpegVcodecType = chukasaModel.getFfmpegVcodecType();

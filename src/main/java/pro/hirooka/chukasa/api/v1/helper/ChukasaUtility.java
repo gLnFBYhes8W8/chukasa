@@ -171,6 +171,13 @@ public class ChukasaUtility {
     }
 
     public static String buildM3u8URI(ChukasaModel chukasaModel){
+        final boolean isHevc = chukasaModel.getFfmpegVcodecType() == FfmpegVcodecType.HEVC_NVENC || chukasaModel.getFfmpegVcodecType() == FfmpegVcodecType.HEVC_QSV;
+        final String hevc;
+        if(isHevc){
+            hevc = "hevc";
+        }else{
+            hevc = "h264";
+        }
         String m3u8URI = "/";
         if(chukasaModel.getChukasaSettings().getStreamingType().equals(StreamingType.WEBCAM)
                 || chukasaModel.getChukasaSettings().getStreamingType().equals(StreamingType.TUNER)){
@@ -185,7 +192,7 @@ public class ChukasaUtility {
                     + FILE_SEPARATOR
                     + LIVE_PATH_NAME
                     + FILE_SEPARATOR
-                    + M3U8_FILE_NAME + M3U8_FILE_EXTENSION;
+                    + M3U8_FILE_NAME + hevc + M3U8_FILE_EXTENSION;
         }else if(chukasaModel.getChukasaSettings().getStreamingType().equals(StreamingType.FILE)
                 || chukasaModel.getChukasaSettings().getStreamingType().equals(StreamingType.OKKAKE)){
             m3u8URI = "/"
@@ -199,7 +206,7 @@ public class ChukasaUtility {
                     + FILE_SEPARATOR
                     + chukasaModel.getChukasaSettings().getFileName()
                     + FILE_SEPARATOR
-                    + M3U8_FILE_NAME + M3U8_FILE_EXTENSION;
+                    + M3U8_FILE_NAME + hevc + M3U8_FILE_EXTENSION;
         }
         log.info(m3u8URI);
         return m3u8URI;
