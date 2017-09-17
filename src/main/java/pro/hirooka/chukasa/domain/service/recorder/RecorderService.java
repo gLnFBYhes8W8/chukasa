@@ -41,6 +41,8 @@ public class RecorderService implements IRecorderService {
     private IRecorderRunnerService recorderRunnerService;
     @Autowired
     private MongoDBConfiguration mongoDBConfiguration;
+    @Autowired
+    private Recorder recorder;
 
     @PostConstruct
     public void init(){
@@ -121,7 +123,6 @@ public class RecorderService implements IRecorderService {
             // reserve
             log.info("reservation");
 
-            Recorder recorder = new Recorder();
             recorder.reserve(reservedProgram);
 
         }else if(now > startRecording && stopRecording > now){

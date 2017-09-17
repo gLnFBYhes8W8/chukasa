@@ -25,6 +25,9 @@ public class Recorder {
     @Autowired
     SystemConfiguration systemConfiguration;
 
+    @Autowired
+    RecorderRunner recorderRunner;
+
     @Getter
     Map<Integer, ScheduledFuture> scheduledFutureMap = new HashMap<>();
 
@@ -33,8 +36,8 @@ public class Recorder {
         ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
         TaskScheduler taskScheduler = new ConcurrentTaskScheduler(scheduledExecutorService);
         Date date = new Date(reservedProgram.getStart());
-        Runnable runnable = new RecorderRunner(systemConfiguration, reservedProgram);
-        ScheduledFuture scheduledFuture = taskScheduler.schedule(runnable, date);
+        recorderRunner.setReservedProgram(reservedProgram);
+        ScheduledFuture scheduledFuture = taskScheduler.schedule(recorderRunner, date);
         scheduledFutureMap.put(reservedProgram.getId(), scheduledFuture);
         log.info("scheduler: {}", date.toString());
     }
@@ -45,8 +48,8 @@ public class Recorder {
             ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
             TaskScheduler taskScheduler = new ConcurrentTaskScheduler(scheduledExecutorService);
             Date date = new Date(reservedProgram.getStart());
-            Runnable runnable = new RecorderRunner(systemConfiguration, reservedProgram);
-            ScheduledFuture scheduledFuture = taskScheduler.schedule(runnable, date);
+            recorderRunner.setReservedProgram(reservedProgram);
+            ScheduledFuture scheduledFuture = taskScheduler.schedule(recorderRunner, date);
             scheduledFutureMap.put(reservedProgram.getId(), scheduledFuture);
         });
     }
