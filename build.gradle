@@ -39,9 +39,7 @@ ext {
 }
 
 bootJar {
-    launchScript {
-        included = true
-    }
+    launchScript()
 }
 
 sourceCompatibility = 1.8
