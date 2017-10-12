@@ -28,6 +28,8 @@ Localisation
   WiFi Country: JP(Japan)
 /*******************************************************
 
+# set network configuration
+
 # sudo adduser XXX
 # sudo gpasswd -a XXX sudo
 
@@ -142,9 +144,9 @@ cd ~/chukasa_temporary && \
 #*******************************************************************************************************************
 cd ~/chukasa_temporary && \
     sudo apt-get -y install libpcre3-dev libpcre++-dev libssl-dev && \
-    wget http://nginx.org/download/nginx-1.13.5.tar.gz && \
-    tar zxvf nginx-1.13.5.tar.gz && \
-    cd nginx-1.13.5 && \
+    wget http://nginx.org/download/nginx-1.13.6.tar.gz && \
+    tar zxvf nginx-1.13.6.tar.gz && \
+    cd nginx-1.13.6 && \
     ./configure --with-http_ssl_module --with-ipv6 --with-http_v2_module && \
     make -j$(nproc) && \
     sudo make install
