@@ -182,12 +182,13 @@ git clone https://github.com/hirooka/chukasa.git
 cd chukasa
 
 # build chukasa application
+edit "application.yml, tuner.json"
 ./gradlew build
 cp build/libs/chukasa-0.0.1-SNAPSHOT.jar /opt/chukasa/
 
 #　chukasa service
 sudo cp ubuntu/systemd/chukasa.service /etc/systemd/system/
-sudo sh -c "sed -i -e 's/chukasa/$USER/g' /etc/systemd/system/chukasa.service"
+sudo sh -c "sed -i -e 's/User=chukasa/User=$USER/g' /etc/systemd/system/chukasa.service"
 sudo systemctl enable chukasa
 
 #　nginx service
