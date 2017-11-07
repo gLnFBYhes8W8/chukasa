@@ -3,6 +3,8 @@ package pro.hirooka.chukasa.domain.service.aaa;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pro.hirooka.chukasa.domain.entity.aaa.OperationEntity;
 import pro.hirooka.chukasa.domain.entity.aaa.PermissionEntity;
@@ -61,6 +63,8 @@ public class ChukasaUserDetailsService implements IChukasaUserDetailsService {
         permissionEntity.setName("READ_ONLY");
         permissionEntityRepository.save(permissionEntity);
 
+        PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+
         RoleEntity roleEntity = new RoleEntity();
         roleEntity.setName("ADMIN");
         roleEntity.setAuthority("ROLE_ADMIN");
@@ -72,7 +76,7 @@ public class ChukasaUserDetailsService implements IChukasaUserDetailsService {
         roleEntitySet.add(roleEntity);
         UserDetailsEntity userDetailsEntity = new UserDetailsEntity();
         userDetailsEntity.setUsername("admin");
-        userDetailsEntity.setPassword("admin");
+        userDetailsEntity.setPassword(passwordEncoder.encode("admin"));
         userDetailsEntity.setRoleEntitySet(roleEntitySet);
         repository.save(userDetailsEntity);
 
@@ -87,7 +91,7 @@ public class ChukasaUserDetailsService implements IChukasaUserDetailsService {
         roleEntitySet.add(roleEntity);
         userDetailsEntity = new UserDetailsEntity();
         userDetailsEntity.setUsername("guest");
-        userDetailsEntity.setPassword("guest");
+        userDetailsEntity.setPassword(passwordEncoder.encode("guest"));
         userDetailsEntity.setRoleEntitySet(roleEntitySet);
         repository.save(userDetailsEntity);
     }
