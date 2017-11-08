@@ -267,7 +267,7 @@ public class SystemService implements ISystemService {
                     return true;
                 }
             }else if(userAgent.contains(MAC)){
-                final String versionUnderscoreString = userAgent.split(MAC)[1].split(" ")[0];
+                final String versionUnderscoreString = userAgent.split(MAC)[1].split(" ")[0].split("\\)")[0];
                 final String versionString = versionUnderscoreString.split("_")[0]
                         + "." + versionUnderscoreString.split("_")[1];
                 final double version = Double.parseDouble(versionString);
