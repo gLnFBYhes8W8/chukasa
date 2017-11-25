@@ -1,5 +1,6 @@
 package pro.hirooka.chukasa.domain.service.aaa;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -18,8 +19,10 @@ import pro.hirooka.chukasa.domain.repository.aaa.UserDetailsEntityRepository;
 
 import javax.annotation.PostConstruct;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+@Slf4j
 @Service
 public class ChukasaUserDetailsService implements IChukasaUserDetailsService {
 
@@ -39,10 +42,11 @@ public class ChukasaUserDetailsService implements IChukasaUserDetailsService {
         return repository.findOneByUsername(username);
     }
 
-    @PostConstruct
-    void init(){
+    @Override
+    public void createInitialUser() {
 
-        // TODO: example data
+        log.info("create initial user");
+
         OperationEntity operationEntity = new OperationEntity();
         operationEntity.setOperationType(OperationType.READ);
         operationEntity.setName(OperationType.READ.name());
@@ -94,5 +98,10 @@ public class ChukasaUserDetailsService implements IChukasaUserDetailsService {
         userDetailsEntity.setPassword(passwordEncoder.encode("guest"));
         userDetailsEntity.setRoleEntitySet(roleEntitySet);
         repository.save(userDetailsEntity);
+    }
+
+    @Override
+    public List<UserDetailsEntity> readAllUserDetails() {
+        return repository.findAll();
     }
 }
