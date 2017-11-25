@@ -9,13 +9,25 @@
 
     <div th:replace="header :: header"></div>
 
-    <ul class="nav nav-tabs">
-        <li class="active" th:if="${isPTxByProgram == true}"><a href="#tabNow" data-toggle="tab">Tuner</a></li>
-        <li class="active" th:if="${isPTxByChannel == true}"><a href="#tabCapture" data-toggle="tab">Tuner</a></li>
-        <li th:if="${isPTxByChannel == true or isPTxByProgram == true}"><a href="#tabFile" data-toggle="tab">Video File</a></li>
-        <li class="active" th:if="${isPTxByChannel == false and isPTxByProgram == false}"><a href="#tabFile" data-toggle="tab">Video File</a></li>
-        <li th:if="${isWebCamera == true}"><a href="#tabWebCamera" data-toggle="tab">Web Camera</a></li>
-        <li th:if="${isPTxByProgram == true}"><a href="#tabOkkake" data-toggle="tab">Okkake(EXPERIMENTAL)</a></li>
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item" th:if="${isPTxByProgram == true}">
+            <a class="nav-link active" href="#tabNow" role="tab" data-toggle="tab" id="tabNow-tab">Tuner</a>
+        </li>
+        <li class="nav-item" th:if="${isPTxByChannel == true}">
+            <a class="nav-link active" href="#tabCapture" role="tab" data-toggle="tab" id="tabCapture-tab">Tuner</a>
+        </li>
+        <li class="nav-item" th:if="${isPTxByChannel == true or isPTxByProgram == true}">
+            <a class="nav-link" href="#tabFile" role="tab" data-toggle="tab" id="tabFile-tab">Video File</a>
+        </li>
+        <li class="nav-item" th:if="${isPTxByChannel == false and isPTxByProgram == false}">
+            <a class="nav-link active" href="#tabFile" role="tab" data-toggle="tab" id="tabFile-tab">Video File</a>
+        </li>
+        <li class="nav-item" th:if="${isWebCamera == true}">
+            <a class="nav-link" href="#tabWebCamera" role="tab" data-toggle="tab" id="tabWebCamera-tab">Web Camera</a>
+        </li>
+        <li class="nav-item" th:if="${isPTxByProgram == true}">
+            <a class="nav-link" href="#tabOkkake" role="tab" data-toggle="tab" id="tabOkkake-tab">Okkake(EXPERIMENTAL)</a>
+        </li>
     </ul>
 
     <div class="tab-content">
@@ -24,7 +36,7 @@
 
         <!-- Now -->
 
-        <div th:if="${isPTxByProgram == true}" class="tab-pane active" id="tabNow">
+        <div role="tabpanel" th:if="${isPTxByProgram == true}" class="tab-pane fade show active" id="tabNow" aria-labelledby="tabNow-tab">
 
             <form th:action="@{/video}" th:object="${chukasaSettings}" method="post">
 
@@ -90,7 +102,7 @@
         </div>
 
         <!-- CAPTURE -->
-        <div th:if="${isPTxByChannel == true}" class="tab-pane active" id="tabCapture">
+        <div role="tabpanel" th:if="${isPTxByChannel == true}" class="tab-pane fade show active" id="tabCapture" aria-labelledby="tabCapture-tab">
 
             <form th:action="@{/video}" th:object="${chukasaSettings}" method="post">
 
@@ -156,7 +168,7 @@
         </div>
 
         <!-- FILE -->
-        <div th:if="${isPTxByChannel == false and isPTxByProgram == false}" class="tab-pane active" id="tabFile">
+        <div role="tabpanel" th:if="${isPTxByChannel == false and isPTxByProgram == false}" class="tab-pane fade show active" id="tabFile" aria-labelledby="tabFile-tab">
 
             <form th:action="@{/video}" th:object="${chukasaSettings}" method="post">
 
@@ -221,7 +233,7 @@
 
         </div>
 
-        <div th:if="${isPTxByChannel == true or isPTxByProgram == true}" class="tab-pane" id="tabFile">
+        <div role="tabpanel" th:if="${isPTxByChannel == true or isPTxByProgram == true}" class="tab-pane fade" id="tabFile" aria-labelledby="tabFile-tab">
 
             <form th:action="@{/video}" th:object="${chukasaSettings}" method="post">
 
@@ -287,7 +299,7 @@
         </div>
 
         <!-- OKKAKE -->
-        <div class="tab-pane" id="tabOkkake">
+        <div role="tabpanel" class="tab-pane fade" id="tabOkkake" aria-labelledby="tabOkkake-tab">
 
             <form th:action="@{/video}" th:object="${chukasaSettings}" method="post">
 
@@ -353,7 +365,7 @@
         </div>
 
         <!-- WEB_CAMERA -->
-        <div class="tab-pane" id="tabWebCamera">
+        <div role="tabpanel" class="tab-pane fade" id="tabWebCamera" aria-labelledby="tabWebCamera-tab">
 
             <form th:action="@{/video}" th:object="${chukasaSettings}" method="post">
 
@@ -431,10 +443,9 @@
     <div th:replace="footer :: footer"></div>
 </div>
 
-<script src="https://code.jquery.com/jquery-1.11.1.min.js"
-        th:src="@{/webjars/jquery/1.11.1/jquery.min.js}"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7-1/js/bootstrap.min.js"
-        th:src="@{/webjars/bootstrap/3.3.7-1/js/bootstrap.min.js}"></script>
+<script src="webjars/jquery/3.2.1/jquery.min.js"></script>
+<script src="webjars/popper.js/1.12.3/dist/umd/popper.min.js"></script>
+<script src="webjars/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"></script>
 
 <script>
     function onChangeTranscodingSettings(obj){

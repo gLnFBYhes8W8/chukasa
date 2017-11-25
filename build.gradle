@@ -51,7 +51,9 @@ ext {
     commonsIoVersion = '2.5'
 
     // UI
-    bootstrapVersion = '3.3.7-1'
+    bootstrapVersion = '4.0.0-beta.2'
+    jQueryVersion = '3.2.1'
+    popperJsVersion = '1.12.3'
 
     // API
     springfoxSwaggerVersion = '2.7.0'
@@ -100,6 +102,8 @@ dependencies {
 
     // UI
     compile group: 'org.webjars', name: 'bootstrap', version: bootstrapVersion
+    compile group: 'org.webjars', name: 'jquery', version: jQueryVersion
+    compile group: 'org.webjars.npm', name: 'popper.js', version: popperJsVersion
 
     // API
     compile group: 'io.springfox', name: 'springfox-swagger2', version: springfoxSwaggerVersion
