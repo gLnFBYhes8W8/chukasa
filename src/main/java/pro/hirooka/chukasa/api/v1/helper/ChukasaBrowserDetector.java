@@ -14,6 +14,8 @@ public class ChukasaBrowserDetector implements IChukasaBrowserDetector {
     final String FIREFOX = "Firefox/";
     final String SEAMONKEY = "Seamonkey/";
 
+    final String ANDROID = "Linux; Android ";
+
     @Override
     public WebBrowserType getBrowserType(String userAgent) {
         if(isSafari(userAgent)){
@@ -75,12 +77,22 @@ public class ChukasaBrowserDetector implements IChukasaBrowserDetector {
         if(isSafari(userAgent) || isEdge(userAgent)){
             return true;
         }
+        else if(isAndroidChrome(userAgent)){
+            return true;
+        }
         return false;
     }
 
     @Override
     public boolean isAlternativeSupported(String userAgent) {
         if(isChrome(userAgent) || isIE(userAgent) || isFirefox(userAgent)){
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isAndroidChrome(String userAgent){
+        if(isChrome(userAgent) && userAgent.contains(ANDROID)){
             return true;
         }
         return false;
