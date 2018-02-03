@@ -1,5 +1,6 @@
-<!DOCTYPE html>
+<!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -24,16 +25,11 @@
         <li>Web Camera: <span th:text="${isWebCamera}"></span></li>
     </ul>
 
-
     <div th:text="${systemProperties}"></div>
-
 
 </div>
 
-<script src="https://code.jquery.com/jquery-1.11.1.min.js"
-        th:src="@{/webjars/jquery/1.11.1/jquery.min.js}"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
-        th:src="@{/webjars/bootstrap/3.3.6/js/bootstrap.min.js}"></script>
+<div id="bootstrap4-js" th:replace="bootstrap4-js :: bootstrap4-js"></div>
 
 </body>
 </html>

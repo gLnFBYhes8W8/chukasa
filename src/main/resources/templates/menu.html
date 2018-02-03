@@ -1,5 +1,6 @@
-<!DOCTYPE html>
+<!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head th:replace="head :: common_header(~{::title},~{})">
     <title>...</title>
 </head>
@@ -443,9 +444,7 @@
     <div th:replace="footer :: footer"></div>
 </div>
 
-<script src="webjars/jquery/3.3.1/jquery.min.js"></script>
-<script src="webjars/popper.js/1.13.0/dist/umd/popper.min.js"></script>
-<script src="webjars/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<div id="bootstrap4-js" th:replace="bootstrap4-js :: bootstrap4-js"></div>
 
 <script>
     function onChangeTranscodingSettings(obj){

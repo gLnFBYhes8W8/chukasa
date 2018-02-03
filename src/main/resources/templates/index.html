@@ -1,9 +1,12 @@
-<!DOCTYPE html>
+<!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head th:replace="head :: common_header(~{::title},~{})">
     <title>chukasa</title>
 </head>
+
 <body>
+
 <div class="container">
 
     <hr/>
@@ -17,6 +20,10 @@
     <hr/>
 
     <div th:replace="footer :: footer"></div>
+
+    <div th:replace="bootstrap4-js :: bootstrap4-js"></div>
+
+</div>
 
 </body>
 </html>

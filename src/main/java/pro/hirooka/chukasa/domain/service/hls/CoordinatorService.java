@@ -114,7 +114,7 @@ public class CoordinatorService implements ICoordinatorService {
     public void stop() {
         chukasaModelManagementComponent.get().forEach(chukasaModel -> {
             final int adaptiveBitrateStreaming = chukasaModel.getAdaptiveBitrateStreaming();
-            ffmpegStopperService.stop();
+            Future<Integer> future = ffmpegStopperService.stop();
         });
     }
 

@@ -86,7 +86,7 @@ public class MultiHttpSecurityConfiguration {
                     .and()
                     .formLogin()
                     .loginPage("/login")
-                    .defaultSuccessUrl("/menu")
+                    .defaultSuccessUrl("/chukasa")
                     .permitAll()
                     .and()
                     .logout()

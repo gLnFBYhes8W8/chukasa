@@ -1,0 +1,131 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="head :: common_header(~{::title}, ~{::link})">
+    <title>chukasa</title>
+    <link rel="stylesheet" th:href="@{/css/player.css}"/>
+</head>
+<body>
+
+<div class="container">
+
+    <div id="hlsjs" th:replace="embedded-hlsjs-player :: hls"></div>
+
+    <form id="form">
+
+        <input type = "hidden" id = "streamingType" name = "streamingType" value = "TUNER"/>
+
+        <div class="form-group">
+            <select class="form-control" id="ch" name="physicalLogicalChannel">
+                <option th:value="${program.physicalLogicalChannel}" th:text="${program.channelName + ' (' + program.remoteControllerChannel + '): ' + program.title}" th:each="program : ${programList}">...</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <select class="form-control" id="transcodingSettings" name="transcodingSettings">
+                <option value="CELLULAR_LOW" selected="selected">CELLULAR_LOW</option>
+                <option value="CELLULAR_MID">CELLULAR_MID</option>
+                <option value="CELLULAR_HIGH">CELLULAR_HIGH</option>
+                <option value="WIFI_LOW">WIFI_LOW</option>
+                <option value="WIFI_MID">WIFI_MID</option>
+                <option value="WIFI_HIGH">WIFI_HIGH</option>
+                <option value="HD_LOW">HD_LOW</option>
+                <option value="HD_HIGH">HD_HIGH</option>
+                <option value="FULL_HD_LOW">FULL_HD_LOW</option>
+                <option value="FULL_HD_HIGH">FULL_HD_HIGH</option>
+                <option value="FULL_HD_EXTREME">FULL_HD_EXTREME</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <select class="form-control" id="encryption" name="canEncrypt">
+                <option value="true" selected="selected">AES-128/CBC/PKCS7Padding</option>
+                <option value="false">None</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <select class="form-control" id="playlistType" name="playlistType">
+                <option value="LIVE" selected="selected">Live</option>
+                <option value="EVENT">Event</option>
+            </select>
+        </div>
+
+
+    </form>
+
+    <button id="ajax_start" class="btn btn-primary">ajax</button>
+
+    <hr/>
+    <button id="ajax_stop" class="btn btn-warning">ajax</button>
+
+    <hr/>
+    <div th:replace="footer :: footer"></div>
+
+</div>
+
+<div id="bootstrap4-js" th:replace="bootstrap4-js :: bootstrap4-js"></div>
+
+<script th:inline="javascript">
+    $(function () {
+        $('#ajax_start').on('click', function () {
+            var url = '/chukasa/';
+            var jsonData = {
+                "adaptiveBitrateStreaming" : 0,
+                "streamingType" : $('#form [name=streamingType]').val(),
+                "playlistType" : $('#form [name=playlistType]').val(),
+                "transcodingSettings" : $('#form [name=transcodingSettings]').val(),
+                "canEncrypt" : $('#form [name=canEncrypt]').val(),
+                "physicalLogicalChannel" : $('#form [name=physicalLogicalChannel]').val(),
+                "fileName" : null,
+                "videoResolution" : null,
+                "videoBitrate" : "0",
+                "audioBitrate" : 0
+            };
+            //alert(JSON.stringify(jsonData));
+
+            $.ajax({
+                type: 'post',
+                url : url,
+                data : JSON.stringify(jsonData),
+                contentType : 'application/json',
+                dataType : 'html',
+                headers : {
+                    'X-CSRF-TOKEN' : [[ ${_csrf.token} ]],
+                },
+                scriptCharset : 'utf-8',
+                success : function (data) {
+                    $('#hls_video_tag').html(data);
+                },
+                error : function (data) {
+                    //
+                }
+            });
+
+        });
+
+        $('#ajax_stop').on('click', function () {
+            var url = '/chukasa/stop';
+
+            $.ajax({
+                type: 'get',
+                url : url,
+                headers : {
+                    'X-CSRF-TOKEN' : [[ ${_csrf.token} ]],
+                },
+                scriptCharset : 'utf-8',
+                success : function (data) {
+                    $('#hls_video_tag').html(data);
+                },
+                error : function (data) {
+                    //
+                }
+            });
+
+        });
+
+    });
+</script>
+
+</body>
+</html>

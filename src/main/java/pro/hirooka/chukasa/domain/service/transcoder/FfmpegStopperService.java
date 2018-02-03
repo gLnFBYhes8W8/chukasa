@@ -57,6 +57,14 @@ public class FfmpegStopperService implements IFfmpegStopperService {
             process.getErrorStream().close();
             process.getOutputStream().close();
             process.destroy();
+
+            // TODO: reconsider
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
         } catch (IOException e) {
             // TODO:
         }

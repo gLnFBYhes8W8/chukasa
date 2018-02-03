@@ -1,10 +1,13 @@
-<!DOCTYPE html>
+<!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head th:replace="head :: common_header(~{::title}, ~{::link})">
-    <title>...</title>
+    <title>chukasa</title>
     <link rel="stylesheet" th:href="@{/css/player.css}"/>
 </head>
+
 <body>
+
 <div class="container">
     <video th:src="${html5PlayerModel.PlaylistURI}" height="2880" width="5120" controls="controls" autoplay="autoplay" type="application/x-mpegURL"></video>
     <form th:action="@{/video/stop}" method="get">
@@ -12,6 +15,9 @@
     </form>
     <div>(Native)</div>
 </div>
+
+<div id="bootstrap4-js" th:replace="bootstrap4-js :: bootstrap4-js"></div>
+
 </body>
 </html>
 

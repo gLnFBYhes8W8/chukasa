@@ -7,8 +7,8 @@ apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 apply plugin: 'com.google.cloud.tools.appengine'
 
-sourceCompatibility = 1.9
-targetCompatibility = 1.9
+sourceCompatibility = JavaVersion.VERSION_1_9
+targetCompatibility = JavaVersion.VERSION_1_9
 
 buildscript {
     ext {
@@ -110,9 +110,6 @@ dependencies {
     // lombok
     compileOnly group: 'org.projectlombok', name: 'lombok', version: lombokVersion
     testCompileOnly group: 'org.projectlombok', name: 'lombok', version: lombokVersion
-    // !!! WORKAROUND for Java 9 !!!
-    //compileOnly files('lombok-edge.jar')
-    //testCompileOnly files('lombok-edge.jar')
 
     // Test
     testCompile group: 'junit', name: 'junit', version: junitVersion

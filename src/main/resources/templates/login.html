@@ -1,10 +1,12 @@
-<!DOCTYPE html>
+<!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head th:replace="head :: common_header(~{::title},~{})">
     <title>chukasa</title>
 </head>
 
 <body>
+<div class="container">
 <a href="#" title="chukasa"><span><img src="/images/chukasa.jpg" height="180" width="211"></img></span></a>
 <form th:action="@{/login}" method="post">
     <div class="form-group">
@@ -21,5 +23,9 @@
 </form>
 <hr />
 <div th:insert="footer :: footer"></div>
+</div>
+
+<div id="bootstrap4-js" th:replace="bootstrap4-js :: bootstrap4-js"></div>
+
 </body>
 </html>
