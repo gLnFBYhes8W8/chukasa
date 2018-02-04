@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import pro.hirooka.chukasa.domain.config.aaa.AaaConfiguration;
+import pro.hirooka.chukasa.domain.config.SpringConfiguration;
 import pro.hirooka.chukasa.domain.service.aaa.IChukasaUserDetailsService;
 
 import java.util.Objects;
@@ -13,14 +13,14 @@ import java.util.Objects;
 @Controller
 public class LoginController {
 
-    private final AaaConfiguration aaaConfiguration;
+    private final SpringConfiguration springConfiguration;
     private final IChukasaUserDetailsService chukasaUserDetailsService;
 
     @Autowired
-    public LoginController(AaaConfiguration aaaConfiguration,
+    public LoginController(SpringConfiguration springConfiguration,
                            IChukasaUserDetailsService chukasaUserDetailsService) {
-        this.aaaConfiguration =
-                Objects.requireNonNull(aaaConfiguration, "aaaConfiguration");
+        this.springConfiguration =
+                Objects.requireNonNull(springConfiguration, "springConfiguration");
         this.chukasaUserDetailsService =
                 Objects.requireNonNull(chukasaUserDetailsService, "chukasaUserDetailsService");
     }
@@ -28,9 +28,9 @@ public class LoginController {
     @RequestMapping("/login")
     public String login() {
 
-        if(aaaConfiguration.getProfiles().contains("postgresql")
-                || aaaConfiguration.getProfiles().contains("mysql")
-                || aaaConfiguration.getProfiles().contains("hsqldb")){
+        if(springConfiguration.getProfiles().contains("postgresql")
+                || springConfiguration.getProfiles().contains("mysql")
+                || springConfiguration.getProfiles().contains("hsqldb")){
             if(chukasaUserDetailsService.readAllUserDetails().size() == 0){
                 chukasaUserDetailsService.createInitialUser();
             }

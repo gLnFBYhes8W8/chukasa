@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import pro.hirooka.chukasa.domain.config.SpringConfiguration;
 import pro.hirooka.chukasa.domain.service.aaa.IChukasaUserDetailsService;
 
 @EnableWebSecurity
@@ -22,15 +23,15 @@ public class MultiHttpSecurityConfiguration {
     public static class ApiWebSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
 
         @Autowired
-        AaaConfiguration aaaConfiguration;
+        SpringConfiguration springConfiguration;
         @Autowired
         IChukasaUserDetailsService chukasaUserDetailsService;
 
         @Override
         protected void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
-            if(aaaConfiguration.getProfiles().contains("postgresql")
-                    || aaaConfiguration.getProfiles().contains("mysql")
-                    || aaaConfiguration.getProfiles().contains("hsqldb")){
+            if(springConfiguration.getProfiles().contains("postgresql")
+                    || springConfiguration.getProfiles().contains("mysql")
+                    || springConfiguration.getProfiles().contains("hsqldb")){
                 authenticationManagerBuilder.userDetailsService(this.chukasaUserDetailsService);//.passwordEncoder(passwordEncoder()); // TODO:
             }else{
                 authenticationManagerBuilder.inMemoryAuthentication().withUser("admin").password("admin").roles("ADMIN");
@@ -61,15 +62,15 @@ public class MultiHttpSecurityConfiguration {
     public static class FormLoginWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
 
         @Autowired
-        AaaConfiguration aaaConfiguration;
+        SpringConfiguration springConfiguration;
         @Autowired
         IChukasaUserDetailsService chukasaUserDetailsService;
 
         @Override
         protected void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
-            if(aaaConfiguration.getProfiles().contains("postgresql")
-                    || aaaConfiguration.getProfiles().contains("mysql")
-                    || aaaConfiguration.getProfiles().contains("hsqldb")){
+            if(springConfiguration.getProfiles().contains("postgresql")
+                    || springConfiguration.getProfiles().contains("mysql")
+                    || springConfiguration.getProfiles().contains("hsqldb")){
                 authenticationManagerBuilder.userDetailsService(this.chukasaUserDetailsService);//.passwordEncoder(passwordEncoder()); // TODO:
             }else{
                 authenticationManagerBuilder.inMemoryAuthentication().withUser("admin").password("admin").roles("ADMIN");

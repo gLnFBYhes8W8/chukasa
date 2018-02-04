@@ -54,10 +54,8 @@
 
     </form>
 
-    <button id="ajax_start" class="btn btn-primary">ajax</button>
-
     <hr/>
-    <button id="ajax_stop" class="btn btn-warning">ajax</button>
+    <button id="ajax_play_button_start" class="btn btn-primary"><span id="ajax_play_button_text">Start</span></button>
 
     <hr/>
     <div th:replace="footer :: footer"></div>
@@ -68,59 +66,71 @@
 
 <script th:inline="javascript">
     $(function () {
-        $('#ajax_start').on('click', function () {
-            var url = '/chukasa/';
-            var jsonData = {
-                "adaptiveBitrateStreaming" : 0,
-                "streamingType" : $('#form [name=streamingType]').val(),
-                "playlistType" : $('#form [name=playlistType]').val(),
-                "transcodingSettings" : $('#form [name=transcodingSettings]').val(),
-                "canEncrypt" : $('#form [name=canEncrypt]').val(),
-                "physicalLogicalChannel" : $('#form [name=physicalLogicalChannel]').val(),
-                "fileName" : null,
-                "videoResolution" : null,
-                "videoBitrate" : "0",
-                "audioBitrate" : 0
-            };
-            //alert(JSON.stringify(jsonData));
+        $('#ajax_play_button_start').on('click', function () {
 
-            $.ajax({
-                type: 'post',
-                url : url,
-                data : JSON.stringify(jsonData),
-                contentType : 'application/json',
-                dataType : 'html',
-                headers : {
-                    'X-CSRF-TOKEN' : [[ ${_csrf.token} ]],
-                },
-                scriptCharset : 'utf-8',
-                success : function (data) {
-                    $('#hls_video_tag').html(data);
-                },
-                error : function (data) {
-                    //
-                }
-            });
+            var id = $(this).attr('id');
 
-        });
+            if(id == 'ajax_play_button_start'){
 
-        $('#ajax_stop').on('click', function () {
-            var url = '/chukasa/stop';
+                var url = '/chukasa/';
+                var jsonData = {
+                    "adaptiveBitrateStreaming" : 0,
+                    "streamingType" : $('#form [name=streamingType]').val(),
+                    "playlistType" : $('#form [name=playlistType]').val(),
+                    "transcodingSettings" : $('#form [name=transcodingSettings]').val(),
+                    "canEncrypt" : $('#form [name=canEncrypt]').val(),
+                    "physicalLogicalChannel" : $('#form [name=physicalLogicalChannel]').val(),
+                    "fileName" : null,
+                    "videoResolution" : null,
+                    "videoBitrate" : "0",
+                    "audioBitrate" : 0
+                };
+                //alert(JSON.stringify(jsonData));
 
-            $.ajax({
-                type: 'get',
-                url : url,
-                headers : {
-                    'X-CSRF-TOKEN' : [[ ${_csrf.token} ]],
-                },
-                scriptCharset : 'utf-8',
-                success : function (data) {
-                    $('#hls_video_tag').html(data);
-                },
-                error : function (data) {
-                    //
-                }
-            });
+                $.ajax({
+                    type: 'post',
+                    url : url,
+                    data : JSON.stringify(jsonData),
+                    contentType : 'application/json',
+                    dataType : 'html',
+                    headers : {
+                        'X-CSRF-TOKEN' : [[ ${_csrf.token} ]],
+                    },
+                    scriptCharset : 'utf-8',
+                    success : function (data) {
+                        $('#hls_video_tag').html(data);
+                    },
+                    error : function (data) {
+                        //
+                    }
+                });
+
+                $(this).attr("id", "ajax_play_button_stop");
+                $(this).attr("class", "btn btn-warning");
+                $("#ajax_play_button_text").text("Stop");
+
+            }else if(id == 'ajax_play_button_stop'){
+
+                var url = '/chukasa/stop';
+                $.ajax({
+                    type: 'get',
+                    url : url,
+                    headers : {
+                        'X-CSRF-TOKEN' : [[ ${_csrf.token} ]],
+                    },
+                    scriptCharset : 'utf-8',
+                    success : function (data) {
+                        $('#hls_video_tag').html(data);
+                    },
+                    error : function (data) {
+                        //
+                    }
+                });
+
+                $(this).attr('id', "ajax_play_button_start");
+                $(this).attr("class", "btn btn-primary");
+                $("#ajax_play_button_text").text("Start");
+            }
 
         });
 
