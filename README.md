@@ -1,6 +1,6 @@
 # chukasa 
 
-HTTP Live Streaming (HLS) server that distributes video file on demand or live stream of webcam or tuner to cross-platform.
+HTTP Live Streaming (HLS) server that distributes video file on demand or live stream of webcam or tuner (PT3, PX-S1UD v2.0, PX-BCUD) to cross-platform.
 
 [![Build Status](https://travis-ci.org/hirooka/chukasa.svg?branch=master)](https://travis-ci.org/hirooka/chukasa) [![Build Status](https://circleci.com/gh/hirooka/chukasa.png?style=shield)](https://circleci.com/gh/hirooka/chukasa)
 
