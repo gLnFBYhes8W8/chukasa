@@ -1,38 +1,64 @@
-# procedure_ubuntu_16_04_3_nvenc.txt
+# procedure_raspberry_pi_3_model_b_raspbian.txt
 
-# Ubuntu 16.04.3
+# Raspberry Pi 3 Model B, PX-S1UD V2.0, PX-BCUD
 
+# unzip unzip 2017-11-29-raspbian-stretch.zip
+# sudo dd bs=4M if=2017-11-29-raspbian-stretch.img of=/dev/sdXXX
+#     1173+0 records in
+#     1173+0 records out
+#     4919918592 bytes (4.9 GB, 4.6 GiB) copied, 251.601 s, 19.6 MB/s
+# sudo sync
+
+# Raspbian Stretch 2017-11-29
 # uname -a
-# Linux ubuntu 4.10.0-28-generic #32~16.04.2-Ubuntu SMP Thu Jul 20 10:19:48 UTC 2017 x86_64 x86_64 x86_64 GNU/Linux
+# Linux raspberrypi 4.9.59-v7+ #1047 SMP Sun Oct 29 12:19:23 GMT 2017 armv7l GNU/Linux
 
 /*******************************************************
-cat /etc/lsb-release
-DISTRIB_ID=Ubuntu
-DISTRIB_RELEASE=16.04
-DISTRIB_CODENAME=xenial
-DISTRIB_DESCRIPTION="Ubuntu 16.04.3 LTS"
+Preferences - Raspberry Pi Configuration
+System
+  Password: Change Password...
+  Hostname:
+  Auto Login: uncheck
+Interfaces
+  SSH: Enabled
+Localisation
+  Locale: en(English), US(USA), UTF-8
+  Timezone: Japan
+  Keyboard: United States, English(US)
+  WiFi Country: JP(Japan)
 /*******************************************************
+
+# set network configuration
+
+# sudo adduser XXX
+# sudo gpasswd -a XXX sudo
+
+/*******************************************************
+cat /etc/os-release
+PRETTY_NAME="Raspbian GNU/Linux 9 (stretch)"
+NAME="Raspbian GNU/Linux"
+VERSION_ID="9"
+VERSION="9 (stretch)"
+ID=raspbian
+ID_LIKE=debian
+HOME_URL="http://www.raspbian.org/"
+SUPPORT_URL="http://www.raspbian.org/RaspbianForums"
+BUG_REPORT_URL="http://www.raspbian.org/RaspbianBugs"
+
+df -h
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/root        30G  4.2G   25G  15% /
+devtmpfs        460M     0  460M   0% /dev
+tmpfs           464M     0  464M   0% /dev/shm
+tmpfs           464M   13M  452M   3% /run
+tmpfs           5.0M  4.0K  5.0M   1% /run/lock
+tmpfs           464M     0  464M   0% /sys/fs/cgroup
+/dev/mmcblk0p1   41M   21M   21M  51% /boot
+tmpfs            93M     0   93M   0% /run/user/1000
+tmpfs            93M     0   93M   0% /run/user/1001
+*******************************************************/
 
 ########## Begin ##########
-
-#*******************************************************************************************************************
-# NVIDIA Driver
-#*******************************************************************************************************************
-sudo touch /etc/modprobe.d/blacklist-nouveau.conf
-sudo sh -c "echo 'blacklist nouveau' >> /etc/modprobe.d/blacklist-nouveau.conf"
-sudo sh -c "echo 'blacklist lbm-nouveau' >> /etc/modprobe.d/blacklist-nouveau.conf"
-sudo sh -c "echo 'options nouveau modeset=0' >> /etc/modprobe.d/blacklist-nouveau.conf"
-sudo sh -c "echo 'alias nouveau off' >> /etc/modprobe.d/blacklist-nouveau.conf"
-sudo sh -c "echo 'alias lbm-nouveau off' >> /etc/modprobe.d/blacklist-nouveau.conf"
-sudo touch /etc/modprobe.d/nouveau-kms.conf
-sudo sh -c "echo 'options nouveau modeset=0' >> /etc/modprobe.d/nouveau-kms.conf"
-sudo update-initramfs -u
-sudo systemctl set-default multi-user.target
-sudo reboot
-chmod 755 NVIDIA-Linux-x86_64-384.111.run
-sudo ./NVIDIA-Linux-x86_64-384.111.run
-sudo systemctl set-default graphical.target
-sudo reboot
 
 #*******************************************************************************************************************
 # Time
@@ -50,18 +76,8 @@ sudo apt-get update
 #*******************************************************************************************************************
 # Package
 #*******************************************************************************************************************
-sudo apt-get -y install build-essential git wget libasound2-dev autoconf libtool pcsc-tools pkg-config libpcsclite-dev pcscd cmake yasm curl ssh
-
-# Input Japanase
-# https://hirooka.pro/?p=8373
-
-# Google Chrome
-sudo apt-get -y install libindicator7 libappindicator1
-sudo dpkg -i google-chrome-stable_current_amd64.deb
-
-# VirtualBox
-sudo apt-get -y install libqt5x11extras5 libsdl1.2debian
-sudo dpkg -i virtualbox-5.2_5.2.6-120293~Ubuntu~xenial_amd64.deb
+sudo apt-get -y install autoconf libpcsclite-dev pcsc-tools pcscd cmake libasound2-dev
+sudo apt-get -y install ttf-kochi-gothic xfonts-intl-japanese xfonts-intl-japanese-big xfonts-kaname jfbterm
 
 #*******************************************************************************************************************
 # Temprary Directory
@@ -77,29 +93,19 @@ sudo gpasswd -a $USER audio
 #*******************************************************************************************************************
 # Webcam (Audio)
 #*******************************************************************************************************************
-# 環境により異なる．
-# cat /proc/asound/modules にて事前に確認する．
-
-# ASUS Z170I PRO GAMING の場合
-# cat /proc/asound/modules
-#  0 snd_hda_intel
-#  1 snd_usb_audio
+#cat /proc/asound/modules
 sudo touch /etc/modprobe.d/alsa-base.conf
-sudo sh -c "echo 'options snd slots=snd_usb_audio,snd_hda_intel' >> /etc/modprobe.d/alsa-base.conf"
+sudo sh -c "echo 'options snd slots=snd_usb_audio,snd_bcm2835' >> /etc/modprobe.d/alsa-base.conf"
 sudo sh -c "echo 'options snd_usb_audio index=0' >> /etc/modprobe.d/alsa-base.conf"
-sudo sh -c "echo 'options snd_hda_intel index=1' >> /etc/modprobe.d/alsa-base.conf"
-
-# ASUS B85M-E の場合
-sudo touch /etc/modprobe.d/alsa-base.conf
-sudo sh -c "echo 'options snd slots=snd_usb_audio,snd_hda_intel,snd_hda_intel' >> /etc/modprobe.d/alsa-base.conf"
-sudo sh -c "echo 'options snd_usb_audio index=0' >> /etc/modprobe.d/alsa-base.conf"
-sudo sh -c "echo 'options snd_hda_intel index=1' >> /etc/modprobe.d/alsa-base.conf"
-sudo sh -c "echo 'options snd_hda_intel index=2' >> /etc/modprobe.d/alsa-base.conf"
+sudo sh -c "echo 'options snd_bcm2835 index=1' >> /etc/modprobe.d/alsa-base.conf"
 
 #*******************************************************************************************************************
-# DVB Tuber
+# DVB Tuber (PX-S1UD V2.0)
 #*******************************************************************************************************************
-// TODO
+cd ~/chukasa_temporary && \
+    wget http://plex-net.co.jp/plex/px-s1ud/PX-S1UD_driver_Ver.1.0.1.zip && \
+    unzip PX-S1UD_driver_Ver.1.0.1.zip && \
+    sudo cp PX-S1UD_driver_Ver.1.0.1/x64/amd64/isdbt_rio.inp /lib/firmware/
 
 #*******************************************************************************************************************
 # recdvb
@@ -127,10 +133,10 @@ cd ~/chukasa_temporary && \
 # FFmpeg
 #*******************************************************************************************************************
 cd ~/chukasa_temporary && \
-    wget http://ffmpeg.org/releases/ffmpeg-snapshot.tar.bz2 && \
+    wget https://ffmpeg.org/releases/ffmpeg-snapshot.tar.bz2 && \
     tar jxvf ffmpeg-* && \
     cd ffmpeg && \
-    ./configure --disable-shared --enable-static && \
+    ./configure --disable-shared --enable-static --enable-omx-rpi --enable-mmal && \
     make -j$(nproc) && \
     sudo make install
 
@@ -140,8 +146,8 @@ cd ~/chukasa_temporary && \
 cd ~/chukasa_temporary && \
     sudo apt-get -y install libpcre3-dev libpcre++-dev libssl-dev && \
     wget http://nginx.org/download/nginx-1.13.8.tar.gz && \
-    tar zxvf nginx-*.tar.gz && \
-    cd nginx-* && \
+    tar zxvf nginx-1.13.8.tar.gz && \
+    cd nginx-1.13.8 && \
     ./configure --with-http_ssl_module --with-ipv6 --with-http_v2_module && \
     make -j$(nproc) && \
     sudo make install
@@ -149,74 +155,47 @@ cd ~/chukasa_temporary && \
 #*******************************************************************************************************************
 # MongoDB
 #*******************************************************************************************************************
-sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5
-echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.6 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.6.list
-sudo apt-get update
-sudo apt-get install -y mongodb-org
-sudo systemctl enable mongod
-sudo systemctl start mongod
+sudo apt-get -y install mongodb
 
 #*******************************************************************************************************************
 # PostgreSQL
 #*******************************************************************************************************************
-sudo sh -c "echo 'deb http://apt.postgresql.org/pub/repos/apt/ xenial-pgdg main' | sudo tee /etc/apt/sources.list.d/pgdg.list"
-wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
-sudo apt-get update
-sudo apt-get -y install postgresql-10
-sudo systemctl enable postgresql
-sudo systemctl start postgresql
+sudo apt-get -y install postgresql
 # TODO: change password
 sudo -u postgres bash -c "psql -c \"CREATE USER chukasa WITH PASSWORD 'chukasa';\""
 sudo -u postgres bash -c "psql -c \"CREATE DATABASE chukasa ENCODING 'UTF8' OWNER chukasa;\""
 
 #*******************************************************************************************************************
-# MySQL
+# 環境が整ったところでいったん reboot
 #*******************************************************************************************************************
-sudo apt-get -y install mysql-server
-mysql -u root -p
-# TODO: change password
-# mysql> CREATE DATABASE chukasa;
-# mysql> GRANT ALL ON chukasa.* to chukasa@localhost IDENTIFIED BY 'chukasa';
-# mysql> FLUSH PRIVILEGES;
-
-#*******************************************************************************************************************
-# OpenJDK 8
-#*******************************************************************************************************************
-sudo apt-get -y install openjdk-8-jdk
-sudo sh -c "echo 'export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64' >> /etc/profile.d/jdk.sh"
-sudo sh -c "echo 'export PATH=\$JAVA_HOME/bin:\$PATH' >> /etc/profile.d/jdk.sh"
-source /etc/profile.d/jdk.sh
+sudo reboot
 
 #*******************************************************************************************************************
 # chukasa
 #*******************************************************************************************************************
+sudo mkdir /opt/chukasa
+sudo chown $USER:$USER /opt/chukasa
+mkdir /opt/chukasa/video
+
 # clone project and edit configuration file
 cd ~/chukasa_temporary
 git clone https://github.com/hirooka/chukasa.git
 cd chukasa
 
 # build chukasa application
+edit "application.yml, tuner.json"
 ./gradlew build
+cp build/libs/chukasa-0.0.1-SNAPSHOT.jar /opt/chukasa/
 
-# deploy chukasa application
-sudo mkdir -p /opt/chukasa/video
-sudo cp build/libs/chukasa-0.0.1-SNAPSHOT.jar /opt/chukasa/
-sudo chown $USER:$USER -R /opt/chukasa
+#　chukasa service
+sudo cp ubuntu/systemd/chukasa.service /etc/systemd/system/
+sudo sh -c "sed -i -e 's/User=chukasa/User=$USER/g' /etc/systemd/system/chukasa.service"
+sudo systemctl enable chukasa
 
 #　nginx service
 sudo cp ubuntu/nginx/nginx.conf /usr/local/nginx/conf/nginx.conf
 sudo cp ubuntu/systemd/nginx.service /etc/systemd/system/
 sudo systemctl enable nginx
-sudo systemctl start nginx
-
-# MongoDB service
-#sudo cp ubuntu/systemd/mongod.service /lib/systemd/system/
-#sudo systemctl enable mongod
-
-# chukasa service
-sudo cp ubuntu/systemd/chukasa.service /etc/systemd/system/
-sudo sh -c "sed -i -e 's/User=chukasa/User=$USER/g' /etc/systemd/system/chukasa.service"
-sudo systemctl enable chukasa
 
 sudo reboot
 

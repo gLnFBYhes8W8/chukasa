@@ -1,4 +1,4 @@
-# procedure_ubuntu_16_04_3_nvenc.txt
+# procedure_ubuntu_16_04_3_x265_x264.txt
 
 # Ubuntu 16.04.3
 
@@ -16,28 +16,9 @@ DISTRIB_DESCRIPTION="Ubuntu 16.04.3 LTS"
 ########## Begin ##########
 
 #*******************************************************************************************************************
-# NVIDIA Driver
-#*******************************************************************************************************************
-sudo touch /etc/modprobe.d/blacklist-nouveau.conf
-sudo sh -c "echo 'blacklist nouveau' >> /etc/modprobe.d/blacklist-nouveau.conf"
-sudo sh -c "echo 'blacklist lbm-nouveau' >> /etc/modprobe.d/blacklist-nouveau.conf"
-sudo sh -c "echo 'options nouveau modeset=0' >> /etc/modprobe.d/blacklist-nouveau.conf"
-sudo sh -c "echo 'alias nouveau off' >> /etc/modprobe.d/blacklist-nouveau.conf"
-sudo sh -c "echo 'alias lbm-nouveau off' >> /etc/modprobe.d/blacklist-nouveau.conf"
-sudo touch /etc/modprobe.d/nouveau-kms.conf
-sudo sh -c "echo 'options nouveau modeset=0' >> /etc/modprobe.d/nouveau-kms.conf"
-sudo update-initramfs -u
-sudo systemctl set-default multi-user.target
-sudo reboot
-chmod 755 NVIDIA-Linux-x86_64-384.111.run
-sudo ./NVIDIA-Linux-x86_64-384.111.run
-sudo systemctl set-default graphical.target
-sudo reboot
-
-#*******************************************************************************************************************
 # Time
 #*******************************************************************************************************************
-sudo timedatectl set-ntp 1
+sudo timedatectl set-ntp true
 
 #*******************************************************************************************************************
 # Apt
@@ -51,17 +32,6 @@ sudo apt-get update
 # Package
 #*******************************************************************************************************************
 sudo apt-get -y install build-essential git wget libasound2-dev autoconf libtool pcsc-tools pkg-config libpcsclite-dev pcscd cmake yasm curl ssh
-
-# Input Japanase
-# https://hirooka.pro/?p=8373
-
-# Google Chrome
-sudo apt-get -y install libindicator7 libappindicator1
-sudo dpkg -i google-chrome-stable_current_amd64.deb
-
-# VirtualBox
-sudo apt-get -y install libqt5x11extras5 libsdl1.2debian
-sudo dpkg -i virtualbox-5.2_5.2.6-120293~Ubuntu~xenial_amd64.deb
 
 #*******************************************************************************************************************
 # Temprary Directory
@@ -124,13 +94,47 @@ cd ~/chukasa_temporary && \
     sudo make install
 
 #*******************************************************************************************************************
+# nasm
+#*******************************************************************************************************************
+cd ~/chukasa_temporary && \
+  wget http://www.nasm.us/pub/nasm/releasebuilds/2.13.01/nasm-2.13.01.tar.bz2 && \
+  tar xjvf nasm-2.13.01.tar.bz2 && \
+  cd nasm-2.13.01 && \
+  ./autogen.sh && \
+  ./configure && \
+  make && \
+  sudo make install
+
+#*******************************************************************************************************************
+# x264
+#*******************************************************************************************************************
+cd ~/chukasa_temporary && \
+    git clone --depth 1 http://git.videolan.org/git/x264 && \
+    cd x264 && \
+    ./configure --enable-static && \
+    make -j$(nproc) && \
+    sudo make install
+
+#*******************************************************************************************************************
+# x265
+#*******************************************************************************************************************
+sudo apt-get -y install cmake mercurial
+cd ~/chukasa_temporary && \
+    hg clone https://bitbucket.org/multicoreware/x265 && \
+    cd x265/build/linux && \
+    ./multilib.sh && \
+    cmake -G "Unix Makefiles" ../../source && \
+    make -j$(nproc) && \
+    sudo make install
+
+#*******************************************************************************************************************
 # FFmpeg
 #*******************************************************************************************************************
 cd ~/chukasa_temporary && \
     wget http://ffmpeg.org/releases/ffmpeg-snapshot.tar.bz2 && \
     tar jxvf ffmpeg-* && \
     cd ffmpeg && \
-    ./configure --disable-shared --enable-static && \
+    ./configure --disable-shared --enable-static --enable-libx265 --enable-libx264 --enable-gpl && \
     make -j$(nproc) && \
     sudo make install
 
@@ -139,7 +143,7 @@ cd ~/chukasa_temporary && \
 #*******************************************************************************************************************
 cd ~/chukasa_temporary && \
     sudo apt-get -y install libpcre3-dev libpcre++-dev libssl-dev && \
-    wget http://nginx.org/download/nginx-1.13.8.tar.gz && \
+    wget http://nginx.org/download/nginx-1.13.5.tar.gz && \
     tar zxvf nginx-*.tar.gz && \
     cd nginx-* && \
     ./configure --with-http_ssl_module --with-ipv6 --with-http_v2_module && \
@@ -149,12 +153,10 @@ cd ~/chukasa_temporary && \
 #*******************************************************************************************************************
 # MongoDB
 #*******************************************************************************************************************
-sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5
-echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.6 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.6.list
+sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6
+sudo sh -c "echo 'deb [ arch=amd64,arm64 ] http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.4 multiverse' | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list"
 sudo apt-get update
-sudo apt-get install -y mongodb-org
-sudo systemctl enable mongod
-sudo systemctl start mongod
+sudo apt-get -y install mongodb-org
 
 #*******************************************************************************************************************
 # PostgreSQL
@@ -162,7 +164,7 @@ sudo systemctl start mongod
 sudo sh -c "echo 'deb http://apt.postgresql.org/pub/repos/apt/ xenial-pgdg main' | sudo tee /etc/apt/sources.list.d/pgdg.list"
 wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
 sudo apt-get update
-sudo apt-get -y install postgresql-10
+sudo apt-get -y install postgresql-9.6
 sudo systemctl enable postgresql
 sudo systemctl start postgresql
 # TODO: change password
@@ -207,11 +209,10 @@ sudo chown $USER:$USER -R /opt/chukasa
 sudo cp ubuntu/nginx/nginx.conf /usr/local/nginx/conf/nginx.conf
 sudo cp ubuntu/systemd/nginx.service /etc/systemd/system/
 sudo systemctl enable nginx
-sudo systemctl start nginx
 
 # MongoDB service
-#sudo cp ubuntu/systemd/mongod.service /lib/systemd/system/
-#sudo systemctl enable mongod
+sudo cp ubuntu/systemd/mongod.service /lib/systemd/system/
+sudo systemctl enable mongod
 
 # chukasa service
 sudo cp ubuntu/systemd/chukasa.service /etc/systemd/system/

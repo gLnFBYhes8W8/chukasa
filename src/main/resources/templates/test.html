@@ -1,0 +1,43 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="head :: common_header(~{::title}, ~{::link})">
+    <title>chukasa</title>
+    <link rel="stylesheet" th:href="@{/css/player.css}"/>
+</head>
+<body>
+
+<div class="container">
+
+    <form id="form">
+
+    </form>
+
+    <button id="ajax_play_button_start" class="btn btn-primary"><span id="ajax_play_button_text">Start</span></button>
+
+    <hr/>
+    <div th:replace="footer :: footer"></div>
+
+</div>
+
+<div id="bootstrap4-js" th:replace="bootstrap4-js :: bootstrap4-js"></div>
+
+<script>
+    $(function(){
+        $('#ajax_play_button_start').on('click', function(){
+            var id = $(this).attr('id');
+            if(id == 'ajax_play_button_start'){
+                $(this).attr("id", "ajax_play_button_stop");
+                $(this).attr("class", "btn btn-warning");
+                $("#ajax_play_button_text").text("Stop");
+            }else if(id == 'ajax_play_button_stop'){
+                $(this).attr('id', "ajax_play_button_start");
+                $(this).attr("class", "btn btn-primary");
+                $("#ajax_play_button_text").text("Start");
+            }
+        });
+    });
+</script>
+
+</body>
+</html>
