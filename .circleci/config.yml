@@ -1,0 +1,16 @@
+version: 2
+jobs:
+  build:
+
+    working_directory: ~/chukasa
+
+    docker:
+      - image: circleci/openjdk:9-jdk-browsers
+
+    steps:
+
+      - checkout
+
+      - run: ./gradlew dependencies
+
+      - run: ./gradlew test
