@@ -9,11 +9,13 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import pro.hirooka.chukasa.api.v1.helper.ChukasaUtility;
 import pro.hirooka.chukasa.api.v1.helper.IChukasaBrowserDetector;
+import pro.hirooka.chukasa.domain.config.common.CommonConfiguration;
 import pro.hirooka.chukasa.domain.config.common.SystemConfiguration;
 import pro.hirooka.chukasa.domain.config.common.type.FfmpegVcodecType;
 import pro.hirooka.chukasa.domain.config.hls.HlsConfiguration;
 import pro.hirooka.chukasa.domain.model.app.Html5Player;
 import pro.hirooka.chukasa.domain.model.common.ChannelConfiguration;
+import pro.hirooka.chukasa.domain.model.common.VideoFile;
 import pro.hirooka.chukasa.domain.model.hls.ChukasaModel;
 import pro.hirooka.chukasa.domain.model.hls.ChukasaSettings;
 import pro.hirooka.chukasa.domain.model.recorder.Program;
@@ -26,6 +28,7 @@ import pro.hirooka.chukasa.domain.service.hls.ICoordinatorService;
 import pro.hirooka.chukasa.domain.service.recorder.IProgramTableService;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -36,6 +39,8 @@ import static pro.hirooka.chukasa.domain.config.ChukasaConstants.ALTERNATIVE_HLS
 @Controller
 public class ChukasaController {
 
+    @Autowired
+    CommonConfiguration commonConfiguration;
     @Autowired
     SystemConfiguration systemConfiguration;
     @Autowired
@@ -113,6 +118,32 @@ public class ChukasaController {
         assert programList != null;
         programList.sort(Comparator.comparingInt(Program::getRemoteControllerChannel));
         model.addAttribute("programList", programList);
+
+        // FILE
+        List<VideoFile> videoFileModelList = new ArrayList<>();
+        File fileDirectory = new File(systemConfiguration.getFilePath());
+        File[] fileArray = fileDirectory.listFiles();
+        if(fileArray != null) {
+            String[] videoFileExtensionArray = commonConfiguration.getVideoFileExtension();
+            List<String> videoFileExtensionList = Arrays.asList(videoFileExtensionArray);
+            for (File file : fileArray) {
+                for(String videoFileExtension : videoFileExtensionList){
+                    if(file.getName().endsWith("." + videoFileExtension)){
+                        VideoFile videoFileModel = new VideoFile();
+                        videoFileModel.setName(file.getName());
+                        videoFileModelList.add(videoFileModel);
+                    }
+                }
+            }
+        }else{
+            log.warn("'{}' does not exist.", fileDirectory);
+        }
+        videoFileModelList.sort(Comparator.comparing(VideoFile::getName));
+
+        model.addAttribute("isPTxByChannel", isPTxByChannel);
+        model.addAttribute("isPTxByProgram", isPTxByProgram);
+        model.addAttribute("isWebCamera", isWebCamera);
+        model.addAttribute("videoFileModelList", videoFileModelList);
 
         return "chukasa";
     }
