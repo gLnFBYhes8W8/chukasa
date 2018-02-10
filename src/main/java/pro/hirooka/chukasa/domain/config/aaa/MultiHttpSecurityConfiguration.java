@@ -9,6 +9,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import pro.hirooka.chukasa.domain.config.SpringConfiguration;
 import pro.hirooka.chukasa.domain.service.aaa.IChukasaUserDetailsService;
@@ -37,9 +39,10 @@ public class MultiHttpSecurityConfiguration {
                         || springConfiguration.getProfiles().contains("hsqldb")) {
                     authenticationManagerBuilder.userDetailsService(this.chukasaUserDetailsService);//.passwordEncoder(passwordEncoder()); // TODO:
                 } else {
-                    authenticationManagerBuilder.inMemoryAuthentication().withUser("admin").password("admin").roles("ADMIN");
-                    authenticationManagerBuilder.inMemoryAuthentication().withUser("user").password("user").roles("USER");
-                    authenticationManagerBuilder.inMemoryAuthentication().withUser("guest").password("guest").roles("GUEST");
+                    final PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+                    authenticationManagerBuilder.inMemoryAuthentication().withUser("admin").password(passwordEncoder.encode("admin")).roles("ADMIN");
+                    authenticationManagerBuilder.inMemoryAuthentication().withUser("user").password(passwordEncoder.encode("user")).roles("USER");
+                    authenticationManagerBuilder.inMemoryAuthentication().withUser("guest").password(passwordEncoder.encode("guest")).roles("GUEST");
                 }
             }
         }
@@ -90,9 +93,10 @@ public class MultiHttpSecurityConfiguration {
                         || springConfiguration.getProfiles().contains("hsqldb")) {
                     authenticationManagerBuilder.userDetailsService(this.chukasaUserDetailsService);//.passwordEncoder(passwordEncoder()); // TODO:
                 } else {
-                    authenticationManagerBuilder.inMemoryAuthentication().withUser("admin").password("admin").roles("ADMIN");
-                    authenticationManagerBuilder.inMemoryAuthentication().withUser("user").password("user").roles("USER");
-                    authenticationManagerBuilder.inMemoryAuthentication().withUser("guest").password("guest").roles("GUEST");
+                    final PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+                    authenticationManagerBuilder.inMemoryAuthentication().withUser("admin").password(passwordEncoder.encode("admin")).roles("ADMIN");
+                    authenticationManagerBuilder.inMemoryAuthentication().withUser("user").password(passwordEncoder.encode("user")).roles("USER");
+                    authenticationManagerBuilder.inMemoryAuthentication().withUser("guest").password(passwordEncoder.encode("guest")).roles("GUEST");
                 }
             }
         }
