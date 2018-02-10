@@ -26,30 +26,44 @@ public class MultiHttpSecurityConfiguration {
         SpringConfiguration springConfiguration;
         @Autowired
         IChukasaUserDetailsService chukasaUserDetailsService;
+        @Autowired
+        AaaConfiguration aaaConfiguration;
 
         @Override
         protected void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
-            if(springConfiguration.getProfiles().contains("postgresql")
-                    || springConfiguration.getProfiles().contains("mysql")
-                    || springConfiguration.getProfiles().contains("hsqldb")){
-                authenticationManagerBuilder.userDetailsService(this.chukasaUserDetailsService);//.passwordEncoder(passwordEncoder()); // TODO:
-            }else{
-                authenticationManagerBuilder.inMemoryAuthentication().withUser("admin").password("admin").roles("ADMIN");
-                authenticationManagerBuilder.inMemoryAuthentication().withUser("user").password("user").roles("USER");
-                authenticationManagerBuilder.inMemoryAuthentication().withUser("guest").password("guest").roles("GUEST");
+            if(aaaConfiguration.isEnabled()) {
+                if (springConfiguration.getProfiles().contains("postgresql")
+                        || springConfiguration.getProfiles().contains("mysql")
+                        || springConfiguration.getProfiles().contains("hsqldb")) {
+                    authenticationManagerBuilder.userDetailsService(this.chukasaUserDetailsService);//.passwordEncoder(passwordEncoder()); // TODO:
+                } else {
+                    authenticationManagerBuilder.inMemoryAuthentication().withUser("admin").password("admin").roles("ADMIN");
+                    authenticationManagerBuilder.inMemoryAuthentication().withUser("user").password("user").roles("USER");
+                    authenticationManagerBuilder.inMemoryAuthentication().withUser("guest").password("guest").roles("GUEST");
+                }
             }
         }
 
         protected void configure(HttpSecurity http) throws Exception {
-            http
-                    .antMatcher("/api/**")
-                    .authorizeRequests()
-                    .anyRequest()
-                    .authenticated()
-                    .and()
-                    .httpBasic()
-                    .and()
-                    .csrf().disable();
+            if(aaaConfiguration.isEnabled()) {
+                http
+                        .antMatcher("/api/**")
+                        .authorizeRequests()
+                        .anyRequest()
+                        .authenticated()
+                        .and()
+                        .httpBasic()
+                        .and()
+                        .csrf().disable();
+            }else{
+                http
+                        .antMatcher("/**")
+                        .authorizeRequests()
+                        .anyRequest()
+                        .permitAll()
+                        .and()
+                        .httpBasic().disable();
+            }
         }
 
         @Override
@@ -65,37 +79,51 @@ public class MultiHttpSecurityConfiguration {
         SpringConfiguration springConfiguration;
         @Autowired
         IChukasaUserDetailsService chukasaUserDetailsService;
+        @Autowired
+        AaaConfiguration aaaConfiguration;
 
         @Override
         protected void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
-            if(springConfiguration.getProfiles().contains("postgresql")
-                    || springConfiguration.getProfiles().contains("mysql")
-                    || springConfiguration.getProfiles().contains("hsqldb")){
-                authenticationManagerBuilder.userDetailsService(this.chukasaUserDetailsService);//.passwordEncoder(passwordEncoder()); // TODO:
-            }else{
-                authenticationManagerBuilder.inMemoryAuthentication().withUser("admin").password("admin").roles("ADMIN");
-                authenticationManagerBuilder.inMemoryAuthentication().withUser("user").password("user").roles("USER");
-                authenticationManagerBuilder.inMemoryAuthentication().withUser("guest").password("guest").roles("GUEST");
+            if(aaaConfiguration.isEnabled()) {
+                if (springConfiguration.getProfiles().contains("postgresql")
+                        || springConfiguration.getProfiles().contains("mysql")
+                        || springConfiguration.getProfiles().contains("hsqldb")) {
+                    authenticationManagerBuilder.userDetailsService(this.chukasaUserDetailsService);//.passwordEncoder(passwordEncoder()); // TODO:
+                } else {
+                    authenticationManagerBuilder.inMemoryAuthentication().withUser("admin").password("admin").roles("ADMIN");
+                    authenticationManagerBuilder.inMemoryAuthentication().withUser("user").password("user").roles("USER");
+                    authenticationManagerBuilder.inMemoryAuthentication().withUser("guest").password("guest").roles("GUEST");
+                }
             }
         }
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
-            http
-                    .authorizeRequests()
-                    .anyRequest().authenticated()
-                    .and()
-                    .formLogin()
-                    .loginPage("/login")
-                    .defaultSuccessUrl("/chukasa")
-                    .permitAll()
-                    .and()
-                    .logout()
-                    .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                    .logoutSuccessUrl("/login")
-                    .deleteCookies("JSESSIONID")
-                    .invalidateHttpSession(true)
-                    .permitAll();
+            if(aaaConfiguration.isEnabled()) {
+                http
+                        .authorizeRequests()
+                        .anyRequest().authenticated()
+                        .and()
+                        .formLogin()
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/chukasa")
+                        .permitAll()
+                        .and()
+                        .logout()
+                        .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                        .logoutSuccessUrl("/login")
+                        .deleteCookies("JSESSIONID")
+                        .invalidateHttpSession(true)
+                        .permitAll();
+            }else{
+                http
+                        .antMatcher("/**")
+                        .authorizeRequests()
+                        .anyRequest()
+                        .permitAll()
+                        .and()
+                        .httpBasic().disable();
+            }
         }
 
         @Override
