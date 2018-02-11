@@ -1,3 +1,6 @@
+aaa:
+  enabled: false
+
 system:
   ffmpeg-path: /usr/local/bin/ffmpeg
   recxxx-path: /usr/local/bin/recdvb
