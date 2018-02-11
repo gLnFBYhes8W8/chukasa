@@ -1,0 +1,147 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head></head>
+<body>
+
+<span th:fragment="tab-file">
+
+    <!-- FILE -->
+    <div role="tabpanel" th:if="${isPTxByChannel == false and isPTxByProgram == false}" class="tab-pane fade show active" id="tabFile" aria-labelledby="tabFile-tab">
+
+        <form th:action="@{/video}" th:object="${chukasaSettings}" method="post">
+
+
+
+            <input type = "hidden" id = "streamingTypeFile" name = "streamingType" value = "FILE"/>
+
+            <div class="form-group">
+                <label for="fileNameFile">File Name</label>
+                <select class="form-control" id="fileNameFile" name="fileName">
+                    <option th:value="${videoFileModel.name}" th:text="${videoFileModel.name}" th:each="videoFileModel : ${videoFileModelList}">...</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="transcodingSettingsFile">Encoding Settings</label>
+                <select class="form-control" id="transcodingSettingsFile" name="transcodingSettings" onchange="onChangeTranscodingSettings(this);">
+                    <option value="CELLULAR_LOW" selected="selected">CELLULAR_LOW</option>
+                    <option value="CELLULAR_MID">CELLULAR_MID</option>
+                    <option value="CELLULAR_HIGH">CELLULAR_HIGH</option>
+                    <option value="WIFI_LOW">WIFI_LOW</option>
+                    <option value="WIFI_MID">WIFI_MID</option>
+                    <option value="WIFI_HIGH">WIFI_HIGH</option>
+                    <option value="HD_LOW">HD_LOW</option>
+                    <option value="HD_HIGH">HD_HIGH</option>
+                    <option value="FULL_HD_LOW">FULL_HD_LOW</option>
+                    <option value="FULL_HD_HIGH">FULL_HD_HIGH</option>
+                    <option value="FULL_HD_EXTREME">FULL_HD_EXTREME</option>
+                </select>
+            </div>
+
+            <ul>
+                <li>Video Resolution : <span id="videoResolutionTextFile">400 x 224</span></li>
+                <li>Video Bitrate : <span id="totalBitrateTextFile">0.1</span> [Mbps]</li>
+                <li>Video Bitrate : <span id="videoBitrateTextFile">0.1</span> [Mbps]</li>
+                <li>Audio Bitrate : <span id="audioBitrateTextFile">32</span> [kbps]</li>
+            </ul>
+
+            <div class="form-group">
+                <label for="encryptionFile">Encryption</label>
+                <select class="form-control" id="encryptionFile" name="canEncrypt">
+                    <option value="true" selected="selected">AES-128/CBC/PKCS7Padding</option>
+                    <option value="false">None</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="playlistTypeFile">Playlist Type</label>
+                <select class="form-control" id="playlistTypeFile" name="playlistType">
+                    <option value="LIVE" selected="selected">Live</option>
+                    <option value="EVENT">Event</option>
+                </select>
+            </div>
+
+            <span th:if="${isSupported == true}">
+                <input class="btn btn-primary" type="submit" value="Start HTTP Live Streaming (HLS)"/>
+            </span>
+            <span th:if="${isSupported == false}">
+                <input class="btn btn-primary disabled" type="button" value="Start HTTP Live Streaming (HLS)"/>
+                <p>This browser is not supported.</p>
+            </span>
+
+        </form>
+
+    </div>
+
+    <div role="tabpanel" th:if="${isPTxByChannel == true or isPTxByProgram == true}" class="tab-pane fade" id="tabFile" aria-labelledby="tabFile-tab">
+
+        <form th:action="@{/video}" th:object="${chukasaSettings}" method="post">
+
+
+
+            <input type = "hidden" id = "streamingTypeFile" name = "streamingType" value = "FILE"/>
+
+            <div class="form-group">
+                <label for="fileNameFile">File Name</label>
+                <select class="form-control" id="fileNameFile" name="fileName">
+                    <option th:value="${videoFileModel.name}" th:text="${videoFileModel.name}" th:each="videoFileModel : ${videoFileModelList}">...</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="transcodingSettingsFile">Encoding Settings</label>
+                <select class="form-control" id="transcodingSettingsFile" name="transcodingSettings" onchange="onChangeTranscodingSettings(this);">
+                    <option value="CELLULAR_LOW" selected="selected">CELLULAR_LOW</option>
+                    <option value="CELLULAR_MID">CELLULAR_MID</option>
+                    <option value="CELLULAR_HIGH">CELLULAR_HIGH</option>
+                    <option value="WIFI_LOW">WIFI_LOW</option>
+                    <option value="WIFI_MID">WIFI_MID</option>
+                    <option value="WIFI_HIGH">WIFI_HIGH</option>
+                    <option value="HD_LOW">HD_LOW</option>
+                    <option value="HD_HIGH">HD_HIGH</option>
+                    <option value="FULL_HD_LOW">FULL_HD_LOW</option>
+                    <option value="FULL_HD_HIGH">FULL_HD_HIGH</option>
+                    <option value="FULL_HD_EXTREME">FULL_HD_EXTREME</option>
+                </select>
+            </div>
+
+            <ul>
+                <li>Video Resolution : <span id="videoResolutionTextFile">400 x 224</span></li>
+                <li>Video Bitrate : <span id="totalBitrateTextFile">0.1</span> [Mbps]</li>
+                <li>Video Bitrate : <span id="videoBitrateTextFile">0.1</span> [Mbps]</li>
+                <li>Audio Bitrate : <span id="audioBitrateTextFile">32</span> [kbps]</li>
+            </ul>
+
+            <div class="form-group">
+                <label for="encryptionFile">Encryption</label>
+                <select class="form-control" id="encryptionFile" name="canEncrypt">
+                    <option value="true" selected="selected">AES-128/CBC/PKCS7Padding</option>
+                    <option value="false">None</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="playlistTypeFile">Playlist Type</label>
+                <select class="form-control" id="playlistTypeFile" name="playlistType">
+                    <option value="LIVE">Live</option>
+                    <option value="EVENT" selected="selected">Event</option>
+                </select>
+            </div>
+
+            <span th:if="${isSupported == true}">
+                <input class="btn btn-primary" type="submit" value="Start HTTP Live Streaming (HLS)"/>
+            </span>
+            <span th:if="${isSupported == false}">
+                <input class="btn btn-primary disabled" type="button" value="Start HTTP Live Streaming (HLS)"/>
+                <p>This browser is not supported.</p>
+            </span>
+
+        </form>
+
+    </div>
+
+</span>
+
+</body>
+</html>

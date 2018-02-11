@@ -1,0 +1,60 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head></head>
+<body>
+
+<span th:fragment="tab-now">
+
+    <div role="tabpanel" th:if="${isPTxByProgram == true}" class="tab-pane fade show active" id="tabNow" aria-labelledby="tabNow-tab">
+
+        <form th:action="@{/video}" th:object="${chukasaSettings}" method="post">
+
+
+
+            <input type = "hidden" id = "streamingType" name = "streamingType" value = "TUNER"/>
+
+            <div class="form-group">
+                <select class="form-control" id="ch" name="physicalLogicalChannel">
+                    <option th:value="${program.physicalLogicalChannel}" th:text="${program.channelName + ' (' + program.remoteControllerChannel + '): ' + program.title}" th:each="program : ${programList}">...</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <select class="form-control" id="transcodingSettings" name="transcodingSettings">
+                    <option value="CELLULAR_LOW" selected="selected">CELLULAR_LOW</option>
+                    <option value="CELLULAR_MID">CELLULAR_MID</option>
+                    <option value="CELLULAR_HIGH">CELLULAR_HIGH</option>
+                    <option value="WIFI_LOW">WIFI_LOW</option>
+                    <option value="WIFI_MID">WIFI_MID</option>
+                    <option value="WIFI_HIGH">WIFI_HIGH</option>
+                    <option value="HD_LOW">HD_LOW</option>
+                    <option value="HD_HIGH">HD_HIGH</option>
+                    <option value="FULL_HD_LOW">FULL_HD_LOW</option>
+                    <option value="FULL_HD_HIGH">FULL_HD_HIGH</option>
+                    <option value="FULL_HD_EXTREME">FULL_HD_EXTREME</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <select class="form-control" id="encryption" name="canEncrypt">
+                    <option value="true" selected="selected">AES-128/CBC/PKCS7Padding</option>
+                    <option value="false">None</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <select class="form-control" id="playlistType" name="playlistType">
+                    <option value="LIVE" selected="selected">Live</option>
+                    <option value="EVENT">Event</option>
+                </select>
+            </div>
+
+        </form>
+
+    </div>
+
+</span>
+
+</body>
+</html>
