@@ -1,10 +1,24 @@
 # procedure_centos_7_3_qsv.txt
 
-
 # CentOS 7.3 (1611), CentOS-7-x86_64-DVD-1611.iso
 # Quick Sync Video (QSV), Intel Media Server Studio 2017 R3
 
+# uname -a
 # Linux localhost.localdomain 3.10.0-514.el7.x86_64 #1 SMP Tue Nov 22 16:42:41 UTC 2016 x86_64 x86_64 x86_64 GNU/Linux
+
+# df -h
+Filesystem           Size  Used Avail Use% Mounted on
+/dev/mapper/cl-root   50G  3.5G   46G   8% /
+devtmpfs             7.7G     0  7.7G   0% /dev
+tmpfs                7.8G  100K  7.8G   1% /dev/shm
+tmpfs                7.8G  9.2M  7.7G   1% /run
+tmpfs                7.8G     0  7.8G   0% /sys/fs/cgroup
+/dev/sda2           1014M  166M  849M  17% /boot
+/dev/sda1            200M  9.5M  191M   5% /boot/efi
+tmpfs                1.6G   28K  1.6G   1% /run/user/1000
+
+# cat /etc/centos-release
+# CentOS Linux release 7.3.1611 (Core)
 
 #*******************************************************************************************************************
 # Time
@@ -94,9 +108,9 @@ cd ~/chukasa_temporary && \
 # FFmpeg
 #*******************************************************************************************************************
 cd ~/chukasa_temporary && \
-    wget http://ffmpeg.org/releases/ffmpeg-snapshot.tar.bz2 && \
-    tar jxvf ffmpeg-snapshot.tar.bz2 && \
-    cd ffmpeg && \
+    wget http://ffmpeg.org/releases/ffmpeg-3.4.2.tar.bz2 && \
+    tar jxvf ffmpeg-3.4.2.tar.bz2 && \
+    cd ffmpeg-3.4.2 && \
     ./configure --enable-libmfx && \
     make -j$(nproc) && \
     sudo make install
@@ -143,31 +157,33 @@ cd ~/chukasa_temporary && \
     sudo make install
 
 #*******************************************************************************************************************
-# MongoDB 3.4
+# MongoDB
 #*******************************************************************************************************************
 cd ~/chukasa_temporary
 sudo semanage port -a -t mongod_port_t -p tcp 27017
-sudo touch /etc/yum.repos.d/mongodb-org-3.4.repo
-sudo sh -c "echo '[mongodb-org-3.4]' >> /etc/yum.repos.d/mongodb-org-3.4.repo"
-sudo sh -c "echo 'name=MongoDB Repository' >> /etc/yum.repos.d/mongodb-org-3.4.repo"
-sudo sh -c "echo 'baseurl=https://repo.mongodb.org/yum/redhat/\$releasever/mongodb-org/3.4/x86_64/' >> /etc/yum.repos.d/mongodb-org-3.4.repo"
-sudo sh -c "echo 'gpgcheck=1' >> /etc/yum.repos.d/mongodb-org-3.4.repo"
-sudo sh -c "echo 'enabled=1' >> /etc/yum.repos.d/mongodb-org-3.4.repo"
-sudo sh -c "echo 'gpgkey=https://www.mongodb.org/static/pgp/server-3.4.asc' >> /etc/yum.repos.d/mongodb-org-3.4.repo"
+sudo touch /etc/yum.repos.d/mongodb-org-3.6.repo
+sudo sh -c "echo '[mongodb-org-3.6]' >> /etc/yum.repos.d/mongodb-org-3.6.repo"
+sudo sh -c "echo 'name=MongoDB Repository' >> /etc/yum.repos.d/mongodb-org-3.6.repo"
+sudo sh -c "echo 'baseurl=https://repo.mongodb.org/yum/redhat/\$releasever/mongodb-org/3.6/x86_64/' >> /etc/yum.repos.d/mongodb-org-3.6.repo"
+sudo sh -c "echo 'gpgcheck=1' >> /etc/yum.repos.d/mongodb-org-3.6.repo"
+sudo sh -c "echo 'enabled=1' >> /etc/yum.repos.d/mongodb-org-3.6.repo"
+sudo sh -c "echo 'gpgkey=https://www.mongodb.org/static/pgp/server-3.6.asc' >> /etc/yum.repos.d/mongodb-org-3.6.repo"
 sudo yum -y install mongodb-org
+sudo systemctl enable mongod
+sudo systemctl start mongod
 
 #*******************************************************************************************************************
 # PostgreSQL
 #*******************************************************************************************************************
 cd ~/chukasa_temporary
-wget https://download.postgresql.org/pub/repos/yum/9.6/redhat/rhel-7-x86_64/pgdg-redhat96-9.6-3.noarch.rpm
-sudo yum install -y pgdg-redhat96-9.6-3.noarch.rpm
-sudo yum install -y postgresql96-server
-sudo /usr/pgsql-9.6/bin/postgresql96-setup initdb
+wget https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-7.3-x86_64/pgdg-centos10-10-2.noarch.rpm
+sudo yum install -y pgdg-centos10-10-2.noarch.rpm
+sudo yum install -y postgresql10-server
+sudo /usr/pgsql-10/bin/postgresql-10-setup initdb
 # TODO:
-# edit /var/lib/pgsql/9.6/data/pg_hba.conf ident -> trust
-sudo systemctl enable postgresql-9.6
-sudo systemctl start postgresql-9.6
+# edit /var/lib/pgsql/10/data/pg_hba.conf ident -> trust
+sudo systemctl enable postgresql-10
+sudo systemctl start postgresql-10
 # TODO: change password
 sudo -u postgres bash -c "psql -c \"CREATE USER chukasa WITH PASSWORD 'chukasa';\""
 sudo -u postgres bash -c "psql -c \"CREATE DATABASE chukasa ENCODING 'UTF8' OWNER chukasa;\""
@@ -177,19 +193,20 @@ sudo -u postgres bash -c "psql -c \"CREATE DATABASE chukasa ENCODING 'UTF8' OWNE
 #*******************************************************************************************************************
 cd ~/chukasa_temporary && \
     sudo yum -y install pcre-devel openssl-devel && \
-    wget http://nginx.org/download/nginx-1.13.4.tar.gz && \
-    tar zxvf nginx-*.tar.gz && \
+    wget http://nginx.org/download/nginx-1.13.8.tar.gz && \
+    tar zxvf nginx-1.13.8.tar.gz && \
     cd nginx-* && \
     ./configure --with-http_ssl_module --with-ipv6 --with-http_v2_module && \
     make -j$(nproc) && \
     sudo make install
 
 #*******************************************************************************************************************
-# Java 8
+# Java
 #*******************************************************************************************************************
-sudo yum -y update
-sudo yum -y install java-1.8.0-openjdk java-1.8.0-openjdk-devel
-sudo sh -c "echo 'export JAVA_HOME=/usr/lib/jvm/jre-openjdk' >> /etc/profile.d/jdk.sh"
+cd ~/chukasa_temporary
+wget --no-cookies --no-check-certificate --header "Cookie: oraclelicense=accept-securebackup-cookie" "http://download.oracle.com/otn-pub/java/jdk/9.0.4+11/c2514751926b4512b076cc82f959763f/jdk-9.0.4_linux-x64_bin.rpm"
+sudo yum -y install jdk-9.0.4_linux-x64_bin.rpm
+sudo sh -c "echo 'export JAVA_HOME=/usr/java/default' >> /etc/profile.d/jdk.sh"
 sudo sh -c "echo 'export PATH=\$JAVA_HOME/bin:\$PATH' >> /etc/profile.d/jdk.sh"
 source /etc/profile.d/jdk.sh
 
