@@ -243,8 +243,7 @@ public class FfmpegAndRecxxxService implements IFfmpegAndRecxxxService {
                     "-f", "hls",
                     "-hls_segment_type", "fmp4",
                     "-hls_time", Integer.toString(chukasaModel.getHlsConfiguration().getDuration()),
-                    "-hls_fmp4_init_filename", fmp4InitFileOutputPath,
-                    //"-hls_segment_filename", ffmpegOutputPath,
+                    "-hls_fmp4_init_filename", FMP4_INIT_FILE_NAME + FMP4_INIT_FILE_EXTENSION,
                     ffmpegM3U8OutputPath
             };
         } else {
