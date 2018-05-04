@@ -1,0 +1,266 @@
+# procedure_ubuntu_18_04_nvenc.txt
+
+# Ubuntu 18.04, ubuntu-18.04-desktop-amd64
+
+# uname -a
+# Linux ubuntu 4.15.0-20-generic #21-Ubuntu SMP Tue Apr 24 06:16:15 UTC 2018 x86_64 x86_64 x86_64 GNU/Linux
+
+/*******************************************************
+# cat /etc/lsb-release
+DISTRIB_ID=Ubuntu
+DISTRIB_RELEASE=18.04
+DISTRIB_CODENAME=bionic
+DISTRIB_DESCRIPTION="Ubuntu 18.04 LTS"
+/*******************************************************
+
+/*******************************************************
+# df -h
+Filesystem      Size  Used Avail Use% Mounted on
+udev            7.8G     0  7.8G   0% /dev
+tmpfs           1.6G  1.9M  1.6G   1% /run
+/dev/sda2       110G  5.9G   98G   6% /
+tmpfs           7.8G     0  7.8G   0% /dev/shm
+tmpfs           5.0M  4.0K  5.0M   1% /run/lock
+tmpfs           7.8G     0  7.8G   0% /sys/fs/cgroup
+/dev/loop0      3.4M  3.4M     0 100% /snap/gnome-system-monitor/36
+/dev/loop1       87M   87M     0 100% /snap/core/4486
+/dev/loop2       21M   21M     0 100% /snap/gnome-logs/25
+/dev/loop3       13M   13M     0 100% /snap/gnome-characters/69
+/dev/loop4      141M  141M     0 100% /snap/gnome-3-26-1604/59
+/dev/loop5      1.7M  1.7M     0 100% /snap/gnome-calculator/154
+/dev/sda1       511M  4.7M  507M   1% /boot/efi
+tmpfs           1.6G   16K  1.6G   1% /run/user/120
+tmpfs           1.6G   32K  1.6G   1% /run/user/1000
+/*******************************************************
+
+########## Begin ##########
+
+#*******************************************************************************************************************
+# Time
+#*******************************************************************************************************************
+sudo timedatectl set-ntp 1
+
+#*******************************************************************************************************************
+# Apt
+#*******************************************************************************************************************
+sudo apt-get update
+#sudo apt-get -y upgrade
+#sudo apt-get -y dist-upgrade
+#sudo reboot
+
+#*******************************************************************************************************************
+# Package
+#*******************************************************************************************************************
+sudo apt-get -y install build-essential git wget libasound2-dev autoconf libtool pcsc-tools pkg-config libpcsclite-dev pcscd cmake yasm curl ssh
+
+#*******************************************************************************************************************
+# NVIDIA Driver
+#*******************************************************************************************************************
+sudo touch /etc/modprobe.d/blacklist-nouveau.conf
+sudo sh -c "echo 'blacklist nouveau' >> /etc/modprobe.d/blacklist-nouveau.conf"
+sudo sh -c "echo 'blacklist lbm-nouveau' >> /etc/modprobe.d/blacklist-nouveau.conf"
+sudo sh -c "echo 'options nouveau modeset=0' >> /etc/modprobe.d/blacklist-nouveau.conf"
+sudo sh -c "echo 'alias nouveau off' >> /etc/modprobe.d/blacklist-nouveau.conf"
+sudo sh -c "echo 'alias lbm-nouveau off' >> /etc/modprobe.d/blacklist-nouveau.conf"
+sudo touch /etc/modprobe.d/nouveau-kms.conf
+sudo sh -c "echo 'options nouveau modeset=0' >> /etc/modprobe.d/nouveau-kms.conf"
+sudo update-initramfs -u
+sudo systemctl set-default multi-user.target
+sudo reboot
+chmod 755 NVIDIA-Linux-x86_64-390.48.run
+sudo ./NVIDIA-Linux-x86_64-390.48.run
+sudo systemctl set-default graphical.target
+sudo reboot
+
+#*******************************************************************************************************************
+# Tools
+#*******************************************************************************************************************
+# Input Japanase
+# https://hirooka.pro/?p=9679
+
+# Google Chrome
+sudo dpkg -i google-chrome-stable_current_amd64.deb
+
+# VLC
+sudo apt-get -y install vlc
+
+# VirtualBox
+sudo apt-get -y install libqt5printsupport5 libqt5opengl5
+wget https://download.virtualbox.org/virtualbox/5.2.10/virtualbox-5.2_5.2.10-122088~Ubuntu~bionic_amd64.deb
+sudo dpkg -i virtualbox-5.2_5.2.10-122088~Ubuntu~bionic_amd64.deb
+
+# SDKMAN!, IntelliJ IDEA
+
+#*******************************************************************************************************************
+# Temprary Directory
+#*******************************************************************************************************************
+mkdir ~/chukasa_temporary
+
+#*******************************************************************************************************************
+# Video / Audio
+#*******************************************************************************************************************
+sudo gpasswd -a $USER video
+sudo gpasswd -a $USER audio
+
+#*******************************************************************************************************************
+# Webcam (Audio)
+#*******************************************************************************************************************
+# 環境により異なる．
+# cat /proc/asound/modules にて事前に確認する．
+
+# ASUS Z170I PRO GAMING の場合
+# cat /proc/asound/modules
+#  0 snd_hda_intel
+#  1 snd_usb_audio
+sudo touch /etc/modprobe.d/alsa-base.conf
+sudo sh -c "echo 'options snd slots=snd_usb_audio,snd_hda_intel' >> /etc/modprobe.d/alsa-base.conf"
+sudo sh -c "echo 'options snd_usb_audio index=0' >> /etc/modprobe.d/alsa-base.conf"
+sudo sh -c "echo 'options snd_hda_intel index=1' >> /etc/modprobe.d/alsa-base.conf"
+
+# ASUS B85M-E の場合
+sudo touch /etc/modprobe.d/alsa-base.conf
+sudo sh -c "echo 'options snd slots=snd_usb_audio,snd_hda_intel,snd_hda_intel' >> /etc/modprobe.d/alsa-base.conf"
+sudo sh -c "echo 'options snd_usb_audio index=0' >> /etc/modprobe.d/alsa-base.conf"
+sudo sh -c "echo 'options snd_hda_intel index=1' >> /etc/modprobe.d/alsa-base.conf"
+sudo sh -c "echo 'options snd_hda_intel index=2' >> /etc/modprobe.d/alsa-base.conf"
+
+#*******************************************************************************************************************
+# DVB Tuber
+#*******************************************************************************************************************
+// TODO
+
+#*******************************************************************************************************************
+# recdvb
+#*******************************************************************************************************************
+cd ~/chukasa_temporary && \
+    git clone https://github.com/dogeel/recdvb && \
+    cd recdvb && \
+    chmod a+x autogen.sh && \
+    ./autogen.sh && \
+    ./configure && \
+    make -j$(nproc) && \
+    sudo make install
+
+#*******************************************************************************************************************
+# epgdump
+#*******************************************************************************************************************
+cd ~/chukasa_temporary && \
+    git clone https://github.com/Piro77/epgdump.git && \
+    cd epgdump && \
+    ./autogen.sh && \
+    make -j$(nproc) && \
+    sudo make install
+
+#*******************************************************************************************************************
+# FFmpeg
+#*******************************************************************************************************************
+cd ~/chukasa_temporary && \
+    git clone https://git.videolan.org/git/ffmpeg/nv-codec-headers && \
+    cd nv-codec-headers && \
+    make && \
+    sudo make install
+
+cd ~/chukasa_temporary && \
+    wget http://ffmpeg.org/releases/ffmpeg-4.0.tar.bz2 && \
+    tar jxvf ffmpeg-4.0.tar.bz2 && \
+    cd ffmpeg-4.0 && \
+    ./configure --disable-shared --enable-static && \
+    make -j$(nproc) && \
+    sudo make install
+
+#*******************************************************************************************************************
+# nginx
+#*******************************************************************************************************************
+cd ~/chukasa_temporary && \
+    sudo apt-get -y install libpcre3-dev libpcre++-dev libssl-dev zlibc zlib1g zlib1g-dev && \
+    wget http://nginx.org/download/nginx-1.14.0.tar.gz && \
+    tar zxvf nginx-1.14.0.tar.gz && \
+    cd nginx-1.14.0 && \
+    ./configure --with-http_ssl_module --with-ipv6 --with-http_v2_module && \
+    make -j$(nproc) && \
+    sudo make install
+
+#*******************************************************************************************************************
+# MongoDB
+#*******************************************************************************************************************
+// TODO
+sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5
+echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.6 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.6.list
+sudo apt-get update
+sudo apt-get install -y mongodb-org
+sudo systemctl enable mongod
+sudo systemctl start mongod
+
+#*******************************************************************************************************************
+# PostgreSQL
+#*******************************************************************************************************************
+sudo apt-get -y install postgresql-10
+sudo systemctl enable postgresql
+sudo systemctl start postgresql
+# TODO: change password
+sudo -u postgres bash -c "psql -c \"CREATE USER chukasa WITH PASSWORD 'chukasa';\""
+sudo -u postgres bash -c "psql -c \"CREATE DATABASE chukasa ENCODING 'UTF8' OWNER chukasa;\""
+
+#*******************************************************************************************************************
+# MySQL
+#*******************************************************************************************************************
+sudo apt-get -y install mysql-server
+sudo mysql -u root -p
+# TODO: change password
+# mysql> CREATE DATABASE chukasa;
+# mysql> GRANT ALL ON chukasa.* to chukasa@localhost IDENTIFIED BY 'chukasa';
+# mysql> FLUSH PRIVILEGES;
+# mysql> exit;
+
+#*******************************************************************************************************************
+# Java
+#*******************************************************************************************************************
+#sudo add-apt-repository ppa:linuxuprising/java
+#sudo apt-get update
+#sudo apt-get install oracle-java10-installer
+
+sudo apt-get -y install software-properties-common
+sudo sh -c "echo 'oracle-java8-installer shared/accepted-oracle-license-v1-1 select true' | debconf-set-selections"
+sudo add-apt-repository -y ppa:webupd8team/java
+sudo apt-get update
+sudo apt-get -y install oracle-java8-installer
+
+#sudo update-alternatives --config java
+#sudo update-alternatives --config javac
+
+#*******************************************************************************************************************
+# chukasa
+#*******************************************************************************************************************
+# clone project and edit configuration file
+cd ~/chukasa_temporary
+git clone https://github.com/hirooka/chukasa.git
+cd chukasa
+
+# build chukasa application
+./gradlew build
+
+# deploy chukasa application
+sudo mkdir -p /opt/chukasa/video
+sudo cp build/libs/chukasa-0.0.1-SNAPSHOT.jar /opt/chukasa/
+sudo chown $USER:$USER -R /opt/chukasa
+
+#　nginx service
+sudo cp ubuntu/nginx/nginx.conf /usr/local/nginx/conf/nginx.conf
+sudo cp ubuntu/systemd/nginx.service /etc/systemd/system/
+sudo systemctl enable nginx
+sudo systemctl start nginx
+
+# MongoDB service
+#sudo cp ubuntu/systemd/mongod.service /lib/systemd/system/
+#sudo systemctl enable mongod
+
+# chukasa service
+sudo cp ubuntu/systemd/chukasa.service /etc/systemd/system/
+sudo sh -c "sed -i -e 's/User=chukasa/User=$USER/g' /etc/systemd/system/chukasa.service"
+sudo systemctl enable chukasa
+
+sudo reboot
+
+#*******************************************************************************************************************
+# End Of File
+#*******************************************************************************************************************
