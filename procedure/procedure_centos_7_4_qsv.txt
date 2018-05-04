@@ -1,0 +1,271 @@
+# procedure_centos_7_4_qsv.txt
+
+# CentOS 7.4 (1708), CentOS-7-x86_64-DVD-1708.iso
+# Quick Sync Video (QSV), Intel Media Server Studio 2018 R1
+
+# uname -a
+# Linux localhost.localdomain 3.10.0-693.el7.x86_64 #1 SMP Tue Aug 22 21:09:27 UTC 2017 x86_64 x86_64 x86_64 GNU/Linux
+
+# df -h
+Filesystem               Size  Used Avail Use% Mounted on
+/dev/mapper/centos-root   33G  3.8G   30G  12% /
+devtmpfs                 7.7G     0  7.7G   0% /dev
+tmpfs                    7.8G   32M  7.7G   1% /dev/shm
+tmpfs                    7.8G  9.3M  7.7G   1% /run
+tmpfs                    7.8G     0  7.8G   0% /sys/fs/cgroup
+/dev/sda2               1014M  171M  844M  17% /boot
+/dev/sda1                200M  9.8M  191M   5% /boot/efi
+/dev/mapper/centos-home   17G   70M   17G   1% /home
+tmpfs                    1.6G   32K  1.6G   1% /run/user/1000
+
+# cat /etc/centos-release
+# CentOS Linux release 7.4.1708 (Core)
+
+#*******************************************************************************************************************
+# Time
+#*******************************************************************************************************************
+sudo timedatectl set-timezone Asia/Tokyo
+sudo timedatectl set-ntp 1
+
+#*******************************************************************************************************************
+# Temporary directory
+#*******************************************************************************************************************
+mkdir ~/chukasa_temporary
+
+#*******************************************************************************************************************
+# Web Camera (Audio)
+#*******************************************************************************************************************
+# 環境により異なる．
+# cat /proc/asound/modules にて事前に確認する．
+
+# ASUS Z170I PRO GAMING の場合
+# cat /proc/asound/modules
+#  0 snd_hda_intel
+#  1 snd_usb_audio
+sudo yum -y install alsa-lib-devel alsa-lib alsa-utils alsa-tools-firmware
+sudo touch /etc/modprobe.d/alsa-base.conf
+sudo sh -c "echo 'options snd slots=snd_usb_audio,snd_hda_intel' >> /etc/modprobe.d/alsa-base.conf"
+sudo sh -c "echo 'options snd_usb_audio index=0' >> /etc/modprobe.d/alsa-base.conf"
+sudo sh -c "echo 'options snd_hda_intel index=1' >> /etc/modprobe.d/alsa-base.conf"
+sudo gpasswd -a $USER audio
+
+# ASUS B85M-E の場合
+#sudo sh -c "echo 'options snd slots=snd_usb_audio,snd_hda_intel,snd_hda_intel' >> /etc/modprobe.d/alsa-base.conf"
+#sudo sh -c "echo 'options snd_usb_audio index=0' >> /etc/modprobe.d/alsa-base.conf"
+#sudo sh -c "echo 'options snd_hda_intel index=1' >> /etc/modprobe.d/alsa-base.conf"
+#sudo sh -c "echo 'options snd_hda_intel index=2' >> /etc/modprobe.d/alsa-base.conf"
+
+#*******************************************************************************************************************
+# Intel Media Server Studio 2018 R1 for Linux - Community Edition
+#*******************************************************************************************************************
+# Download MediaServerStudioEssentials2018R1 via Intel Developer Zone (https://software.intel.com/en-us/intel-media-server-studio)
+sudo usermod -a -G video $USER
+tar zxvf MediaServerStudioEssentials2018R1.tar.gz
+cd MediaServerStudioEssentials2018R1
+tar zxvf SDK2018Production16.8.tar.gz
+cd SDK2018Production16.8
+cd CentOS_7.4
+tar zxvf install_scripts_centos_16.8-69021.tar.gz
+# to modprobe pt3_drv
+sed -i -e "s/kernel-headers kernel-devel/kernel-headers-3.10.0-693.11.6.el7.x86_64 kernel-devel-3.10.0-693.11.6.el7.x86_64/g" install_sdk_CentOS.sh
+sudo ./install_sdk_CentOS.sh
+sudo reboot
+
+#*******************************************************************************************************************
+# Lib
+#*******************************************************************************************************************
+sudo touch /etc/ld.so.conf.d/local.conf
+sudo sh -c "echo '/usr/local/lib' >> /etc/ld.so.conf.d/local.conf"
+
+#*******************************************************************************************************************
+# libmfx
+#*******************************************************************************************************************
+sudo mkdir /opt/intel/mediasdk/include/mfx
+sudo cp /opt/intel/mediasdk/include/*.h /opt/intel/mediasdk/include/mfx
+sudo touch /usr/lib64/pkgconfig/libmfx.pc
+sudo sh -c "echo 'prefix=/opt/intel/mediasdk' >> /usr/lib64/pkgconfig/libmfx.pc"
+sudo sh -c "echo 'exec_prefix=\${prefix}' >> /usr/lib64/pkgconfig/libmfx.pc"
+sudo sh -c "echo 'libdir=\${prefix}/lib/lin_x64' >> /usr/lib64/pkgconfig/libmfx.pc"
+sudo sh -c "echo 'includedir=\${prefix}/include' >> /usr/lib64/pkgconfig/libmfx.pc"
+sudo sh -c "echo '' >> /usr/lib64/pkgconfig/libmfx.pc"
+sudo sh -c "echo 'Name: libmfx' >> /usr/lib64/pkgconfig/libmfx.pc"
+sudo sh -c "echo 'Description: Intel Media SDK' >> /usr/lib64/pkgconfig/libmfx.pc"
+sudo sh -c "echo 'Version: 16.8' >> /usr/lib64/pkgconfig/libmfx.pc"
+sudo sh -c "echo 'Libs: -L\${libdir} -lmfx -lva -lstdc++ -ldl -lva-drm -ldrm' >> /usr/lib64/pkgconfig/libmfx.pc"
+sudo sh -c "echo 'Cflags: -I\${includedir} -I/usr/include/libdrm' >> /usr/lib64/pkgconfig/libmfx.pc"
+# use "centos/usr/lib64/pkgconfig/libmfx.pc"
+# sudo cp centos/usr/lib64/pkgconfig/libmfx.pc /usr/lib64/pkgconfig/
+
+#*******************************************************************************************************************
+# Yasm
+#*******************************************************************************************************************
+cd ~/chukasa_temporary && \
+    wget http://www.tortall.net/projects/yasm/releases/yasm-1.3.0.tar.gz && \
+    tar zxvf yasm-*.tar.gz && \
+    cd yasm-* && \
+    ./configure && \
+    make -j$(nproc) && \
+    sudo make install
+
+#*******************************************************************************************************************
+# FFmpeg
+#*******************************************************************************************************************
+cd ~/chukasa_temporary && \
+    wget http://ffmpeg.org/releases/ffmpeg-3.4.2.tar.bz2 && \
+    tar jxvf ffmpeg-3.4.2.tar.bz2 && \
+    cd ffmpeg-3.4.2 && \
+    ./configure --enable-libmfx && \
+    make -j$(nproc) && \
+    sudo make install
+
+#*******************************************************************************************************************
+# Fix link
+#*******************************************************************************************************************
+sudo unlink /lib/modules/3.10.0-693.el7.x86_64/source
+sudo unlink /lib/modules/3.10.0-693.el7.x86_64/build
+sudo ln -s /usr/src/kernels/3.10.0-693.11.6.el7.x86_64 /lib/modules/3.10.0-693.el7.x86_64/build
+sudo ln -s /lib/modules/3.10.0-693.el7.x86_64/build /lib/modules/3.10.0-693.el7.x86_64/source
+
+#*******************************************************************************************************************
+# PT3 driver
+#*******************************************************************************************************************
+cd ~/chukasa_temporary && \
+    git clone https://github.com/m-tsudo/pt3.git && \
+    cd pt3 && \
+    make -j$(nproc) && \
+    sudo make install && \
+    sudo modprobe pt3_drv
+
+#*******************************************************************************************************************
+# recpt1
+#*******************************************************************************************************************
+sudo yum -y install pcsc-lite-devel
+cd ~/chukasa_temporary && \
+    git clone https://github.com/stz2012/recpt1.git && \
+    cd recpt1/recpt1 && \
+    ./autogen.sh && \
+    ./configure && \
+    make -j$(nproc) && \
+    sudo make install
+
+#*******************************************************************************************************************
+# epgdump
+#*******************************************************************************************************************
+sudo yum -y install cmake
+cd ~/chukasa_temporary && \
+    git clone https://github.com/Piro77/epgdump.git && \
+    cd epgdump && \
+    ./autogen.sh && \
+    make -j$(nproc) && \
+    sudo make install
+
+#*******************************************************************************************************************
+# MongoDB
+#*******************************************************************************************************************
+cd ~/chukasa_temporary
+sudo semanage port -a -t mongod_port_t -p tcp 27017
+sudo touch /etc/yum.repos.d/mongodb-org-3.6.repo
+sudo sh -c "echo '[mongodb-org-3.6]' >> /etc/yum.repos.d/mongodb-org-3.6.repo"
+sudo sh -c "echo 'name=MongoDB Repository' >> /etc/yum.repos.d/mongodb-org-3.6.repo"
+sudo sh -c "echo 'baseurl=https://repo.mongodb.org/yum/redhat/\$releasever/mongodb-org/3.6/x86_64/' >> /etc/yum.repos.d/mongodb-org-3.6.repo"
+sudo sh -c "echo 'gpgcheck=1' >> /etc/yum.repos.d/mongodb-org-3.6.repo"
+sudo sh -c "echo 'enabled=1' >> /etc/yum.repos.d/mongodb-org-3.6.repo"
+sudo sh -c "echo 'gpgkey=https://www.mongodb.org/static/pgp/server-3.6.asc' >> /etc/yum.repos.d/mongodb-org-3.6.repo"
+sudo yum -y install mongodb-org
+sudo systemctl enable mongod
+sudo systemctl start mongod
+
+#*******************************************************************************************************************
+# PostgreSQL
+#*******************************************************************************************************************
+cd ~/chukasa_temporary
+wget https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-7.4-x86_64/pgdg-centos10-10-2.noarch.rpm
+sudo yum install -y pgdg-centos10-10-2.noarch.rpm
+sudo yum install -y postgresql10-server
+sudo /usr/pgsql-10/bin/postgresql-10-setup initdb
+# TODO:
+# edit /var/lib/pgsql/10/data/pg_hba.conf ident -> trust
+sudo systemctl enable postgresql-10
+sudo systemctl start postgresql-10
+# TODO: change password
+sudo -u postgres bash -c "psql -c \"CREATE USER chukasa WITH PASSWORD 'chukasa';\""
+sudo -u postgres bash -c "psql -c \"CREATE DATABASE chukasa ENCODING 'UTF8' OWNER chukasa;\""
+
+#*******************************************************************************************************************
+# nginx
+#*******************************************************************************************************************
+cd ~/chukasa_temporary && \
+    sudo yum -y install pcre-devel openssl-devel && \
+    wget http://nginx.org/download/nginx-1.14.0.tar.gz && \
+    tar zxvf nginx-1.14.0.tar.gz && \
+    cd nginx-1.14.0 && \
+    ./configure --with-http_ssl_module --with-ipv6 --with-http_v2_module && \
+    make -j$(nproc) && \
+    sudo make install
+
+#*******************************************************************************************************************
+# Java
+#*******************************************************************************************************************
+cd ~/chukasa_temporary
+// TODO Java 8
+wget --no-cookies --no-check-certificate --header "Cookie: oraclelicense=accept-securebackup-cookie" "http://download.oracle.com/otn-pub/java/jdk/10.0.1+10/fb4372174a714e6b8c52526dc134031e/jdk-10.0.1_linux-x64_bin.rpm"
+sudo yum -y install jdk-10.0.1_linux-x64_bin.rpm
+sudo sh -c "echo 'export JAVA_HOME=/usr/java/default' >> /etc/profile.d/jdk.sh"
+sudo sh -c "echo 'export PATH=\$JAVA_HOME/bin:\$PATH' >> /etc/profile.d/jdk.sh"
+source /etc/profile.d/jdk.sh
+
+#*******************************************************************************************************************
+# chukasa
+#*******************************************************************************************************************
+# clone project and edit configuration file
+cd ~/chukasa_temporary
+git clone https://github.com/hirooka/chukasa.git
+cd chukasa
+
+# build chukasa application
+./gradlew build
+
+# deploy chukasa application
+#sudo adduser chukasa
+#sudo passwd chukasa
+#sudo gpasswd -a chukasa video
+#sudo gpasswd -a chukasa audio
+sudo mkdir -p /opt/chukasa/video
+sudo cp build/libs/chukasa-0.0.1-SNAPSHOT.jar /opt/chukasa/
+# // TODO:
+# cp src/main/resources/application.properties /opt/chukasa/
+# cp src/main/resources/tuner.json /opt/chukasa/
+sudo chmod u+x /opt/chukasa/chukasa-0.0.1-SNAPSHOT.jar
+#sudo chown chukasa:chukasa -R /opt/chukasa
+sudo chown $USER:$USER -R /opt/chukasa
+
+# chukasa sysconfig
+sudo cp centos/etc/sysconfig/chukasa /etc/sysconfig/
+# or
+# sudo touch /etc/sysconfig/chukasa
+# sudo sh -c "echo 'JAVA_HOME=\"/usr/java/default\"' >> /etc/sysconfig/chukasa"
+# sudo sh -c "echo 'LIBVA_DRIVER_NAME=\"iHD\"' >> /etc/sysconfig/chukasa"
+# sudo sh -c "echo 'MFX_HOME=\"/opt/intel/mediasdk\"' >> /etc/sysconfig/chukasa"
+# sudo sh -c "echo 'LIBVA_DRIVERS_PATH=\"/opt/intel/mediasdk/lib64\"' >> /etc/sysconfig/chukasa"
+
+# nginx service
+sudo cp ubuntu/nginx/nginx.conf /usr/local/nginx/conf/nginx.conf
+sudo cp ubuntu/systemd/nginx.service /etc/systemd/system/
+sudo systemctl enable nginx
+sudo systemctl start nginx
+
+# chukasa service
+# edit User
+vi centos/systemd/chukasa.service
+sudo cp centos/systemd/chukasa.service /etc/systemd/system/
+sudo systemctl enable chukasa
+sudo systemctl start chukasa
+
+sudo firewall-cmd --zone=public --add-port=80/tcp --permanent
+sudo firewall-cmd --reload
+
+sudo reboot
+
+#*******************************************************************************************************************
+# End Of File
+#*******************************************************************************************************************
