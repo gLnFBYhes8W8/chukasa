@@ -126,3 +126,16 @@ spring:
   jpa:
      hibernate:
        ddl-auto: create
+---
+spring:
+  profiles: localhost-docker-mongodb-postgresql
+  datasource:
+    url: jdbc:postgresql://postgres:5432/chukasa
+    username: chukasa
+    password: chukasa
+  data:
+    mongodb:
+      host: mongo
+      port: 27017
+      database: chukasa
+      server-selection-timeout: 500

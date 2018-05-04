@@ -1,0 +1,154 @@
+# procedure_ubuntu_18_04_docker.txt
+
+# Ubuntu 18.04, ubuntu-18.04-live-server-amd64
+
+# uname -a
+# Linux ubuntu-vm 4.15.0-20-generic #21-Ubuntu SMP Tue Apr 24 06:16:15 UTC 2018 x86_64 x86_64 x86_64 GNU/Linux
+
+/*******************************************************
+cat /etc/lsb-release
+DISTRIB_ID=Ubuntu
+DISTRIB_RELEASE=18.04
+DISTRIB_CODENAME=bionic
+DISTRIB_DESCRIPTION="Ubuntu 18.04 LTS"
+/*******************************************************
+
+/*******************************************************
+# df -h
+Filesystem      Size  Used Avail Use% Mounted on
+udev            968M     0  968M   0% /dev
+tmpfs           200M  936K  199M   1% /run
+/dev/sda2       9.8G  3.5G  5.8G  38% /
+tmpfs           997M     0  997M   0% /dev/shm
+tmpfs           5.0M     0  5.0M   0% /run/lock
+tmpfs           997M     0  997M   0% /sys/fs/cgroup
+/dev/loop0       87M   87M     0 100% /snap/core/4486
+tmpfs           200M     0  200M   0% /run/user/1000
+/*******************************************************
+
+########## Begin ##########
+
+#*******************************************************************************************************************
+# Time
+#*******************************************************************************************************************
+sudo timedatectl set-ntp 1
+
+#*******************************************************************************************************************
+# Apt
+#*******************************************************************************************************************
+sudo apt-get update
+#sudo apt-get -y upgrade
+#sudo apt-get -y dist-upgrade
+#sudo reboot
+
+#*******************************************************************************************************************
+# Package
+#*******************************************************************************************************************
+sudo apt-get -y install build-essential pcscd
+
+#*******************************************************************************************************************
+# Ja
+#*******************************************************************************************************************
+sudo apt-get -y install language-pack-ja-base
+
+#*******************************************************************************************************************
+# Temprary Directory
+#*******************************************************************************************************************
+mkdir ~/chukasa_temporary
+
+#*******************************************************************************************************************
+# Video / Audio
+#*******************************************************************************************************************
+sudo gpasswd -a $USER video
+sudo gpasswd -a $USER audio
+
+#*******************************************************************************************************************
+# Webcam (Audio)
+#*******************************************************************************************************************
+# 環境により異なる．
+# cat /proc/asound/modules にて事前に確認する．
+
+# ASUS Z170I PRO GAMING の場合
+# cat /proc/asound/modules
+#  0 snd_hda_intel
+#  1 snd_usb_audio
+sudo touch /etc/modprobe.d/alsa-base.conf
+sudo sh -c "echo 'options snd slots=snd_usb_audio,snd_hda_intel' >> /etc/modprobe.d/alsa-base.conf"
+sudo sh -c "echo 'options snd_usb_audio index=0' >> /etc/modprobe.d/alsa-base.conf"
+sudo sh -c "echo 'options snd_hda_intel index=1' >> /etc/modprobe.d/alsa-base.conf"
+
+# ASUS B85M-E の場合
+# sudo sh -c "echo 'options snd slots=snd_usb_audio,snd_hda_intel,snd_hda_intel' >> /etc/modprobe.d/alsa-base.conf"
+# sudo sh -c "echo 'options snd_usb_audio index=0' >> /etc/modprobe.d/alsa-base.conf"
+# sudo sh -c "echo 'options snd_hda_intel index=1' >> /etc/modprobe.d/alsa-base.conf"
+# sudo sh -c "echo 'options snd_hda_intel index=2' >> /etc/modprobe.d/alsa-base.conf"
+
+#*******************************************************************************************************************
+# DVB Tuber
+#*******************************************************************************************************************
+// TODO
+
+#*******************************************************************************************************************
+# Docker
+#*******************************************************************************************************************
+sudo apt-get update
+sudo apt-get -y install apt-transport-https ca-certificates curl software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo apt-key fingerprint 0EBFCD88
+// TODO: test -> stable
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) test"
+sudo apt-get update
+sudo apt-get -y install docker-ce
+sudo usermod -aG docker $USER
+sudo systemctl enable docker
+
+#*******************************************************************************************************************
+# Java 8
+#*******************************************************************************************************************
+sudo apt-get -y install openjdk-8-jdk
+sudo sh -c "echo 'export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64' >> /etc/profile.d/jdk.sh"
+sudo sh -c "echo 'export PATH=\$JAVA_HOME/bin:\$PATH' >> /etc/profile.d/jdk.sh"
+source /etc/profile.d/jdk.sh
+
+#*******************************************************************************************************************
+# 環境が整ったところでいったん reboot
+#*******************************************************************************************************************
+sudo reboot
+
+#*******************************************************************************************************************
+# chukasa
+#*******************************************************************************************************************
+sudo mkdir /opt/chukasa
+sudo chown $USER:$USER /opt/chukasa
+mkdir /opt/chukasa/video
+
+# clone project and edit configuration file
+cd ~/chukasa_temporary
+git clone https://github.com/hirooka/chukasa.git
+
+# build chukasa application
+cd chukasa
+./gradlew build
+
+# build chukasa Docker image
+docker build -t hirooka/chukasa:0.0.1-SNAPSHOT .
+# or pull Docker image
+# docker pull hirooka/chukasa:0.0.1-SNAPSHOT
+
+# push if needed
+# docker push hirooka/chukasa:0.0.1-SNAPSHOT
+
+# pull and run MongoDB Docker image
+docker pull mongo
+docker run --name some-mongo -d mongo
+
+# pull and run PostgreSQL Docker image
+docker pull postgres
+docker run --name some-postgres -e POSTGRES_USER=chukasa -d postgres
+
+# run chukasa Docker image with MongoDB Docker image
+docker run --link some-mongo:mongo --link some-postgres:postgres --privileged --volume /dev/:/dev/ --volume /var/run/pcscd/pcscd.comm:/var/run/pcscd/pcscd.comm -v /opt/chukasa/video:/opt/chukasa/video -p 80:80 -v /etc/localtime:/etc/localtime:ro -it hirooka/chukasa:0.0.1-SNAPSHOT /bin/bash
+
+#*******************************************************************************************************************
+# End Of File
+#*******************************************************************************************************************
