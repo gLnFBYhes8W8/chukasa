@@ -1,0 +1,204 @@
+# procedure_raspberry_pi_3_raspbian_april_2018.txt
+
+# Raspberry Pi 3 Model B, PX-S1UD V2.0, PX-BCUD
+
+# unzip 2018-04-18-raspbian-stretch.img
+# sudo dd bs=4M if=2018-04-18-raspbian-stretch.img of=/dev/sdXXX
+#     1181+0 records in
+#     1181+0 records out
+#     4953473024 bytes (5.0 GB, 4.6 GiB) copied, 193.108 s, 25.7 MB/s
+# sudo sync
+
+# Raspbian Stretch 2018-04-18
+# uname -a
+# Linux raspberrypi 4.14.34-v7+ #1110 SMP Mon Apr 16 15:18:51 BST 2018 armv7l GNU/Linux
+
+/*******************************************************
+Preferences - Raspberry Pi Configuration
+System
+  Password: Change Password...
+  Hostname:
+  Auto Login: uncheck
+Interfaces
+  SSH: Enabled
+Localisation
+  Locale: en(English), US(USA), UTF-8
+  Timezone: Japan
+  Keyboard: United States, English(US)
+  WiFi Country: JP(Japan)
+/*******************************************************
+
+# set network configuration
+
+# sudo adduser XXX
+# sudo gpasswd -a XXX sudo
+
+/*******************************************************
+cat /etc/os-release
+PRETTY_NAME="Raspbian GNU/Linux 9 (stretch)"
+NAME="Raspbian GNU/Linux"
+VERSION_ID="9"
+VERSION="9 (stretch)"
+ID=raspbian
+ID_LIKE=debian
+HOME_URL="http://www.raspbian.org/"
+SUPPORT_URL="http://www.raspbian.org/RaspbianForums"
+BUG_REPORT_URL="http://www.raspbian.org/RaspbianBugs"
+
+df -h
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/root        30G  4.2G   25G  15% /
+devtmpfs        460M     0  460M   0% /dev
+tmpfs           464M     0  464M   0% /dev/shm
+tmpfs           464M   13M  452M   3% /run
+tmpfs           5.0M  4.0K  5.0M   1% /run/lock
+tmpfs           464M     0  464M   0% /sys/fs/cgroup
+/dev/mmcblk0p1   43M   22M   21M  51% /boot
+tmpfs            93M     0   93M   0% /run/user/109
+tmpfs            93M     0   93M   0% /run/user/1000
+*******************************************************/
+
+########## Begin ##########
+
+#*******************************************************************************************************************
+# Time
+#*******************************************************************************************************************
+sudo timedatectl set-ntp 1
+
+#*******************************************************************************************************************
+# Apt
+#*******************************************************************************************************************
+sudo apt-get update
+#sudo apt-get -y upgrade
+#sudo apt-get -y dist-upgrade
+#sudo reboot
+
+#*******************************************************************************************************************
+# Package
+#*******************************************************************************************************************
+sudo apt-get -y install autoconf libpcsclite-dev pcsc-tools pcscd cmake libasound2-dev
+sudo apt-get -y install ttf-kochi-gothic xfonts-intl-japanese xfonts-intl-japanese-big xfonts-kaname jfbterm
+
+#*******************************************************************************************************************
+# Temprary Directory
+#*******************************************************************************************************************
+mkdir ~/chukasa_temporary
+
+#*******************************************************************************************************************
+# Video / Audio
+#*******************************************************************************************************************
+sudo gpasswd -a $USER video
+sudo gpasswd -a $USER audio
+
+#*******************************************************************************************************************
+# Webcam (Audio)
+#*******************************************************************************************************************
+#cat /proc/asound/modules
+sudo touch /etc/modprobe.d/alsa-base.conf
+sudo sh -c "echo 'options snd slots=snd_usb_audio,snd_bcm2835' >> /etc/modprobe.d/alsa-base.conf"
+sudo sh -c "echo 'options snd_usb_audio index=0' >> /etc/modprobe.d/alsa-base.conf"
+sudo sh -c "echo 'options snd_bcm2835 index=1' >> /etc/modprobe.d/alsa-base.conf"
+
+#*******************************************************************************************************************
+# DVB Tuber (PX-S1UD V2.0)
+#*******************************************************************************************************************
+cd ~/chukasa_temporary && \
+    wget http://plex-net.co.jp/plex/px-s1ud/PX-S1UD_driver_Ver.1.0.1.zip && \
+    unzip PX-S1UD_driver_Ver.1.0.1.zip && \
+    sudo cp PX-S1UD_driver_Ver.1.0.1/x64/amd64/isdbt_rio.inp /lib/firmware/
+
+#*******************************************************************************************************************
+# recdvb
+#*******************************************************************************************************************
+cd ~/chukasa_temporary && \
+    git clone https://github.com/dogeel/recdvb && \
+    cd recdvb && \
+    chmod a+x autogen.sh && \
+    ./autogen.sh && \
+    ./configure && \
+    make -j$(nproc) && \
+    sudo make install
+
+#*******************************************************************************************************************
+# epgdump
+#*******************************************************************************************************************
+cd ~/chukasa_temporary && \
+    git clone https://github.com/Piro77/epgdump.git && \
+    cd epgdump && \
+    ./autogen.sh && \
+    make -j$(nproc) && \
+    sudo make install
+
+#*******************************************************************************************************************
+# FFmpeg
+#*******************************************************************************************************************
+cd ~/chukasa_temporary && \
+    wget http://ffmpeg.org/releases/ffmpeg-4.0.tar.bz2 && \
+    tar jxvf ffmpeg-4.0.tar.bz2 && \
+    cd ffmpeg-4.0 && \
+    ./configure --disable-shared --enable-static --enable-omx-rpi --enable-mmal && \
+    make -j$(nproc) && \
+    sudo make install
+
+#*******************************************************************************************************************
+# nginx
+#*******************************************************************************************************************
+cd ~/chukasa_temporary && \
+    sudo apt-get -y install libpcre3-dev libpcre++-dev libssl-dev && \
+    wget http://nginx.org/download/nginx-1.14.0.tar.gz && \
+    tar zxvf nginx-1.14.0.tar.gz && \
+    cd nginx-1.14.0 && \
+    ./configure --with-http_ssl_module --with-ipv6 --with-http_v2_module && \
+    make -j$(nproc) && \
+    sudo make install
+
+#*******************************************************************************************************************
+# MongoDB
+#*******************************************************************************************************************
+sudo apt-get -y install mongodb
+
+#*******************************************************************************************************************
+# PostgreSQL
+#*******************************************************************************************************************
+sudo apt-get -y install postgresql
+# TODO: change password
+sudo -u postgres bash -c "psql -c \"CREATE USER chukasa WITH PASSWORD 'chukasa';\""
+sudo -u postgres bash -c "psql -c \"CREATE DATABASE chukasa ENCODING 'UTF8' OWNER chukasa;\""
+
+#*******************************************************************************************************************
+# 環境が整ったところでいったん reboot
+#*******************************************************************************************************************
+sudo reboot
+
+#*******************************************************************************************************************
+# chukasa
+#*******************************************************************************************************************
+sudo mkdir /opt/chukasa
+sudo chown $USER:$USER /opt/chukasa
+mkdir /opt/chukasa/video
+
+# clone project and edit configuration file
+cd ~/chukasa_temporary
+git clone https://github.com/hirooka/chukasa.git
+cd chukasa
+
+# build chukasa application
+edit "application.yml, tuner.json"
+./gradlew build
+cp build/libs/chukasa-0.0.1-SNAPSHOT.jar /opt/chukasa/
+
+#　chukasa service
+sudo cp ubuntu/systemd/chukasa.service /etc/systemd/system/
+sudo sh -c "sed -i -e 's/User=chukasa/User=$USER/g' /etc/systemd/system/chukasa.service"
+sudo systemctl enable chukasa
+
+#　nginx service
+sudo cp ubuntu/nginx/nginx.conf /usr/local/nginx/conf/nginx.conf
+sudo cp ubuntu/systemd/nginx.service /etc/systemd/system/
+sudo systemctl enable nginx
+
+sudo reboot
+
+#*******************************************************************************************************************
+# End Of File
+#*******************************************************************************************************************
