@@ -1,5 +1,5 @@
 aaa:
-  enabled: false
+  enabled: true
 
 system:
   ffmpeg-path: /usr/local/bin/ffmpeg
