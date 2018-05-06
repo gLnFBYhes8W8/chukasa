@@ -37,23 +37,23 @@ mkdir ~/chukasa_temporary
 #*******************************************************************************************************************
 # 環境により異なる．
 # cat /proc/asound/modules にて事前に確認する．
+sudo touch /etc/modprobe.d/alsa-base.conf
 
 # ASUS Z170I PRO GAMING の場合
 # cat /proc/asound/modules
 #  0 snd_hda_intel
 #  1 snd_usb_audio
 sudo yum -y install alsa-lib-devel alsa-lib alsa-utils alsa-tools-firmware
-sudo touch /etc/modprobe.d/alsa-base.conf
 sudo sh -c "echo 'options snd slots=snd_usb_audio,snd_hda_intel' >> /etc/modprobe.d/alsa-base.conf"
 sudo sh -c "echo 'options snd_usb_audio index=0' >> /etc/modprobe.d/alsa-base.conf"
 sudo sh -c "echo 'options snd_hda_intel index=1' >> /etc/modprobe.d/alsa-base.conf"
 sudo gpasswd -a $USER audio
 
 # ASUS B85M-E の場合
-#sudo sh -c "echo 'options snd slots=snd_usb_audio,snd_hda_intel,snd_hda_intel' >> /etc/modprobe.d/alsa-base.conf"
-#sudo sh -c "echo 'options snd_usb_audio index=0' >> /etc/modprobe.d/alsa-base.conf"
-#sudo sh -c "echo 'options snd_hda_intel index=1' >> /etc/modprobe.d/alsa-base.conf"
-#sudo sh -c "echo 'options snd_hda_intel index=2' >> /etc/modprobe.d/alsa-base.conf"
+# sudo sh -c "echo 'options snd slots=snd_usb_audio,snd_hda_intel,snd_hda_intel' >> /etc/modprobe.d/alsa-base.conf"
+# sudo sh -c "echo 'options snd_usb_audio index=0' >> /etc/modprobe.d/alsa-base.conf"
+# sudo sh -c "echo 'options snd_hda_intel index=1' >> /etc/modprobe.d/alsa-base.conf"
+# sudo sh -c "echo 'options snd_hda_intel index=2' >> /etc/modprobe.d/alsa-base.conf"
 
 #*******************************************************************************************************************
 # Intel Media Server Studio 2018 R1 for Linux - Community Edition
@@ -214,30 +214,32 @@ sudo sh -c "echo 'export JAVA_HOME=/usr/java/default' >> /etc/profile.d/jdk.sh"
 sudo sh -c "echo 'export PATH=\$JAVA_HOME/bin:\$PATH' >> /etc/profile.d/jdk.sh"
 source /etc/profile.d/jdk.sh
 
+# sudo alternatives --config java
+# sudo alternatives --config javac
+# sudo unlink /usr/java/latest
+# sudo ln -s /usr/java/jdk1.8.0_172-amd64 /usr/java/latest
+
 #*******************************************************************************************************************
 # chukasa
 #*******************************************************************************************************************
 # clone project and edit configuration file
 cd ~/chukasa_temporary
-git clone https://github.com/hirooka/chukasa.git
+git clone https://github.com/hirooka/chukasa
 cd chukasa
+mv src/main/resources/tuner2.json src/main/resources/tuner.json
+# src/main/resources/application.yml
 
 # build chukasa application
 ./gradlew build
 
 # deploy chukasa application
-#sudo adduser chukasa
-#sudo passwd chukasa
-#sudo gpasswd -a chukasa video
-#sudo gpasswd -a chukasa audio
 sudo mkdir -p /opt/chukasa/video
-sudo cp build/libs/chukasa-0.0.1-SNAPSHOT.jar /opt/chukasa/
+sudo chown $USER:$USER -R /opt/chukasa
+cp build/libs/chukasa-0.0.1-SNAPSHOT.jar /opt/chukasa/
 # // TODO:
 # cp src/main/resources/application.properties /opt/chukasa/
 # cp src/main/resources/tuner.json /opt/chukasa/
-sudo chmod u+x /opt/chukasa/chukasa-0.0.1-SNAPSHOT.jar
-#sudo chown chukasa:chukasa -R /opt/chukasa
-sudo chown $USER:$USER -R /opt/chukasa
+# wget https://download.blender.org/durian/trailer/sintel_trailer-1080p.mp4 -P /opt/chukasa/video/
 
 # chukasa sysconfig
 sudo cp centos/etc/sysconfig/chukasa /etc/sysconfig/
@@ -255,16 +257,47 @@ sudo systemctl enable nginx
 sudo systemctl start nginx
 
 # chukasa service
-# edit User
-vi centos/systemd/chukasa.service
 sudo cp centos/systemd/chukasa.service /etc/systemd/system/
+sudo sh -c "sed -i -e 's/User=chukasa/User=$USER/g' /etc/systemd/system/chukasa.service"
 sudo systemctl enable chukasa
-sudo systemctl start chukasa
+#sudo systemctl start chukasa
 
 sudo firewall-cmd --zone=public --add-port=80/tcp --permanent
 sudo firewall-cmd --reload
 
 sudo reboot
+
+
+#*******************************************************************************************************************
+# chukasa user
+#*******************************************************************************************************************
+#sudo adduser chukasa
+#sudo passwd chukasa
+#sudo gpasswd -a chukasa video
+#sudo gpasswd -a chukasa audio
+#sudo chown chukasa:chukasa -R /opt/chukasa
+#sudo reboot
+
+#*******************************************************************************************************************
+# Tools
+#*******************************************************************************************************************
+# TODO:
+# Input Japanase
+# https://hirooka.pro/?p=xxxx
+
+# Google Chrome
+sudo yum -y install epel-release
+sudo yum -y install libappindicator-gtk3
+sudo yum -y install google-chrome-stable_current_x86_64.rpm
+
+# VLC
+sudo yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+sudo yum -y install https://download1.rpmfusion.org/free/el/rpmfusion-free-release-7.noarch.rpm
+sudo yum -y install vlc
+
+# VirtualBox
+
+# SDKMAN!, IntelliJ IDEA
 
 #*******************************************************************************************************************
 # End Of File
