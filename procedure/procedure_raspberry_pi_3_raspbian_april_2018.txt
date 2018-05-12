@@ -155,7 +155,13 @@ cd ~/chukasa_temporary && \
 #*******************************************************************************************************************
 # MongoDB
 #*******************************************************************************************************************
-sudo apt-get -y install mongodb
+#sudo apt-get -y install mongodb
+
+sudo mkdir -p /data/db
+cd ~/chukasa_temporary
+wget https://andyfelong.com/downloads/mongodb_stretch_3_0_14_core.zip
+unzip mongodb_stretch_3_0_14_core.zip
+sudo cp core/* /usr/local/bin/
 
 #*******************************************************************************************************************
 # PostgreSQL
@@ -173,29 +179,35 @@ sudo reboot
 #*******************************************************************************************************************
 # chukasa
 #*******************************************************************************************************************
-sudo mkdir /opt/chukasa
-sudo chown $USER:$USER /opt/chukasa
-mkdir /opt/chukasa/video
-
 # clone project and edit configuration file
 cd ~/chukasa_temporary
-git clone https://github.com/hirooka/chukasa.git
+git clone https://github.com/hirooka/chukasa
 cd chukasa
+# edit "application.yml, tuner.json"
+# mv src/main/resources/tuner3.json src/main/resources/tuner.json
+# src/main/resources/application.yml
 
 # build chukasa application
-edit "application.yml, tuner.json"
 ./gradlew build
-cp build/libs/chukasa-0.0.1-SNAPSHOT.jar /opt/chukasa/
 
-#　chukasa service
-sudo cp ubuntu/systemd/chukasa.service /etc/systemd/system/
-sudo sh -c "sed -i -e 's/User=chukasa/User=$USER/g' /etc/systemd/system/chukasa.service"
-sudo systemctl enable chukasa
+# deploy chukasa application
+sudo mkdir -p /opt/chukasa/video
+sudo cp build/libs/chukasa-0.0.1-SNAPSHOT.jar /opt/chukasa/
+sudo chown $USER:$USER -R /opt/chukasa
 
 #　nginx service
 sudo cp ubuntu/nginx/nginx.conf /usr/local/nginx/conf/nginx.conf
 sudo cp ubuntu/systemd/nginx.service /etc/systemd/system/
 sudo systemctl enable nginx
+
+# MongoDB service
+sudo cp raspbian/mongod.service /lib/systemd/system/
+sudo systemctl enable mongod
+
+# chukasa service
+sudo cp ubuntu/systemd/chukasa.service /etc/systemd/system/
+sudo sh -c "sed -i -e 's/User=chukasa/User=$USER/g' /etc/systemd/system/chukasa.service"
+sudo systemctl enable chukasa
 
 sudo reboot
 
