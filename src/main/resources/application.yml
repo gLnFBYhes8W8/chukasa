@@ -31,6 +31,12 @@ recorder:
   start-margin: 30
   stop-margin: 0
 
+hyaruka:
+  scheme: http
+  host: 192.168.115.4
+  port: 49149
+  api-version: v1
+  enabled: true
 
 server:
   port: 8080

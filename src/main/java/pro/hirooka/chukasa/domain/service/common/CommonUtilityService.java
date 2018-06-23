@@ -13,6 +13,7 @@ import pro.hirooka.chukasa.domain.model.common.ChannelConfiguration;
 import pro.hirooka.chukasa.domain.model.common.ChannelConfigurationWrapper;
 import pro.hirooka.chukasa.domain.model.common.Tuner;
 import pro.hirooka.chukasa.domain.model.common.TunerWrapper;
+import pro.hirooka.chukasa.domain.model.common.type.TunerType;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -85,6 +86,20 @@ public class CommonUtilityService implements ICommonUtilityService {
                     return ChannelType.GR;
                 }else if(channelConfiguration.getChannelType() == ChannelType.BS){
                     return ChannelType.BS;
+                }
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public TunerType getTunerType(int channel) {
+        for(ChannelConfiguration channelConfiguration : getChannelConfigurationList()){
+            if(channelConfiguration.getPhysicalLogicalChannel() == channel){
+                if(channelConfiguration.getChannelType() == ChannelType.GR){
+                    return TunerType.GR;
+                }else if(channelConfiguration.getChannelType() == ChannelType.BS){
+                    return TunerType.BS;
                 }
             }
         }

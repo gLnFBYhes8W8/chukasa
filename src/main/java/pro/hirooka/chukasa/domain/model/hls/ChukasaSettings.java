@@ -4,6 +4,7 @@ import lombok.Data;
 import pro.hirooka.chukasa.domain.config.common.type.PlaylistType;
 import pro.hirooka.chukasa.domain.config.common.type.StreamingType;
 import pro.hirooka.chukasa.domain.config.common.type.TranscodingSettings;
+import pro.hirooka.chukasa.domain.model.common.type.TunerType;
 
 @Data
 public class ChukasaSettings {
@@ -15,6 +16,7 @@ public class ChukasaSettings {
     private TranscodingSettings transcodingSettings;
     private boolean canEncrypt;
     private int physicalLogicalChannel;
+    private TunerType tunerType;
     private String fileName;
 
     private String videoResolution;

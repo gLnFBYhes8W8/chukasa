@@ -7,11 +7,14 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import pro.hirooka.chukasa.api.v1.helper.ChukasaUtility;
 import pro.hirooka.chukasa.api.v1.helper.IChukasaBrowserDetector;
 import pro.hirooka.chukasa.domain.config.common.CommonConfiguration;
+import pro.hirooka.chukasa.domain.config.common.HyarukaConfiguration;
 import pro.hirooka.chukasa.domain.config.common.SystemConfiguration;
 import pro.hirooka.chukasa.domain.config.common.type.FfmpegVcodecType;
+import pro.hirooka.chukasa.domain.config.common.type.StreamingType;
 import pro.hirooka.chukasa.domain.config.hls.HlsConfiguration;
 import pro.hirooka.chukasa.domain.model.app.Html5Player;
 import pro.hirooka.chukasa.domain.model.common.ChannelConfiguration;
@@ -64,6 +67,8 @@ public class ChukasaController {
     ILastEpgdumpExecutedService lastEpgdumpExecutedService;
     @Autowired
     IEpgdumpService epgdumpService;
+    @Autowired
+    HyarukaConfiguration hyarukaConfiguration;
 
 
     @GetMapping("")
@@ -177,6 +182,7 @@ public class ChukasaController {
         ChukasaModel chukasaModel = new ChukasaModel();
         chukasaModel.setSystemConfiguration(systemConfiguration);
         chukasaModel.setHlsConfiguration(hlsConfiguration);
+        chukasaSettings.setTunerType(commonUtilityService.getTunerType(chukasaSettings.getPhysicalLogicalChannel()));
         chukasaModel.setChukasaSettings(chukasaSettings);
 
         chukasaModel.setUuid(UUID.randomUUID());
@@ -227,6 +233,21 @@ public class ChukasaController {
 
     @RequestMapping(value = "/stop", method = RequestMethod.GET)
     String stop(){
+
+        chukasaModelManagementComponent.get().forEach(chukasaModel -> {
+            if(hyarukaConfiguration.isEnabled() && chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.TUNER) {
+                final String HYARUKA_SCHEME = hyarukaConfiguration.getScheme().name();
+                final String HYARUKA_HOST = hyarukaConfiguration.getHost();
+                final int HYARUKA_PORT = hyarukaConfiguration.getPort();
+                final String HYARUKA_API_VERSION = hyarukaConfiguration.getApiVersion();
+                final String HYARUKA_URI = HYARUKA_SCHEME.toLowerCase() + "://" + HYARUKA_HOST + ":" + HYARUKA_PORT
+                        + "/api/" + HYARUKA_API_VERSION + "/streams/"
+                        + chukasaModel.getChukasaSettings().getTunerType().name() + "/" + chukasaModel.getChukasaSettings().getPhysicalLogicalChannel();
+                RestTemplate restTemplate = new RestTemplate();
+                restTemplate.delete(HYARUKA_URI);
+            }
+        });
+
         taskCoordinatorService.cancel();
         taskCoordinatorService.stop();
         return "redirect:/chukasa/remove";
