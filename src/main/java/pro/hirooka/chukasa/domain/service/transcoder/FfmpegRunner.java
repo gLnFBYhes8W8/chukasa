@@ -1,6 +1,7 @@
 package pro.hirooka.chukasa.domain.service.transcoder;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import pro.hirooka.chukasa.domain.config.ChukasaConstants;
 import pro.hirooka.chukasa.domain.config.common.type.FfmpegVcodecType;
@@ -17,8 +18,9 @@ import java.lang.reflect.Field;
 import static java.util.Objects.requireNonNull;
 
 @Deprecated
-@Slf4j
 public class FfmpegRunner implements Runnable {
+
+    private static final Logger log = LoggerFactory.getLogger(FfmpegRunner.class);
 
     static final String FILE_SEPARATOR = System.getProperty("file.separator");
 

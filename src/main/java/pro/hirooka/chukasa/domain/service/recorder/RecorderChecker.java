@@ -1,6 +1,7 @@
 package pro.hirooka.chukasa.domain.service.recorder;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pro.hirooka.chukasa.domain.model.recorder.ReservedProgram;
 
 import java.io.BufferedReader;
@@ -9,8 +10,9 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-@Slf4j
 public class RecorderChecker {
+
+    private static final Logger log = LoggerFactory.getLogger(RecorderChecker.class);
 
     static public boolean isAlreadyRun(ReservedProgram reservedProgram){
 

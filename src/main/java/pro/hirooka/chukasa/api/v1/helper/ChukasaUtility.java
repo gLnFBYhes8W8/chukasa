@@ -1,7 +1,8 @@
 package pro.hirooka.chukasa.api.v1.helper;
 
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pro.hirooka.chukasa.domain.config.common.SystemConfiguration;
 import pro.hirooka.chukasa.domain.config.common.type.FfmpegVcodecType;
 import pro.hirooka.chukasa.domain.config.common.type.StreamingType;
@@ -14,8 +15,9 @@ import java.nio.file.Files;
 
 import static pro.hirooka.chukasa.domain.config.ChukasaConstants.*;
 
-@Slf4j
 public class ChukasaUtility {
+
+    private static final Logger log = LoggerFactory.getLogger(ChukasaUtility.class);
 
     public static void initializeRunner(IChukasaModelManagementComponent chukasaModelManagementComponent, SystemConfiguration systemConfiguration){
 /*

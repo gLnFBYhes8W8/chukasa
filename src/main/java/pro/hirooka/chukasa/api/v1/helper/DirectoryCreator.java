@@ -1,7 +1,8 @@
 package pro.hirooka.chukasa.api.v1.helper;
 
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pro.hirooka.chukasa.domain.config.ChukasaConstants;
@@ -13,9 +14,10 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
-@Slf4j
 @Component
 public class DirectoryCreator implements IDirectoryCreator{
+
+    private static final Logger log = LoggerFactory.getLogger(DirectoryCreator.class);
 
     static final String FILE_SEPARATOR = System.getProperty("file.separator");
 

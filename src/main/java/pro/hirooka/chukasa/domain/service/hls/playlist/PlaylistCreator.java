@@ -1,7 +1,7 @@
 package pro.hirooka.chukasa.domain.service.hls.playlist;
 
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pro.hirooka.chukasa.domain.config.ChukasaConstants;
@@ -14,9 +14,10 @@ import java.io.*;
 
 import static java.util.Objects.requireNonNull;
 
-@Slf4j
 @Component
 public class PlaylistCreator implements IPlaylistCreator {
+
+    private static final Logger log = LoggerFactory.getLogger(PlaylistCreator.class);
 
     final String FILE_SEPARATOR = ChukasaConstants.FILE_SEPARATOR;
     final String initialStreamPath = ChukasaConstants.INITIAL_STREAM_PATH;
@@ -24,7 +25,6 @@ public class PlaylistCreator implements IPlaylistCreator {
     final String M3U8_FILE_NAME = ChukasaConstants.M3U8_FILE_NAME;
     final String M3U8_FILE_EXTENSION = ChukasaConstants.M3U8_FILE_EXTENSION;
 
-    @Setter
     private int adaptiveBitrateStreaming;
 
     private final IChukasaModelManagementComponent chukasaModelManagementComponent;
@@ -268,6 +268,10 @@ public class PlaylistCreator implements IPlaylistCreator {
         } catch (IOException e) {
             log.error("{} {}", e.getMessage(), e);
         }
+    }
+
+    public void setAdaptiveBitrateStreaming(int adaptiveBitrateStreaming) {
+        this.adaptiveBitrateStreaming = adaptiveBitrateStreaming;
     }
 }
 

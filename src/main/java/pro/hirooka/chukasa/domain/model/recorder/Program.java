@@ -1,11 +1,9 @@
 package pro.hirooka.chukasa.domain.model.recorder;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.Data;
 import org.springframework.data.annotation.Id;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-@Data
 public class Program {
     @Id
     private String id;
@@ -30,4 +28,108 @@ public class Program {
     private String endDate;
     private int physicalLogicalChannel;
     private int remoteControllerChannel;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getChannel() {
+        return channel;
+    }
+
+    public void setChannel(String channel) {
+        this.channel = channel;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDetail() {
+        return detail;
+    }
+
+    public void setDetail(String detail) {
+        this.detail = detail;
+    }
+
+    public long getStart() {
+        return start;
+    }
+
+    public void setStart(long start) {
+        this.start = start;
+    }
+
+    public long getEnd() {
+        return end;
+    }
+
+    public void setEnd(long end) {
+        this.end = end;
+    }
+
+    public long getDuration() {
+        return duration;
+    }
+
+    public void setDuration(long duration) {
+        this.duration = duration;
+    }
+
+    public long getBegin() {
+        return begin;
+    }
+
+    public void setBegin(long begin) {
+        this.begin = begin;
+    }
+
+    public String getChannelName() {
+        return channelName;
+    }
+
+    public void setChannelName(String channelName) {
+        this.channelName = channelName;
+    }
+
+    public String getBeginDate() {
+        return beginDate;
+    }
+
+    public void setBeginDate(String beginDate) {
+        this.beginDate = beginDate;
+    }
+
+    public String getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
+    }
+
+    public int getPhysicalLogicalChannel() {
+        return physicalLogicalChannel;
+    }
+
+    public void setPhysicalLogicalChannel(int physicalLogicalChannel) {
+        this.physicalLogicalChannel = physicalLogicalChannel;
+    }
+
+    public int getRemoteControllerChannel() {
+        return remoteControllerChannel;
+    }
+
+    public void setRemoteControllerChannel(int remoteControllerChannel) {
+        this.remoteControllerChannel = remoteControllerChannel;
+    }
 }

@@ -1,6 +1,7 @@
 package pro.hirooka.chukasa.domain.service.transcoder;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
@@ -13,9 +14,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Future;
 
-@Slf4j
 @Service
 public class FfmpegStopperService implements IFfmpegStopperService {
+
+    private static final Logger log = LoggerFactory.getLogger(FfmpegStopperService.class);
 
     @Autowired
     IChukasaModelManagementComponent chukasaModelManagementComponent;

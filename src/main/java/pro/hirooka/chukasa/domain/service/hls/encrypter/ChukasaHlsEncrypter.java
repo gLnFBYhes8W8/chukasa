@@ -1,8 +1,8 @@
 package pro.hirooka.chukasa.domain.service.hls.encrypter;
 
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.text.RandomStringGenerator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pro.hirooka.chukasa.domain.config.ChukasaConstants;
@@ -18,15 +18,15 @@ import javax.crypto.NoSuchPaddingException;
 import java.io.*;
 import java.security.*;
 
-@Slf4j
 @Service
 public class ChukasaHlsEncrypter implements IChukasaHlsEncrypter {
+
+    private static final Logger log = LoggerFactory.getLogger(ChukasaHlsEncrypter.class);
 
     static final String FILE_SEPARATOR = ChukasaConstants.FILE_SEPARATOR;
     final String STREAM_FILE_NAME_PREFIX = ChukasaConstants.STREAM_FILE_NAME_PREFIX;
     final int MPEG2_TS_PACKET_LENGTH = ChukasaConstants.MPEG2_TS_PACKET_LENGTH;
 
-    @Setter
     private int adaptiveBitrateStreaming;
 
     @Autowired
@@ -34,6 +34,10 @@ public class ChukasaHlsEncrypter implements IChukasaHlsEncrypter {
 
     @Autowired
     IPlaylistCreator playlistBuilder;
+
+    public void setAdaptiveBitrateStreaming(int adaptiveBitrateStreaming) {
+        this.adaptiveBitrateStreaming = adaptiveBitrateStreaming;
+    }
 
     @Override
     public void encrypt() {
@@ -129,6 +133,8 @@ public class ChukasaHlsEncrypter implements IChukasaHlsEncrypter {
         } catch (InvalidKeyException | NoSuchPaddingException | NoSuchAlgorithmException | NoSuchProviderException | IOException e) {
             log.error("{} {}", e.getMessage(), e);
         }
+
+
     }
 
     // Generate Random Key

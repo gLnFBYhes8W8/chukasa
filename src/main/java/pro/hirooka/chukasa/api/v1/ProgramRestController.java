@@ -1,6 +1,7 @@
 package pro.hirooka.chukasa.api.v1;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,10 +18,11 @@ import pro.hirooka.chukasa.domain.service.recorder.IRecorderService;
 import java.util.Date;
 import java.util.List;
 
-@Slf4j
 @RestController
 @RequestMapping("api/v1/programs")
 public class ProgramRestController {
+
+    private static final Logger log = LoggerFactory.getLogger(ProgramRestController.class);
 
     @Autowired
     IProgramTableService programTableService;

@@ -2,7 +2,8 @@ package pro.hirooka.chukasa.domain.service.epg.parser;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pro.hirooka.chukasa.domain.model.recorder.Channel;
@@ -19,9 +20,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
-@Slf4j
 @Component
 public class EpgdumpParser implements IEpgdumpParser {
+
+    private static final Logger log = LoggerFactory.getLogger(EpgdumpParser.class);
 
     @Autowired
     IProgramTableService epgDumpProgramTableService;

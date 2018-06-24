@@ -1,7 +1,8 @@
 package pro.hirooka.chukasa.domain.service.hls.encrypter;
 
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.text.RandomStringGenerator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pro.hirooka.chukasa.domain.config.ChukasaConstants;
 import pro.hirooka.chukasa.domain.config.common.type.StreamingType;
 import pro.hirooka.chukasa.domain.model.hls.ChukasaModel;
@@ -17,8 +18,9 @@ import java.security.*;
 import static java.util.Objects.requireNonNull;
 
 @Deprecated
-@Slf4j
 public class Encrypter implements Runnable {
+
+    private static final Logger log = LoggerFactory.getLogger(Encrypter.class);
 
     static final String FILE_SEPARATOR = System.getProperty("file.separator");
 

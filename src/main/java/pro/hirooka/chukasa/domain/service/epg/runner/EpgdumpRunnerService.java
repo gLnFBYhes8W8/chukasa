@@ -1,7 +1,8 @@
 package pro.hirooka.chukasa.domain.service.epg.runner;
 
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
@@ -26,9 +27,10 @@ import java.util.Set;
 import java.util.concurrent.Future;
 
 @EnableAsync
-@Slf4j
 @Service
 public class EpgdumpRunnerService implements IEpgdumpRunnerService {
+
+    private static final Logger log = LoggerFactory.getLogger(EpgdumpRunnerService.class);
 
     private final String FILE_SEPARATOR = ChukasaConstants.FILE_SEPARATOR;
 

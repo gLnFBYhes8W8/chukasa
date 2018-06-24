@@ -1,6 +1,5 @@
 package pro.hirooka.chukasa.api.v1;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -9,7 +8,6 @@ import pro.hirooka.chukasa.api.v1.exception.ChukasaInternalServerErrorException;
 import pro.hirooka.chukasa.domain.model.api.ChukasaResponse;
 import pro.hirooka.chukasa.domain.service.common.ITunerManagementService;
 
-@Slf4j
 @RestController
 @RequestMapping("api/v1/tuners")
 public class TunerRestController {

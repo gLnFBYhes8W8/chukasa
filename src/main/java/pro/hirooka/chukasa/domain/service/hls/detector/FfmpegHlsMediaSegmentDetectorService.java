@@ -1,6 +1,7 @@
 package pro.hirooka.chukasa.domain.service.hls.detector;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.scheduling.annotation.Async;
@@ -12,9 +13,10 @@ import java.util.Date;
 
 import static java.util.Objects.requireNonNull;
 
-@Slf4j
 @Service
 public class FfmpegHlsMediaSegmentDetectorService implements IFfmpegHlsMediaSegmentDetectorService, ApplicationListener<LastMediaSegmentSequenceEvent> {
+
+    private static final Logger log = LoggerFactory.getLogger(FfmpegHlsMediaSegmentDetectorService.class);
 
     private final FfmpegHlsMediaSegmentDetector ffmpegHLSMediaSegmentDetector;
     private ThreadPoolTaskScheduler threadPoolTaskScheduler;

@@ -1,7 +1,7 @@
 package pro.hirooka.chukasa.domain.service.recorder;
 
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.Async;
@@ -18,9 +18,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 
-@Slf4j
 @Component
 public class Recorder {
+
+    private static final Logger log = LoggerFactory.getLogger(Recorder.class);
 
     @Autowired
     SystemConfiguration systemConfiguration;
@@ -28,7 +29,6 @@ public class Recorder {
     @Autowired
     RecorderRunner recorderRunner;
 
-    @Getter
     Map<Integer, ScheduledFuture> scheduledFutureMap = new HashMap<>();
 
     @Async
@@ -66,4 +66,7 @@ public class Recorder {
         });
     }
 
+    public Map<Integer, ScheduledFuture> getScheduledFutureMap() {
+        return scheduledFutureMap;
+    }
 }

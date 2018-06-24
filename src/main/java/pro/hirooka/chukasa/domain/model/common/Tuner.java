@@ -1,10 +1,24 @@
 package pro.hirooka.chukasa.domain.model.common;
 
-import lombok.Data;
 import pro.hirooka.chukasa.domain.config.common.type.ChannelType;
 
-@Data
 public class Tuner {
     private ChannelType channelType;
     private String deviceName;
+
+    public ChannelType getChannelType() {
+        return channelType;
+    }
+
+    public void setChannelType(ChannelType channelType) {
+        this.channelType = channelType;
+    }
+
+    public String getDeviceName() {
+        return deviceName;
+    }
+
+    public void setDeviceName(String deviceName) {
+        this.deviceName = deviceName;
+    }
 }

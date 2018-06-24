@@ -1,7 +1,8 @@
 package pro.hirooka.chukasa.domain.service.hls.eraser;
 
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pro.hirooka.chukasa.domain.config.common.SystemConfiguration;
 
 import java.io.File;
@@ -11,8 +12,9 @@ import java.util.UUID;
 import static java.util.Objects.requireNonNull;
 import static pro.hirooka.chukasa.domain.config.ChukasaConstants.FILE_SEPARATOR;
 
-@Slf4j
 public class ChukasaRemoverRunner implements Runnable {
+
+    private static final Logger log = LoggerFactory.getLogger(ChukasaRemoverRunner.class);
 
     private String streamRootPath;
 

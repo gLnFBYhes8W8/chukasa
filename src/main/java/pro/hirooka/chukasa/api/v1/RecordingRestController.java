@@ -1,6 +1,5 @@
 package pro.hirooka.chukasa.api.v1;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -13,7 +12,6 @@ import pro.hirooka.chukasa.domain.service.recorder.IRecorderService;
 import java.net.URI;
 import java.util.List;
 
-@Slf4j
 @RestController
 @RequestMapping("api/v1/recordings")
 public class RecordingRestController {

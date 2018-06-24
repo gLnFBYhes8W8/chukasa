@@ -1,7 +1,8 @@
 package pro.hirooka.chukasa.domain.service.hls.remover;
 
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -12,9 +13,10 @@ import java.io.IOException;
 
 import static java.util.Objects.requireNonNull;
 
-@Slf4j
 @Service
 public class ChukasaHlsFileRemoverService implements IChukasaHlsFileRemoverService {
+
+    private static final Logger log = LoggerFactory.getLogger(ChukasaHlsFileRemoverService.class);
 
     private final SystemConfiguration systemConfiguration;
 

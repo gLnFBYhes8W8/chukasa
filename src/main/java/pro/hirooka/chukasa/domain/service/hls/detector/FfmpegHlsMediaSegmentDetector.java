@@ -1,8 +1,8 @@
 package pro.hirooka.chukasa.domain.service.hls.detector;
 
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.text.RandomStringGenerator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
@@ -27,16 +27,16 @@ import java.security.*;
 
 import static java.util.Objects.requireNonNull;
 
-@Slf4j
 @Component
 public class FfmpegHlsMediaSegmentDetector implements Runnable {
+
+    private static final Logger log = LoggerFactory.getLogger(FfmpegHlsMediaSegmentDetector.class);
 
     private final String FILE_SEPARATOR = ChukasaConstants.FILE_SEPARATOR;
     private final int MPEG2_TS_PACKET_LENGTH = ChukasaConstants.MPEG2_TS_PACKET_LENGTH;
     private final String STREAM_FILE_NAME_PREFIX = ChukasaConstants.STREAM_FILE_NAME_PREFIX;
     private final String HLS_IV_FILE_EXTENSION = ChukasaConstants.HLS_IV_FILE_EXTENSION;
 
-    @Setter
     private int adaptiveBitrateStreaming;
     private final IChukasaModelManagementComponent chukasaModelManagementComponent;
     private final IPlaylistCreator playlistBuilder;
@@ -214,5 +214,8 @@ public class FfmpegHlsMediaSegmentDetector implements Runnable {
         }
     }
 
+    public void setAdaptiveBitrateStreaming(int adaptiveBitrateStreaming) {
+        this.adaptiveBitrateStreaming = adaptiveBitrateStreaming;
+    }
 }
 

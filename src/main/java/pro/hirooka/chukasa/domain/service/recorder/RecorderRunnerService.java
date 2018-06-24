@@ -1,6 +1,7 @@
 package pro.hirooka.chukasa.domain.service.recorder;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
@@ -24,10 +25,11 @@ import java.util.concurrent.Future;
 
 import static pro.hirooka.chukasa.domain.config.ChukasaConstants.FILE_SEPARATOR;
 
-@Slf4j
 @EnableAsync
 @Service
 public class RecorderRunnerService implements IRecorderRunnerService {
+
+    private static final Logger log = LoggerFactory.getLogger(RecorderRunnerService.class);
 
     @Autowired
     private SystemConfiguration systemConfiguration;

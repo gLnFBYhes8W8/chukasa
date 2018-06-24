@@ -1,6 +1,7 @@
 package pro.hirooka.chukasa.domain.service.aaa;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -17,14 +18,14 @@ import pro.hirooka.chukasa.domain.repository.aaa.PermissionEntityRepository;
 import pro.hirooka.chukasa.domain.repository.aaa.RoleEntityRepository;
 import pro.hirooka.chukasa.domain.repository.aaa.UserDetailsEntityRepository;
 
-import javax.annotation.PostConstruct;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@Slf4j
 @Service
 public class ChukasaUserDetailsService implements IChukasaUserDetailsService {
+
+    private static final Logger log = LoggerFactory.getLogger(ChukasaUserDetailsService.class);
 
     @Autowired
     UserDetailsEntityRepository repository;

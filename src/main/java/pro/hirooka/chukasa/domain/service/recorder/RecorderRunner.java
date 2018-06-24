@@ -1,15 +1,12 @@
 package pro.hirooka.chukasa.domain.service.recorder;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Component;
 import pro.hirooka.chukasa.domain.config.common.SystemConfiguration;
 import pro.hirooka.chukasa.domain.config.common.type.ChannelType;
 import pro.hirooka.chukasa.domain.config.common.type.FfmpegVcodecType;
-import pro.hirooka.chukasa.domain.config.common.type.HardwareAccelerationType;
 import pro.hirooka.chukasa.domain.model.common.ChannelConfiguration;
 import pro.hirooka.chukasa.domain.model.common.TunerStatus;
 import pro.hirooka.chukasa.domain.model.recorder.ReservedProgram;
@@ -22,12 +19,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import static java.util.Objects.requireNonNull;
 import static pro.hirooka.chukasa.domain.config.ChukasaConstants.FILE_SEPARATOR;
 
-@Slf4j
 @Component
 public class RecorderRunner implements Runnable {
+
+    private static final Logger log = LoggerFactory.getLogger(RecorderRunner.class);
 
     @Autowired
     private SystemConfiguration systemConfiguration;
@@ -38,8 +35,6 @@ public class RecorderRunner implements Runnable {
     @Autowired
     private ISystemService systemService;
 
-    @Setter
-    @Getter
     private ReservedProgram reservedProgram;
 
     @Override
@@ -190,6 +185,14 @@ public class RecorderRunner implements Runnable {
         }
 
         tunerManagementService.update(tunerStatus, true);
+    }
+
+    public ReservedProgram getReservedProgram() {
+        return reservedProgram;
+    }
+
+    public void setReservedProgram(ReservedProgram reservedProgram) {
+        this.reservedProgram = reservedProgram;
     }
 }
 

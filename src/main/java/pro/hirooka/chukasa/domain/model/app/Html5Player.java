@@ -1,8 +1,13 @@
 package pro.hirooka.chukasa.domain.model.app;
 
-import lombok.Data;
-
-@Data
 public class Html5Player {
     private String playlistURI;
+
+    public String getPlaylistURI() {
+        return playlistURI;
+    }
+
+    public void setPlaylistURI(String playlistURI) {
+        this.playlistURI = playlistURI;
+    }
 }

@@ -1,7 +1,8 @@
 package pro.hirooka.chukasa.domain.service.common;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
@@ -22,9 +23,10 @@ import java.util.List;
 import static pro.hirooka.chukasa.domain.config.ChukasaConstants.FILE_SEPARATOR;
 import static pro.hirooka.chukasa.domain.config.ChukasaConstants.STREAM_ROOT_PATH_NAME;
 
-@Slf4j
 @Component
 public class CommonUtilityService implements ICommonUtilityService {
+
+    private static final Logger log = LoggerFactory.getLogger(CommonUtilityService.class);
 
     @Autowired
     private CommonConfiguration commonConfiguration;

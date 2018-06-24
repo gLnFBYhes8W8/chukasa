@@ -1,6 +1,7 @@
 package pro.hirooka.chukasa.app;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -37,10 +38,11 @@ import java.util.stream.Collectors;
 
 import static pro.hirooka.chukasa.domain.config.ChukasaConstants.ALTERNATIVE_HLS_PLAYER;
 
-@Slf4j
 @RequestMapping("/chukasa")
 @Controller
 public class ChukasaController {
+
+    private static final Logger log = LoggerFactory.getLogger(ChukasaController.class);
 
     @Autowired
     CommonConfiguration commonConfiguration;

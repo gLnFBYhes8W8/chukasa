@@ -1,12 +1,18 @@
 package pro.hirooka.chukasa.domain.model.common;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
 
 import java.util.List;
 
-@Data
 public class ChannelConfigurationWrapper {
     @JsonProperty("channelConfiguration")
     private List<ChannelConfiguration> channelConfigurationList;
+
+    public List<ChannelConfiguration> getChannelConfigurationList() {
+        return channelConfigurationList;
+    }
+
+    public void setChannelConfigurationList(List<ChannelConfiguration> channelConfigurationList) {
+        this.channelConfigurationList = channelConfigurationList;
+    }
 }

@@ -1,6 +1,5 @@
 package pro.hirooka.chukasa.domain.entity.aaa;
 
-import lombok.Getter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -16,7 +15,6 @@ import java.util.UUID;
 @Entity
 abstract class AbstractEntity implements Serializable {
 
-    @Getter
     @Id
     private UUID uuid = UUID.randomUUID();
 
@@ -25,4 +23,8 @@ abstract class AbstractEntity implements Serializable {
 
     @UpdateTimestamp
     private Date updatedDate;
+
+    public UUID getUuid() {
+        return uuid;
+    }
 }

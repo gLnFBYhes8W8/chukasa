@@ -1,7 +1,8 @@
 package pro.hirooka.chukasa.domain.service.recorder;
 
 import com.mongodb.MongoClient;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -23,9 +24,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Slf4j
 @Service
 public class RecorderService implements IRecorderService {
+
+    private static final Logger log = LoggerFactory.getLogger(RecorderService.class);
 
     @Autowired
     RecorderConfiguration recorderConfiguration;

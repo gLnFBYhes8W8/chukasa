@@ -1,6 +1,7 @@
 package pro.hirooka.chukasa.domain.service.common;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pro.hirooka.chukasa.domain.config.ChukasaConstants;
@@ -21,9 +22,10 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-@Slf4j
 @Service
 public class TunerManagementService implements ITunerManagementService {
+
+    private static final Logger log = LoggerFactory.getLogger(TunerManagementService.class);
 
     final String DVB_DEVICE = ChukasaConstants.DVB_DEVICE;
     final String CHADEV_DEVICE = ChukasaConstants.CHARACTER_DEVICE;

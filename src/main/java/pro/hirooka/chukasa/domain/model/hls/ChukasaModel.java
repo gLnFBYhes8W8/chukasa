@@ -1,9 +1,7 @@
 package pro.hirooka.chukasa.domain.model.hls;
 
-import lombok.Data;
 import pro.hirooka.chukasa.domain.config.common.SystemConfiguration;
 import pro.hirooka.chukasa.domain.config.common.type.FfmpegVcodecType;
-import pro.hirooka.chukasa.domain.config.common.type.PlaylistType;
 import pro.hirooka.chukasa.domain.config.hls.HlsConfiguration;
 
 import java.math.BigDecimal;
@@ -11,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@Data
 public class ChukasaModel {
 
     // TODO: せいり
@@ -155,5 +152,372 @@ public class ChukasaModel {
         this.tunerDeviceName = "";
     }
 
+    public int getAdaptiveBitrateStreaming() {
+        return adaptiveBitrateStreaming;
+    }
+
+    public void setAdaptiveBitrateStreaming(int adaptiveBitrateStreaming) {
+        this.adaptiveBitrateStreaming = adaptiveBitrateStreaming;
+    }
+
+    public SystemConfiguration getSystemConfiguration() {
+        return systemConfiguration;
+    }
+
+    public void setSystemConfiguration(SystemConfiguration systemConfiguration) {
+        this.systemConfiguration = systemConfiguration;
+    }
+
+    public HlsConfiguration getHlsConfiguration() {
+        return hlsConfiguration;
+    }
+
+    public void setHlsConfiguration(HlsConfiguration hlsConfiguration) {
+        this.hlsConfiguration = hlsConfiguration;
+    }
+
+    public String getStreamRootPath() {
+        return streamRootPath;
+    }
+
+    public void setStreamRootPath(String streamRootPath) {
+        this.streamRootPath = streamRootPath;
+    }
+
+    public String getStreamPath() {
+        return streamPath;
+    }
+
+    public void setStreamPath(String streamPath) {
+        this.streamPath = streamPath;
+    }
+
+    public String getTempEncPath() {
+        return tempEncPath;
+    }
+
+    public void setTempEncPath(String tempEncPath) {
+        this.tempEncPath = tempEncPath;
+    }
+
+    public int getVideoBitrate() {
+        return videoBitrate;
+    }
+
+    public void setVideoBitrate(int videoBitrate) {
+        this.videoBitrate = videoBitrate;
+    }
+
+    public long getTimerSegmenterDelay() {
+        return timerSegmenterDelay;
+    }
+
+    public void setTimerSegmenterDelay(long timerSegmenterDelay) {
+        this.timerSegmenterDelay = timerSegmenterDelay;
+    }
+
+    public long getTimerSegmenterPeriod() {
+        return timerSegmenterPeriod;
+    }
+
+    public void setTimerSegmenterPeriod(long timerSegmenterPeriod) {
+        this.timerSegmenterPeriod = timerSegmenterPeriod;
+    }
+
+    public long getTimerPlaylisterDelay() {
+        return timerPlaylisterDelay;
+    }
+
+    public void setTimerPlaylisterDelay(long timerPlaylisterDelay) {
+        this.timerPlaylisterDelay = timerPlaylisterDelay;
+    }
+
+    public long getTimerPlaylisterPeriod() {
+        return timerPlaylisterPeriod;
+    }
+
+    public void setTimerPlaylisterPeriod(long timerPlaylisterPeriod) {
+        this.timerPlaylisterPeriod = timerPlaylisterPeriod;
+    }
+
+    public ChukasaSettings getChukasaSettings() {
+        return chukasaSettings;
+    }
+
+    public void setChukasaSettings(ChukasaSettings chukasaSettings) {
+        this.chukasaSettings = chukasaSettings;
+    }
+
+    public String getStreamFileExtension() {
+        return streamFileExtension;
+    }
+
+    public void setStreamFileExtension(String streamFileExtension) {
+        this.streamFileExtension = streamFileExtension;
+    }
+
+    public long getReadBytes() {
+        return readBytes;
+    }
+
+    public void setReadBytes(long readBytes) {
+        this.readBytes = readBytes;
+    }
+
+    public int getSeqTs() {
+        return seqTs;
+    }
+
+    public void setSeqTs(int seqTs) {
+        this.seqTs = seqTs;
+    }
+
+    public int getSeqTsEnc() {
+        return seqTsEnc;
+    }
+
+    public void setSeqTsEnc(int seqTsEnc) {
+        this.seqTsEnc = seqTsEnc;
+    }
+
+    public int getSeqTsOkkake() {
+        return seqTsOkkake;
+    }
+
+    public void setSeqTsOkkake(int seqTsOkkake) {
+        this.seqTsOkkake = seqTsOkkake;
+    }
+
+    public int getSeqTsLast() {
+        return seqTsLast;
+    }
+
+    public void setSeqTsLast(int seqTsLast) {
+        this.seqTsLast = seqTsLast;
+    }
+
+    public boolean isFlagSegFullDuration() {
+        return flagSegFullDuration;
+    }
+
+    public void setFlagSegFullDuration(boolean flagSegFullDuration) {
+        this.flagSegFullDuration = flagSegFullDuration;
+    }
+
+    public boolean isFlagLastTs() {
+        return flagLastTs;
+    }
+
+    public void setFlagLastTs(boolean flagLastTs) {
+        this.flagLastTs = flagLastTs;
+    }
+
+    public BigDecimal getInitPcrSecond() {
+        return initPcrSecond;
+    }
+
+    public void setInitPcrSecond(BigDecimal initPcrSecond) {
+        this.initPcrSecond = initPcrSecond;
+    }
+
+    public BigDecimal getLastPcrSecond() {
+        return lastPcrSecond;
+    }
+
+    public void setLastPcrSecond(BigDecimal lastPcrSecond) {
+        this.lastPcrSecond = lastPcrSecond;
+    }
+
+    public BigDecimal getDiffPcrSecond() {
+        return diffPcrSecond;
+    }
+
+    public void setDiffPcrSecond(BigDecimal diffPcrSecond) {
+        this.diffPcrSecond = diffPcrSecond;
+    }
+
+    public BigDecimal getLastPcrSec() {
+        return lastPcrSec;
+    }
+
+    public void setLastPcrSec(BigDecimal lastPcrSec) {
+        this.lastPcrSec = lastPcrSec;
+    }
+
+    public double getDuration() {
+        return duration;
+    }
+
+    public void setDuration(double duration) {
+        this.duration = duration;
+    }
+
+    public List<Double> getExtinfList() {
+        return extinfList;
+    }
+
+    public void setExtinfList(List<Double> extinfList) {
+        this.extinfList = extinfList;
+    }
+
+    public BigDecimal getNextInit() {
+        return nextInit;
+    }
+
+    public void setNextInit(BigDecimal nextInit) {
+        this.nextInit = nextInit;
+    }
+
+    public int getSegmentedSequenceByFFmpeg() {
+        return segmentedSequenceByFFmpeg;
+    }
+
+    public void setSegmentedSequenceByFFmpeg(int segmentedSequenceByFFmpeg) {
+        this.segmentedSequenceByFFmpeg = segmentedSequenceByFFmpeg;
+    }
+
+    public ArrayList<String> getKeyArrayList() {
+        return keyArrayList;
+    }
+
+    public void setKeyArrayList(ArrayList<String> keyArrayList) {
+        this.keyArrayList = keyArrayList;
+    }
+
+    public ArrayList<String> getIvArrayList() {
+        return ivArrayList;
+    }
+
+    public void setIvArrayList(ArrayList<String> ivArrayList) {
+        this.ivArrayList = ivArrayList;
+    }
+
+    public int getSeqPl() {
+        return seqPl;
+    }
+
+    public void setSeqPl(int seqPl) {
+        this.seqPl = seqPl;
+    }
+
+    public String getNamePl() {
+        return namePl;
+    }
+
+    public void setNamePl(String namePl) {
+        this.namePl = namePl;
+    }
+
+    public boolean isFlagLastPl() {
+        return flagLastPl;
+    }
+
+    public void setFlagLastPl(boolean flagLastPl) {
+        this.flagLastPl = flagLastPl;
+    }
+
+    public int getSequenceInitialPlaylist() {
+        return sequenceInitialPlaylist;
+    }
+
+    public void setSequenceInitialPlaylist(int sequenceInitialPlaylist) {
+        this.sequenceInitialPlaylist = sequenceInitialPlaylist;
+    }
+
+    public boolean isFlagTimerSegmenter() {
+        return flagTimerSegmenter;
+    }
+
+    public void setFlagTimerSegmenter(boolean flagTimerSegmenter) {
+        this.flagTimerSegmenter = flagTimerSegmenter;
+    }
+
+    public boolean isFlagTimerFFmpegHLSSegmenter() {
+        return flagTimerFFmpegHLSSegmenter;
+    }
+
+    public void setFlagTimerFFmpegHLSSegmenter(boolean flagTimerFFmpegHLSSegmenter) {
+        this.flagTimerFFmpegHLSSegmenter = flagTimerFFmpegHLSSegmenter;
+    }
+
+    public boolean isFlagTimerPlaylister() {
+        return flagTimerPlaylister;
+    }
+
+    public void setFlagTimerPlaylister(boolean flagTimerPlaylister) {
+        this.flagTimerPlaylister = flagTimerPlaylister;
+    }
+
+    public boolean isFlagRemoveFile() {
+        return flagRemoveFile;
+    }
+
+    public void setFlagRemoveFile(boolean flagRemoveFile) {
+        this.flagRemoveFile = flagRemoveFile;
+    }
+
+    public boolean isTrascoding() {
+        return isTrascoding;
+    }
+
+    public void setTrascoding(boolean trascoding) {
+        isTrascoding = trascoding;
+    }
+
+    public long getFfmpegPID() {
+        return ffmpegPID;
+    }
+
+    public void setFfmpegPID(long ffmpegPID) {
+        this.ffmpegPID = ffmpegPID;
+    }
+
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
+    }
+
+    public FfmpegVcodecType getFfmpegVcodecType() {
+        return ffmpegVcodecType;
+    }
+
+    public void setFfmpegVcodecType(FfmpegVcodecType ffmpegVcodecType) {
+        this.ffmpegVcodecType = ffmpegVcodecType;
+    }
+
+    public int getSequenceMediaSegment() {
+        return sequenceMediaSegment;
+    }
+
+    public void setSequenceMediaSegment(int sequenceMediaSegment) {
+        this.sequenceMediaSegment = sequenceMediaSegment;
+    }
+
+    public int getSequenceLastMediaSegment() {
+        return sequenceLastMediaSegment;
+    }
+
+    public void setSequenceLastMediaSegment(int sequenceLastMediaSegment) {
+        this.sequenceLastMediaSegment = sequenceLastMediaSegment;
+    }
+
+    public int getSequencePlaylist() {
+        return sequencePlaylist;
+    }
+
+    public void setSequencePlaylist(int sequencePlaylist) {
+        this.sequencePlaylist = sequencePlaylist;
+    }
+
+    public String getTunerDeviceName() {
+        return tunerDeviceName;
+    }
+
+    public void setTunerDeviceName(String tunerDeviceName) {
+        this.tunerDeviceName = tunerDeviceName;
+    }
 }
 

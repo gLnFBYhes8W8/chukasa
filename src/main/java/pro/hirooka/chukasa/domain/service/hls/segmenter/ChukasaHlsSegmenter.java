@@ -1,7 +1,7 @@
 package pro.hirooka.chukasa.domain.service.hls.segmenter;
 
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.stereotype.Component;
@@ -17,16 +17,16 @@ import java.io.*;
 import java.math.BigDecimal;
 import java.util.*;
 
-@Slf4j
 @Component
 public class ChukasaHlsSegmenter implements Runnable {
+
+    private static final Logger log = LoggerFactory.getLogger(ChukasaHlsSegmenter.class);
 
     private final String FILE_SEPARATOR = ChukasaConstants.FILE_SEPARATOR;
     private final String STREAM_FILE_NAME_PREFIX = ChukasaConstants.STREAM_FILE_NAME_PREFIX;
     private final int MPEG2_TS_PACKET_LENGTH = ChukasaConstants.MPEG2_TS_PACKET_LENGTH;
     private final String SYNC_WORD = "47";
 
-    @Setter
     private int adaptiveBitrateStreaming;
     @Autowired
     private IChukasaModelManagementComponent chukasaModelManagementComponent;
@@ -968,6 +968,10 @@ public class ChukasaHlsSegmenter implements Runnable {
 
         }
 
+    }
+
+    public void setAdaptiveBitrateStreaming(int adaptiveBitrateStreaming) {
+        this.adaptiveBitrateStreaming = adaptiveBitrateStreaming;
     }
 }
 

@@ -1,6 +1,5 @@
 package pro.hirooka.chukasa.api.v1;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -15,7 +14,6 @@ import java.util.List;
 
 import static pro.hirooka.chukasa.domain.config.ChukasaConstants.FILE_SEPARATOR;
 
-@Slf4j
 @RestController
 @RequestMapping("api/v1/m4v")
 public class M4vRestController {

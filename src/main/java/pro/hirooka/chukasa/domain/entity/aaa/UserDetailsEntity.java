@@ -1,6 +1,5 @@
 package pro.hirooka.chukasa.domain.entity.aaa;
 
-import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,11 +12,9 @@ import java.util.stream.Collectors;
 @Entity
 public class UserDetailsEntity extends AbstractEntity implements UserDetails {
 
-    @Setter
     @Column(unique = true)
     private String username;
 
-    @Setter
     private String password;
 
     @Override
@@ -56,8 +53,19 @@ public class UserDetailsEntity extends AbstractEntity implements UserDetails {
         return true;
     }
 
-    @Setter
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_role")
     private Set<RoleEntity> roleEntitySet;
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setRoleEntitySet(Set<RoleEntity> roleEntitySet) {
+        this.roleEntitySet = roleEntitySet;
+    }
 }
