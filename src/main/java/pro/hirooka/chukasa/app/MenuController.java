@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import pro.hirooka.chukasa.api.v1.helper.IChukasaBrowserDetector;
 import pro.hirooka.chukasa.domain.config.common.CommonConfiguration;
 import pro.hirooka.chukasa.domain.config.common.SystemConfiguration;
-import pro.hirooka.chukasa.domain.entity.aaa.UserDetailsEntity;
+import pro.hirooka.chukasa.domain.model.aaa.ChukasaUserDetails;
 import pro.hirooka.chukasa.domain.model.common.ChannelConfiguration;
 import pro.hirooka.chukasa.domain.model.common.VideoFile;
 import pro.hirooka.chukasa.domain.model.epg.type.EpgdumpStatus;
@@ -67,23 +67,23 @@ public class MenuController {
     // TODO: logic -> service
 
     @RequestMapping
-    String manu(@AuthenticationPrincipal UserDetailsEntity userDetailsEntity, Model model){
+    String manu(@AuthenticationPrincipal ChukasaUserDetails chukasaUserDetails, Model model){
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(authentication.getPrincipal() instanceof UserDetailsEntity){
-            UserDetailsEntity authenticationUserDetailsEntity = UserDetailsEntity.class.cast(authentication.getPrincipal());
-            String usename = authenticationUserDetailsEntity.getUsername();
+        if(authentication.getPrincipal() instanceof ChukasaUserDetails){
+            ChukasaUserDetails authenticationChukasaUserDetails = ChukasaUserDetails.class.cast(authentication.getPrincipal());
+            String username = authenticationChukasaUserDetails.getUsername();
         }
         Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
         if(httpServletRequest.isUserInRole("ADMIN") || httpServletRequest.isUserInRole("ROLE_ADMIN")){
             log.info("ADMIN");
         }
         // SecurityExpressionRoot
-        if(userDetailsEntity == null){
-            userDetailsEntity = new UserDetailsEntity();
-            userDetailsEntity.setUsername("inMmemory");
+        if(chukasaUserDetails == null){
+            chukasaUserDetails = new ChukasaUserDetails();
+            chukasaUserDetails.setUsername("inMmemory");
         }
-        model.addAttribute("user", userDetailsEntity);
+        model.addAttribute("user", chukasaUserDetails);
 
         if(epgdumpService.getStatus().equals(EpgdumpStatus.RUNNING)){
             log.info("EpgdumpService is running.");

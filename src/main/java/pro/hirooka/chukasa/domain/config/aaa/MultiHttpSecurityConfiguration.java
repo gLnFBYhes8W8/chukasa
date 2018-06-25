@@ -34,6 +34,9 @@ public class MultiHttpSecurityConfiguration {
         @Override
         protected void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
             if(aaaConfiguration.isEnabled()) {
+                if(springConfiguration.getProfiles().contains("mongodb")){
+                    authenticationManagerBuilder.userDetailsService(this.chukasaUserDetailsService);
+                }else
                 if (springConfiguration.getProfiles().contains("postgresql")
                         || springConfiguration.getProfiles().contains("mysql")
                         || springConfiguration.getProfiles().contains("hsqldb")) {
@@ -88,6 +91,9 @@ public class MultiHttpSecurityConfiguration {
         @Override
         protected void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
             if(aaaConfiguration.isEnabled()) {
+                if(springConfiguration.getProfiles().contains("mongodb")){
+                    authenticationManagerBuilder.userDetailsService(this.chukasaUserDetailsService);
+                }else
                 if (springConfiguration.getProfiles().contains("postgresql")
                         || springConfiguration.getProfiles().contains("mysql")
                         || springConfiguration.getProfiles().contains("hsqldb")) {

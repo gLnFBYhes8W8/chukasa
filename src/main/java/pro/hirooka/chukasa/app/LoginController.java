@@ -30,7 +30,8 @@ public class LoginController {
     @RequestMapping("/login")
     public String login() {
 
-        if(springConfiguration.getProfiles().contains("postgresql")
+        if(springConfiguration.getProfiles().contains("mongodb")
+                || springConfiguration.getProfiles().contains("postgresql")
                 || springConfiguration.getProfiles().contains("mysql")
                 || springConfiguration.getProfiles().contains("hsqldb")){
             if(chukasaUserDetailsService.readAllUserDetails().size() == 0){

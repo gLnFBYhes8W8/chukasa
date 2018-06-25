@@ -8,39 +8,29 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import pro.hirooka.chukasa.domain.entity.aaa.OperationEntity;
-import pro.hirooka.chukasa.domain.entity.aaa.PermissionEntity;
-import pro.hirooka.chukasa.domain.entity.aaa.RoleEntity;
-import pro.hirooka.chukasa.domain.entity.aaa.UserDetailsEntity;
-import pro.hirooka.chukasa.domain.entity.aaa.type.OperationType;
-import pro.hirooka.chukasa.domain.repository.aaa.OperationEntityRepository;
-import pro.hirooka.chukasa.domain.repository.aaa.PermissionEntityRepository;
-import pro.hirooka.chukasa.domain.repository.aaa.RoleEntityRepository;
-import pro.hirooka.chukasa.domain.repository.aaa.UserDetailsEntityRepository;
+import pro.hirooka.chukasa.domain.model.aaa.ChukasaUserDetails;
+import pro.hirooka.chukasa.domain.model.aaa.ChukasaUserRole;
+import pro.hirooka.chukasa.domain.repository.aaa.*;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+
+import static java.util.Objects.requireNonNull;
 
 @Service
 public class ChukasaUserDetailsService implements IChukasaUserDetailsService {
 
     private static final Logger log = LoggerFactory.getLogger(ChukasaUserDetailsService.class);
 
-    @Autowired
-    UserDetailsEntityRepository repository;
+    private final ChukasaUserDetailsRepository chukasaUserDetailsRepository;
 
-    // TODO: delete
     @Autowired
-    RoleEntityRepository roleEntityRepository;
-    @Autowired
-    PermissionEntityRepository permissionEntityRepository;
-    @Autowired
-    OperationEntityRepository operationEntityRepository;
+    public ChukasaUserDetailsService(ChukasaUserDetailsRepository chukasaUserDetailsRepository) {
+        this.chukasaUserDetailsRepository = requireNonNull(chukasaUserDetailsRepository);
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return repository.findOneByUsername(username);
+        return chukasaUserDetailsRepository.findOneByUsername(username);
     }
 
     @Override
@@ -48,61 +38,29 @@ public class ChukasaUserDetailsService implements IChukasaUserDetailsService {
 
         log.info("create initial user");
 
-        OperationEntity operationEntity = new OperationEntity();
-        operationEntity.setOperationType(OperationType.READ);
-        operationEntity.setName(OperationType.READ.name());
-        operationEntityRepository.save(operationEntity);
-        operationEntity = new OperationEntity();
-        operationEntity.setOperationType(OperationType.WRITE);
-        operationEntity.setName(OperationType.WRITE.name());
-        operationEntityRepository.save(operationEntity);
-
-        Set<OperationEntity> operationEntitySet = new HashSet<>();
-        operationEntitySet.addAll(operationEntityRepository.findAll());
-        PermissionEntity permissionEntity = new PermissionEntity();
-        permissionEntity.setName("ALL");
-        permissionEntityRepository.save(permissionEntity);
-        operationEntitySet = new HashSet<>();
-        operationEntitySet.add(operationEntityRepository.findOneByName(OperationType.READ.name()));
-        permissionEntity = new PermissionEntity();
-        permissionEntity.setName("READ_ONLY");
-        permissionEntityRepository.save(permissionEntity);
-
         PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
-        RoleEntity roleEntity = new RoleEntity();
-        roleEntity.setName("ADMIN");
-        roleEntity.setAuthority("ROLE_ADMIN");
-        Set<PermissionEntity> permissionEntitySet = new HashSet<>();
-        permissionEntitySet.add(permissionEntityRepository.findOneByName("ALL"));
-        roleEntity.setPermissionEntitySet(permissionEntitySet);
-        roleEntity = roleEntityRepository.save(roleEntity);
-        Set<RoleEntity> roleEntitySet = new HashSet<>();
-        roleEntitySet.add(roleEntity);
-        UserDetailsEntity userDetailsEntity = new UserDetailsEntity();
-        userDetailsEntity.setUsername("admin");
-        userDetailsEntity.setPassword(passwordEncoder.encode("admin"));
-        userDetailsEntity.setRoleEntitySet(roleEntitySet);
-        repository.save(userDetailsEntity);
+        ChukasaUserRole userRole = new ChukasaUserRole();
+        userRole.setName("GUEST");
+        userRole.setAuthority("ROLE_GUEST");
+        ChukasaUserDetails chukasaUserDetails = new ChukasaUserDetails();
+        chukasaUserDetails.setUsername("guest");
+        chukasaUserDetails.setPassword(passwordEncoder.encode("guest"));
+        chukasaUserDetails.setUserRoleList(Collections.singletonList(userRole));
+        chukasaUserDetailsRepository.save(chukasaUserDetails);
 
-        roleEntity = new RoleEntity();
-        roleEntity.setName("GUEST");
-        roleEntity.setAuthority("ROLE_GUEST");
-        permissionEntitySet = new HashSet<>();
-        permissionEntitySet.add(permissionEntityRepository.findOneByName("READ_ONLY"));
-        roleEntity.setPermissionEntitySet(permissionEntitySet);
-        roleEntity = roleEntityRepository.save(roleEntity);
-        roleEntitySet = new HashSet<>();
-        roleEntitySet.add(roleEntity);
-        userDetailsEntity = new UserDetailsEntity();
-        userDetailsEntity.setUsername("guest");
-        userDetailsEntity.setPassword(passwordEncoder.encode("guest"));
-        userDetailsEntity.setRoleEntitySet(roleEntitySet);
-        repository.save(userDetailsEntity);
+        userRole = new ChukasaUserRole();
+        userRole.setName("ADMIN");
+        userRole.setAuthority("ROLE_ADMIN");
+        chukasaUserDetails = new ChukasaUserDetails();
+        chukasaUserDetails.setUsername("admin");
+        chukasaUserDetails.setPassword(passwordEncoder.encode("admin"));
+        chukasaUserDetails.setUserRoleList(Collections.singletonList(userRole));
+        chukasaUserDetailsRepository.save(chukasaUserDetails);
     }
 
     @Override
-    public List<UserDetailsEntity> readAllUserDetails() {
-        return repository.findAll();
+    public List<ChukasaUserDetails> readAllUserDetails() {
+        return chukasaUserDetailsRepository.findAll();
     }
 }
