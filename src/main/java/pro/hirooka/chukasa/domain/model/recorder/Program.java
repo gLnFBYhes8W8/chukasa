@@ -3,8 +3,11 @@ package pro.hirooka.chukasa.domain.model.recorder;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.data.annotation.Id;
 
+import java.util.UUID;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Program {
+    private UUID uuid = UUID.randomUUID();
     @Id
     private String id;
     private String channel;
@@ -28,6 +31,8 @@ public class Program {
     private String endDate;
     private int physicalLogicalChannel;
     private int remoteControllerChannel;
+    private int channelRecording;
+    private int channelRemoteControl;
 
     public String getId() {
         return id;
@@ -131,5 +136,21 @@ public class Program {
 
     public void setRemoteControllerChannel(int remoteControllerChannel) {
         this.remoteControllerChannel = remoteControllerChannel;
+    }
+
+    public int getChannelRecording() {
+        return channelRecording;
+    }
+
+    public void setChannelRecording(int channelRecording) {
+        this.channelRecording = channelRecording;
+    }
+
+    public int getChannelRemoteControl() {
+        return channelRemoteControl;
+    }
+
+    public void setChannelRemoteControl(int channelRemoteControl) {
+        this.channelRemoteControl = channelRemoteControl;
     }
 }
