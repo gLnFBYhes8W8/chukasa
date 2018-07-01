@@ -81,6 +81,8 @@ public class ChukasaModel {
 
     private String tunerDeviceName;
 
+    private String unixDomainSocketPath;
+
     public ChukasaModel(){
 
         adaptiveBitrateStreaming = 0;
@@ -150,6 +152,8 @@ public class ChukasaModel {
         this.sequencePlaylist = -1;
 
         this.tunerDeviceName = "";
+
+        this.unixDomainSocketPath = "";
     }
 
     public int getAdaptiveBitrateStreaming() {
@@ -518,6 +522,14 @@ public class ChukasaModel {
 
     public void setTunerDeviceName(String tunerDeviceName) {
         this.tunerDeviceName = tunerDeviceName;
+    }
+
+    public String getUnixDomainSocketPath() {
+        return unixDomainSocketPath;
+    }
+
+    public void setUnixDomainSocketPath(String unixDomainSocketPath) {
+        this.unixDomainSocketPath = unixDomainSocketPath;
     }
 }
 

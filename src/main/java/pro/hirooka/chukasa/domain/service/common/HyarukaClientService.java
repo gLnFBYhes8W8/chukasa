@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.client.ResponseExtractor;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 import pro.hirooka.chukasa.domain.config.common.HyarukaConfiguration;
 import pro.hirooka.chukasa.domain.model.common.type.TunerType;
 import pro.hirooka.chukasa.domain.model.recorder.Program;
@@ -74,6 +75,14 @@ public class HyarukaClientService implements IHyarukaClientService {
             }
         });
         return new AsyncResult<>(responseEntity);
+    }
+
+    @Override
+    public String getUnixDomainSocketPath(TunerType tunerType, int channelRecording) {
+        final String HYARUKA_URI = getHyarukaUri("/streams/" + tunerType.name().toUpperCase() + "/" + channelRecording);
+        final RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> responseEntity = restTemplate.getForEntity(HYARUKA_URI, String.class);
+        return responseEntity.getBody().toString();
     }
 
     private String getHyarukaUri(String path){

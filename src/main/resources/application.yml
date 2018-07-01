@@ -33,10 +33,11 @@ recorder:
 
 hyaruka:
   scheme: http
-  host: 192.168.115.4
+  host: localhost
   port: 49149
   api-version: v1
   enabled: true
+  unix-domain-socket-enabled: false
 
 server:
   port: 8080

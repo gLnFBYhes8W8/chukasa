@@ -12,6 +12,7 @@ public class HyarukaConfiguration {
     private int port;
     private String apiVersion;
     private boolean enabled;
+    private boolean unixDomainSocketEnabled;
 
     public SchemeType getScheme() {
         return scheme;
@@ -51,5 +52,13 @@ public class HyarukaConfiguration {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public boolean isUnixDomainSocketEnabled() {
+        return unixDomainSocketEnabled;
+    }
+
+    public void setUnixDomainSocketEnabled(boolean unixDomainSocketEnabled) {
+        this.unixDomainSocketEnabled = unixDomainSocketEnabled;
     }
 }

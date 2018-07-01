@@ -23,7 +23,9 @@ import pro.hirooka.chukasa.domain.model.common.VideoFile;
 import pro.hirooka.chukasa.domain.model.hls.ChukasaModel;
 import pro.hirooka.chukasa.domain.model.hls.ChukasaSettings;
 import pro.hirooka.chukasa.domain.model.recorder.Program;
+import pro.hirooka.chukasa.domain.service.common.HyarukaClientService;
 import pro.hirooka.chukasa.domain.service.common.ICommonUtilityService;
+import pro.hirooka.chukasa.domain.service.common.IHyarukaClientService;
 import pro.hirooka.chukasa.domain.service.common.ISystemService;
 import pro.hirooka.chukasa.domain.service.epg.IEpgdumpService;
 import pro.hirooka.chukasa.domain.service.epg.ILastEpgdumpExecutedService;
@@ -71,6 +73,8 @@ public class ChukasaController {
     IEpgdumpService epgdumpService;
     @Autowired
     HyarukaConfiguration hyarukaConfiguration;
+    @Autowired
+    IHyarukaClientService hyarukaClientService;
 
 
     @GetMapping("")
@@ -181,9 +185,15 @@ public class ChukasaController {
 
         log.info("ChukasaSettings -> {}", chukasaSettings.toString());
 
+        String unixDomainSocketPath = "";
+        if(hyarukaConfiguration.isEnabled() && hyarukaConfiguration.isUnixDomainSocketEnabled()){
+            unixDomainSocketPath = hyarukaClientService.getUnixDomainSocketPath(commonUtilityService.getTunerType(chukasaSettings.getPhysicalLogicalChannel()), chukasaSettings.getPhysicalLogicalChannel());
+        }
+
         ChukasaModel chukasaModel = new ChukasaModel();
         chukasaModel.setSystemConfiguration(systemConfiguration);
         chukasaModel.setHlsConfiguration(hlsConfiguration);
+        chukasaModel.setUnixDomainSocketPath(unixDomainSocketPath);
         chukasaSettings.setTunerType(commonUtilityService.getTunerType(chukasaSettings.getPhysicalLogicalChannel()));
         chukasaModel.setChukasaSettings(chukasaSettings);
 

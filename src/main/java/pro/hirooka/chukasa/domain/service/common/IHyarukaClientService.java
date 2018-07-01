@@ -13,4 +13,5 @@ public interface IHyarukaClientService {
     List<Program> getProgramListByChannelRecording(int channel);
     Program getProgramByChannelRecordingNow(int channel);
     Future<ResponseEntity<File>> getStream(TunerType tunerType, int channelRecording, long duration, File file);
+    String getUnixDomainSocketPath(TunerType tunerType, int channelRecording);
 }
