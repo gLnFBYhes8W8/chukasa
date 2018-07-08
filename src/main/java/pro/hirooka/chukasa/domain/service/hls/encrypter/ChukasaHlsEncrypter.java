@@ -5,7 +5,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pro.hirooka.chukasa.domain.config.ChukasaConstants;
 import pro.hirooka.chukasa.domain.config.common.type.StreamingType;
 import pro.hirooka.chukasa.domain.model.hls.ChukasaModel;
 import pro.hirooka.chukasa.domain.service.hls.IChukasaModelManagementComponent;
@@ -18,22 +17,27 @@ import javax.crypto.NoSuchPaddingException;
 import java.io.*;
 import java.security.*;
 
+import static java.util.Objects.requireNonNull;
+import static pro.hirooka.chukasa.domain.config.ChukasaConstants.*;
+
 @Service
 public class ChukasaHlsEncrypter implements IChukasaHlsEncrypter {
 
     private static final Logger log = LoggerFactory.getLogger(ChukasaHlsEncrypter.class);
 
-    static final String FILE_SEPARATOR = ChukasaConstants.FILE_SEPARATOR;
-    final String STREAM_FILE_NAME_PREFIX = ChukasaConstants.STREAM_FILE_NAME_PREFIX;
-    final int MPEG2_TS_PACKET_LENGTH = ChukasaConstants.MPEG2_TS_PACKET_LENGTH;
-
     private int adaptiveBitrateStreaming;
 
-    @Autowired
-    IChukasaModelManagementComponent chukasaModelManagementComponent;
+    private final IChukasaModelManagementComponent chukasaModelManagementComponent;
+    private final IPlaylistCreator playlistBuilder;
 
     @Autowired
-    IPlaylistCreator playlistBuilder;
+    public ChukasaHlsEncrypter(
+            IChukasaModelManagementComponent chukasaModelManagementComponent,
+            IPlaylistCreator playlistBuilder
+    ) {
+        this.chukasaModelManagementComponent = requireNonNull(chukasaModelManagementComponent);
+        this.playlistBuilder = requireNonNull(playlistBuilder);
+    }
 
     public void setAdaptiveBitrateStreaming(int adaptiveBitrateStreaming) {
         this.adaptiveBitrateStreaming = adaptiveBitrateStreaming;

@@ -22,8 +22,10 @@ public class FfmpegHlsMediaSegmentDetectorService implements IFfmpegHlsMediaSegm
     private ThreadPoolTaskScheduler threadPoolTaskScheduler;
 
     @Autowired
-    public FfmpegHlsMediaSegmentDetectorService(FfmpegHlsMediaSegmentDetector ffmpegHLSMediaSegmentDetector) {
-        this.ffmpegHLSMediaSegmentDetector = requireNonNull(ffmpegHLSMediaSegmentDetector, "ffmpegHLSMediaSegmentDetector");
+    public FfmpegHlsMediaSegmentDetectorService(
+            FfmpegHlsMediaSegmentDetector ffmpegHLSMediaSegmentDetector
+    ) {
+        this.ffmpegHLSMediaSegmentDetector = requireNonNull(ffmpegHLSMediaSegmentDetector);
     }
 
     @Async

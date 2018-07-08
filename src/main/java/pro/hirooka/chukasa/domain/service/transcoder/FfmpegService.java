@@ -11,14 +11,11 @@ import pro.hirooka.chukasa.domain.config.common.type.FfmpegVcodecType;
 import pro.hirooka.chukasa.domain.config.common.type.StreamingType;
 import pro.hirooka.chukasa.domain.model.hls.ChukasaModel;
 import pro.hirooka.chukasa.domain.service.hls.IChukasaModelManagementComponent;
-import pro.hirooka.chukasa.domain.service.hls.encrypter.IChukasaHlsEncrypter;
-import pro.hirooka.chukasa.domain.service.hls.playlist.IPlaylistCreator;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.lang.reflect.Field;
 import java.util.concurrent.Future;
 
 import static java.util.Objects.requireNonNull;
@@ -35,13 +32,10 @@ public class FfmpegService implements IFfmpegService {
     private final IChukasaModelManagementComponent chukasaModelManagementComponent;
 
     @Autowired
-    IChukasaHlsEncrypter chukasaHlsEncrypter;
-    @Autowired
-    IPlaylistCreator playlistBuilder;
-
-    @Autowired
-    public FfmpegService(IChukasaModelManagementComponent chukasaModelManagementComponent) {
-        this.chukasaModelManagementComponent = requireNonNull(chukasaModelManagementComponent, "chukasaModelManagementComponent");
+    public FfmpegService(
+            IChukasaModelManagementComponent chukasaModelManagementComponent
+    ) {
+        this.chukasaModelManagementComponent = requireNonNull(chukasaModelManagementComponent);
     }
 
     @Async
@@ -434,54 +428,37 @@ public class FfmpegService implements IFfmpegService {
         }
         log.info("{}", command);
 
-        ProcessBuilder processBuilder = new ProcessBuilder(commandArray);
+        final ProcessBuilder processBuilder = new ProcessBuilder(commandArray);
+        final Process process;
         try {
-            Process process = processBuilder.start();
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-            if (process.getClass().getName().equals("java.lang.UNIXProcess")) {
-                Field field = process.getClass().getDeclaredField("pid");
-                field.setAccessible(true);
-                long pid = field.getLong(process);
-                // TODO: final
-                chukasaModel = chukasaModelManagementComponent.get(adaptiveBitrateStreaming);
-                chukasaModel.setFfmpegPID(pid);
-                chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
-                field.setAccessible(false);
-            }
-
-            String str;
+            process = processBuilder.start();
+            final long pid = process.pid();
+            final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+            String str = "";
             boolean isTranscoding = false;
-            while ((str = bufferedReader.readLine()) != null) {
-                log.debug(str);
+            while((str = bufferedReader.readLine()) != null){
+                log.debug("{}", str);
                 // TODO Input/output error (in use...)
-                if (chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.WEBCAM || chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.FILE) {
-                    if (str.startsWith("frame=")) {
-                        if (!isTranscoding) {
-                            isTranscoding = true;
-                            // TODO: final
-                            chukasaModel = chukasaModelManagementComponent.get(adaptiveBitrateStreaming);
-                            chukasaModel.setTrascoding(true);
-                            chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
-                        }
+                if(str.startsWith("frame=")){
+                    if(!isTranscoding){
+                        isTranscoding = true;
+                        chukasaModel.setTrascoding(isTranscoding);
+                        chukasaModel.setFfmpegPID(pid);
+                        chukasaModel.setFfmpegProcess(process);
+                        chukasaModel = chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
                     }
                 }
             }
-            chukasaModel = chukasaModelManagementComponent.get(adaptiveBitrateStreaming);
-            chukasaModel.setTrascoding(false);
+            isTranscoding = false;
+            chukasaModel.setTrascoding(isTranscoding);
+            chukasaModel.setFfmpegPID(-1);
+            chukasaModel.setFfmpegProcess(null);
             chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
             process.getInputStream().close();
             process.getErrorStream().close();
             process.getOutputStream().close();
             bufferedReader.close();
             process.destroy();
-
-            if(chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.OKKAKE){
-                if(chukasaModel.getChukasaSettings().isCanEncrypt()){
-                    chukasaHlsEncrypter.encrypt();
-                }else{
-                    playlistBuilder.create();
-                }
-            }
 
             if (chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.FILE) {
                 int sequenceLastMediaSegment = -1;
@@ -519,15 +496,114 @@ public class FfmpegService implements IFfmpegService {
                 return new AsyncResult<>(sequenceLastMediaSegment);
             }
 
-        } catch (IOException | IllegalAccessException | NoSuchFieldException e) {
-            log.error("{}", e.getMessage());
+        } catch (IOException e) {
+            log.warn("{}", e.getMessage());
+        } finally {
+            log.info("stream is closed.");
         }
-        return null;
+        return new AsyncResult<>(0);
+
+//        ProcessBuilder processBuilder = new ProcessBuilder(commandArray);
+//        try {
+//            Process process = processBuilder.start();
+//            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+//            if (process.getClass().getName().equals("java.lang.UNIXProcess")) {
+//                Field field = process.getClass().getDeclaredField("pid");
+//                field.setAccessible(true);
+//                long pid = field.getLong(process);
+//                // TODO: final
+//                chukasaModel = chukasaModelManagementComponent.get(adaptiveBitrateStreaming);
+//                chukasaModel.setFfmpegPID(pid);
+//                chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
+//                field.setAccessible(false);
+//            }
+//
+//            String str;
+//            boolean isTranscoding = false;
+//            while ((str = bufferedReader.readLine()) != null) {
+//                log.debug(str);
+//                // TODO Input/output error (in use...)
+//                if (chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.WEBCAM || chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.FILE) {
+//                    if (str.startsWith("frame=")) {
+//                        if (!isTranscoding) {
+//                            isTranscoding = true;
+//                            // TODO: final
+//                            chukasaModel = chukasaModelManagementComponent.get(adaptiveBitrateStreaming);
+//                            chukasaModel.setTrascoding(true);
+//                            chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
+//                        }
+//                    }
+//                }
+//            }
+//            chukasaModel = chukasaModelManagementComponent.get(adaptiveBitrateStreaming);
+//            chukasaModel.setTrascoding(false);
+//            chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
+//            process.getInputStream().close();
+//            process.getErrorStream().close();
+//            process.getOutputStream().close();
+//            bufferedReader.close();
+//            process.destroy();
+//
+//            if(chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.OKKAKE){
+//                if(chukasaModel.getChukasaSettings().isCanEncrypt()){
+//                    chukasaHlsEncrypter.encrypt();
+//                }else{
+//                    playlistBuilder.create();
+//                }
+//            }
+//
+//            if (chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.FILE) {
+//                int sequenceLastMediaSegment = -1;
+//                chukasaModel = chukasaModelManagementComponent.get(adaptiveBitrateStreaming);
+//                if (chukasaModel.getChukasaSettings().isCanEncrypt()) {
+//                    String encryptedStreamTemporaryPath = chukasaModel.getTempEncPath();
+//                    File[] temporaryfiles = new File(encryptedStreamTemporaryPath).listFiles();
+//                    assert temporaryfiles != null;
+//                    for (File file : temporaryfiles) {
+//                        log.info(file.getName());
+//                        String fileName = file.getName();
+//                        if(fileName.startsWith(ChukasaConstants.STREAM_FILE_NAME_PREFIX)
+//                                && fileName.endsWith(STREAM_FILE_EXTENSION)){
+//                            log.info("... {}", fileName.split(M3U8_FILE_NAME)[1]);
+//                            String sequenceString = fileName.split(M3U8_FILE_NAME)[1].split(STREAM_FILE_EXTENSION)[0];
+//                            log.info(sequenceString);
+//                            int sequence = Integer.parseInt(sequenceString);
+//                            if(sequence > sequenceLastMediaSegment){
+//                                sequenceLastMediaSegment = sequence;
+//                            }
+//                        }
+//                    }
+//                }else{
+//                    String streamPath = chukasaModel.getStreamPath();
+//                    File[] files = new File(streamPath).listFiles();
+//                    assert files != null;
+//                    for (File file : files){
+//                        log.info(file.getName());
+//                    }
+//                }
+//                log.info("sequenceLastMediaSegment = {}.", sequenceLastMediaSegment);
+//                chukasaModel.setSeqTsLast(sequenceLastMediaSegment);
+//                chukasaModel.setSequenceLastMediaSegment(sequenceLastMediaSegment);
+//                chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
+//                return new AsyncResult<>(sequenceLastMediaSegment);
+//            }
+//
+//        } catch (IOException | IllegalAccessException | NoSuchFieldException e) {
+//            log.error("{}", e.getMessage());
+//        }
+//        return null;
     }
 
     @Override
     public void cancel(int adaptiveBitrateStreaming) {
-
+        ChukasaModel chukasaModel = chukasaModelManagementComponent.get(adaptiveBitrateStreaming);
+        chukasaModel.setTunerDeviceName("");
+        chukasaModel.setFfmpegPID(-1);
+        if(chukasaModel.getFfmpegProcess() != null){
+            chukasaModel.getFfmpegProcess().destroy();
+            chukasaModel.setFfmpegProcess(null);
+        }
+        chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
     }
 }
 

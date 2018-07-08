@@ -26,16 +26,12 @@ import java.nio.file.StandardCopyOption;
 import java.security.*;
 
 import static java.util.Objects.requireNonNull;
+import static pro.hirooka.chukasa.domain.config.ChukasaConstants.*;
 
 @Component
 public class FfmpegHlsMediaSegmentDetector implements Runnable {
 
     private static final Logger log = LoggerFactory.getLogger(FfmpegHlsMediaSegmentDetector.class);
-
-    private final String FILE_SEPARATOR = ChukasaConstants.FILE_SEPARATOR;
-    private final int MPEG2_TS_PACKET_LENGTH = ChukasaConstants.MPEG2_TS_PACKET_LENGTH;
-    private final String STREAM_FILE_NAME_PREFIX = ChukasaConstants.STREAM_FILE_NAME_PREFIX;
-    private final String HLS_IV_FILE_EXTENSION = ChukasaConstants.HLS_IV_FILE_EXTENSION;
 
     private int adaptiveBitrateStreaming;
     private final IChukasaModelManagementComponent chukasaModelManagementComponent;
@@ -43,10 +39,14 @@ public class FfmpegHlsMediaSegmentDetector implements Runnable {
     private final ApplicationEventPublisher applicationEventPublisher;
 
     @Autowired
-    public FfmpegHlsMediaSegmentDetector(IChukasaModelManagementComponent chukasaModelManagementComponent, IPlaylistCreator playlistBuilder, ApplicationEventPublisher applicationEventPublisher) {
-        this.chukasaModelManagementComponent = requireNonNull(chukasaModelManagementComponent, "chukasaModelManagementComponent");
-        this.playlistBuilder = requireNonNull(playlistBuilder, "playlistBuilder");
-        this.applicationEventPublisher = requireNonNull(applicationEventPublisher, "applicationEventPublisher");
+    public FfmpegHlsMediaSegmentDetector(
+            IChukasaModelManagementComponent chukasaModelManagementComponent,
+            IPlaylistCreator playlistBuilder,
+            ApplicationEventPublisher applicationEventPublisher
+    ) {
+        this.chukasaModelManagementComponent = requireNonNull(chukasaModelManagementComponent);
+        this.playlistBuilder = requireNonNull(playlistBuilder);
+        this.applicationEventPublisher = requireNonNull(applicationEventPublisher);
     }
 
     @Override

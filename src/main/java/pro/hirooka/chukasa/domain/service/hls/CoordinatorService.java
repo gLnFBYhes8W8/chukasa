@@ -10,7 +10,6 @@ import pro.hirooka.chukasa.domain.service.hls.remover.IChukasaHlsFileRemoverServ
 import pro.hirooka.chukasa.domain.service.hls.segmenter.IIntermediateChukasaHlsSegmenterService;
 import pro.hirooka.chukasa.domain.service.transcoder.IFfmpegAndRecxxxService;
 import pro.hirooka.chukasa.domain.service.transcoder.IFfmpegService;
-import pro.hirooka.chukasa.domain.service.transcoder.IFfmpegStopperService;
 
 import java.util.Date;
 import java.util.concurrent.Future;
@@ -26,7 +25,6 @@ public class CoordinatorService implements ICoordinatorService {
     private final IFfmpegService ffmpegService;
     private final IFfmpegAndRecxxxService ffmpegAndRecxxxService;
     private final IFfmpegHlsMediaSegmentDetectorService ffmpegHlsMediaSegmentDetectorService;
-    private final IFfmpegStopperService ffmpegStopperService;
     private final IChukasaHlsFileRemoverService chukasaHlsFileRemoverService;
     private final IIntermediateChukasaHlsSegmenterService intermediateChukasaHlsSegmenterService;
 
@@ -38,7 +36,6 @@ public class CoordinatorService implements ICoordinatorService {
             IFfmpegService ffmpegService,
             IFfmpegAndRecxxxService ffmpegAndRecxxxService,
             IFfmpegHlsMediaSegmentDetectorService ffmpegHlsMediaSegmentDetectorService,
-            IFfmpegStopperService ffmpegStopperService,
             IChukasaHlsFileRemoverService chukasaHlsFileRemoverService,
             IIntermediateChukasaHlsSegmenterService intermediateChukasaHlsSegmenterService
     ) {
@@ -50,8 +47,6 @@ public class CoordinatorService implements ICoordinatorService {
                 ffmpegAndRecxxxService, "ffmpegAndRecxxxService");
         this.ffmpegHlsMediaSegmentDetectorService = requireNonNull(
                 ffmpegHlsMediaSegmentDetectorService, "ffmpegHLSMediaSegmentDetectorService");
-        this.ffmpegStopperService = requireNonNull(
-                ffmpegStopperService, "intermediateFFmpegStopperService");
         this.chukasaHlsFileRemoverService = requireNonNull(
                 chukasaHlsFileRemoverService, "intermediateChukasaHLSFileRemoverService");
         this.intermediateChukasaHlsSegmenterService = requireNonNull(

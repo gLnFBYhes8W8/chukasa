@@ -11,6 +11,10 @@
 
     <div id="hlsjs" th:replace="embedded-native-player :: hls"></div>
 
+    <hr/>
+    <button id="ajax_play_button_start" class="btn btn-primary"><span id="ajax_play_button_text">Start</span></button>
+    <hr/>
+
     <div id="tabs">
 
         <ul class="nav nav-tabs">
@@ -341,10 +345,6 @@
 
     </div>
     </div>
-
-
-    <hr/>
-    <button id="ajax_play_button_start" class="btn btn-primary"><span id="ajax_play_button_text">Start</span></button>
 
     <hr/>
     <div th:replace="footer :: footer"></div>

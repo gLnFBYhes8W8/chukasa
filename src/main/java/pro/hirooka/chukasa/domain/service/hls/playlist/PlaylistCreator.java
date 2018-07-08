@@ -13,17 +13,12 @@ import pro.hirooka.chukasa.domain.service.hls.IChukasaModelManagementComponent;
 import java.io.*;
 
 import static java.util.Objects.requireNonNull;
+import static pro.hirooka.chukasa.domain.config.ChukasaConstants.*;
 
 @Component
 public class PlaylistCreator implements IPlaylistCreator {
 
     private static final Logger log = LoggerFactory.getLogger(PlaylistCreator.class);
-
-    final String FILE_SEPARATOR = ChukasaConstants.FILE_SEPARATOR;
-    final String initialStreamPath = ChukasaConstants.INITIAL_STREAM_PATH;
-    final String STREAM_FILE_NAME_PREFIX = ChukasaConstants.STREAM_FILE_NAME_PREFIX;
-    final String M3U8_FILE_NAME = ChukasaConstants.M3U8_FILE_NAME;
-    final String M3U8_FILE_EXTENSION = ChukasaConstants.M3U8_FILE_EXTENSION;
 
     private int adaptiveBitrateStreaming;
 
@@ -94,7 +89,7 @@ public class PlaylistCreator implements IPlaylistCreator {
                         // TODO: HardwareAccelerationType -> hls_segment_type
                         // /usr/local/bin/ffmpeg -i now_transcoding.ts -acodec aac -ab 160k -ar 48000 -ac 2 -s 1280x720 -vcodec hevc_nvenc -tag:v hvc1 -g 60 -b:v 2560k -threads 1 -f hls -hls_segment_type fmp4 -segment_time 2 i.m3u8
                         if(ffmpegVcodecType == FfmpegVcodecType.HEVC_NVENC || ffmpegVcodecType == FfmpegVcodecType.HEVC_QSV){
-                            bufferedWriter.write("#EXT-X-MAP:URI=\"" + initialStreamPath + "/init.mp4\"");
+                            bufferedWriter.write("#EXT-X-MAP:URI=\"" + INITIAL_STREAM_PATH + "/init.mp4\"");
                             bufferedWriter.newLine();
                         }
 
@@ -102,14 +97,14 @@ public class PlaylistCreator implements IPlaylistCreator {
                             for (int i = initialSequenceInPlaylist; i < initialSequenceInPlaylist + URI_IN_PLAYLIST - (sequenceMediaSegment + 1); i++) {
                                 bufferedWriter.write("#EXTINF:" + DURATION + ",");
                                 bufferedWriter.newLine();
-                                bufferedWriter.write(initialStreamPath + "/" + "i" + i + STREAM_FILE_EXTENSION);
+                                bufferedWriter.write(INITIAL_STREAM_PATH + "/" + "i" + i + STREAM_FILE_EXTENSION);
                                 bufferedWriter.newLine();
                             }
                         } else if (playlistType == PlaylistType.EVENT) {
                             for (int i = 0; i < initialSequenceInPlaylist + URI_IN_PLAYLIST - (sequenceMediaSegment + 1); i++) {
                                 bufferedWriter.write("#EXTINF:" + DURATION + ",");
                                 bufferedWriter.newLine();
-                                bufferedWriter.write(initialStreamPath + "/" + "i" + i + STREAM_FILE_EXTENSION);
+                                bufferedWriter.write(INITIAL_STREAM_PATH + "/" + "i" + i + STREAM_FILE_EXTENSION);
                                 bufferedWriter.newLine();
                             }
                         }
@@ -154,7 +149,7 @@ public class PlaylistCreator implements IPlaylistCreator {
                             for (int i = 0; i < sequenceInitialPlaylist + 1; i++) {
                                 bufferedWriter.write("#EXTINF:" + DURATION + ",");
                                 bufferedWriter.newLine();
-                                bufferedWriter.write(initialStreamPath + "/" + "i" + i + STREAM_FILE_EXTENSION);
+                                bufferedWriter.write(INITIAL_STREAM_PATH + "/" + "i" + i + STREAM_FILE_EXTENSION);
                                 bufferedWriter.newLine();
                             }
                             bufferedWriter.write("#EXT-X-DISCONTINUITY");
@@ -232,7 +227,7 @@ public class PlaylistCreator implements IPlaylistCreator {
                     bufferedWriter.newLine();
 
                     if(ffmpegVcodecType == FfmpegVcodecType.HEVC_NVENC || ffmpegVcodecType == FfmpegVcodecType.HEVC_QSV){
-                        bufferedWriter.write("#EXT-X-MAP:URI=\"" + initialStreamPath + "/init.mp4\"");
+                        bufferedWriter.write("#EXT-X-MAP:URI=\"" + INITIAL_STREAM_PATH + "/init.mp4\"");
                         bufferedWriter.newLine();
                     }
 
@@ -240,14 +235,14 @@ public class PlaylistCreator implements IPlaylistCreator {
                         for (int i = sequenceInitialPlaylist; i < sequenceInitialPlaylist + URI_IN_PLAYLIST; i++) {
                             bufferedWriter.write("#EXTINF:" + Double.toString(DURATION) + ",");
                             bufferedWriter.newLine();
-                            bufferedWriter.write(initialStreamPath + "/" + "i" + i + STREAM_FILE_EXTENSION);
+                            bufferedWriter.write(INITIAL_STREAM_PATH + "/" + "i" + i + STREAM_FILE_EXTENSION);
                             bufferedWriter.newLine();
                         }
                     }else if(playlistType == PlaylistType.EVENT){
                         for (int i = 0; i < sequenceInitialPlaylist + URI_IN_PLAYLIST; i++) {
                             bufferedWriter.write("#EXTINF:" + Double.toString(DURATION) + ",");
                             bufferedWriter.newLine();
-                            bufferedWriter.write(initialStreamPath + "/" + "i" + i + STREAM_FILE_EXTENSION);
+                            bufferedWriter.write(INITIAL_STREAM_PATH + "/" + "i" + i + STREAM_FILE_EXTENSION);
                             bufferedWriter.newLine();
                         }
                     }else{
