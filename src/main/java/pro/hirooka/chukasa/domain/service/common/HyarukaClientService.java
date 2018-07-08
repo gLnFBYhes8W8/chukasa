@@ -12,10 +12,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.client.ResponseExtractor;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 import pro.hirooka.chukasa.domain.config.common.HyarukaConfiguration;
-import pro.hirooka.chukasa.domain.model.common.type.TunerType;
-import pro.hirooka.chukasa.domain.model.recorder.Program;
+import pro.hirooka.chukasa.domain.model.epg.Program;
+import pro.hirooka.chukasa.domain.model.epg.TunerType;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -47,16 +46,16 @@ public class HyarukaClientService implements IHyarukaClientService {
     }
 
     @Override
-    public List<Program> getProgramListByChannelRecording(int channel) {
-        final String HYARUKA_URI = getHyarukaUri("/programs/" + channel);
+    public List<Program> getProgramListByChannelRecording(int channelRecording) {
+        final String HYARUKA_URI = getHyarukaUri("/programs/" + channelRecording);
         final RestTemplate restTemplate = new RestTemplate();
         final ResponseEntity<Program[]> responseEntity = restTemplate.getForEntity(HYARUKA_URI, Program[].class);
         return Arrays.asList(responseEntity.getBody());
     }
 
     @Override
-    public Program getProgramByChannelRecordingNow(int channel) {
-        final String HYARUKA_URI = getHyarukaUri("/programs/" + channel + "/now");
+    public Program getProgramByChannelRecordingNow(int channelRecording) {
+        final String HYARUKA_URI = getHyarukaUri("/programs/" + channelRecording + "/now");
         final RestTemplate restTemplate = new RestTemplate();
         final ResponseEntity<Program> responseEntity = restTemplate.getForEntity(HYARUKA_URI, Program.class);
         return responseEntity.getBody();

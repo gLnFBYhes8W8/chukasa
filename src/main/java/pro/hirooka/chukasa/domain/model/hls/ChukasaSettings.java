@@ -3,7 +3,7 @@ package pro.hirooka.chukasa.domain.model.hls;
 import pro.hirooka.chukasa.domain.config.common.type.PlaylistType;
 import pro.hirooka.chukasa.domain.config.common.type.StreamingType;
 import pro.hirooka.chukasa.domain.config.common.type.TranscodingSettings;
-import pro.hirooka.chukasa.domain.model.common.type.TunerType;
+import pro.hirooka.chukasa.domain.model.epg.TunerType;
 
 public class ChukasaSettings {
 
@@ -13,7 +13,7 @@ public class ChukasaSettings {
     private PlaylistType playlistType;
     private TranscodingSettings transcodingSettings;
     private boolean canEncrypt;
-    private int physicalLogicalChannel;
+    private int channelRecording;
     private TunerType tunerType;
     private String fileName;
 
@@ -61,12 +61,12 @@ public class ChukasaSettings {
         this.canEncrypt = canEncrypt;
     }
 
-    public int getPhysicalLogicalChannel() {
-        return physicalLogicalChannel;
+    public int getChannelRecording() {
+        return channelRecording;
     }
 
-    public void setPhysicalLogicalChannel(int physicalLogicalChannel) {
-        this.physicalLogicalChannel = physicalLogicalChannel;
+    public void setChannelRecording(int channelRecording) {
+        this.channelRecording = channelRecording;
     }
 
     public TunerType getTunerType() {
@@ -107,5 +107,22 @@ public class ChukasaSettings {
 
     public void setAudioBitrate(int audioBitrate) {
         this.audioBitrate = audioBitrate;
+    }
+
+    @Override
+    public String toString() {
+        return "ChukasaSettings{" +
+                "adaptiveBitrateStreaming=" + adaptiveBitrateStreaming +
+                ", streamingType=" + streamingType +
+                ", playlistType=" + playlistType +
+                ", transcodingSettings=" + transcodingSettings +
+                ", canEncrypt=" + canEncrypt +
+                ", channelRecording=" + channelRecording +
+                ", tunerType=" + tunerType +
+                ", fileName='" + fileName + '\'' +
+                ", videoResolution='" + videoResolution + '\'' +
+                ", videoBitrate=" + videoBitrate +
+                ", audioBitrate=" + audioBitrate +
+                '}';
     }
 }

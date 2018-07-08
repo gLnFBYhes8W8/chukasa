@@ -1,10 +1,11 @@
-package pro.hirooka.chukasa.domain.model.common;
+package pro.hirooka.chukasa.domain.model.epg;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
 public class ChannelConfigurationWrapper {
+
     @JsonProperty("channelConfiguration")
     private List<ChannelConfiguration> channelConfigurationList;
 

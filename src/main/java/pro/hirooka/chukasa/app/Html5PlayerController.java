@@ -19,7 +19,6 @@ import pro.hirooka.chukasa.domain.config.hls.HlsConfiguration;
 import pro.hirooka.chukasa.domain.model.app.Html5Player;
 import pro.hirooka.chukasa.domain.model.hls.ChukasaModel;
 import pro.hirooka.chukasa.domain.model.hls.ChukasaSettings;
-import pro.hirooka.chukasa.domain.service.common.ICommonUtilityService;
 import pro.hirooka.chukasa.domain.service.common.ISystemService;
 import pro.hirooka.chukasa.domain.service.hls.IChukasaModelManagementComponent;
 import pro.hirooka.chukasa.domain.service.hls.ICoordinatorService;
@@ -47,8 +46,6 @@ public class Html5PlayerController {
     ISystemService systemService;
     @Autowired
     IChukasaBrowserDetector chukasaBrowserDetector;
-    @Autowired
-    ICommonUtilityService commonUtilityService;
     @Autowired
     ICoordinatorService taskCoordinatorService;
 
@@ -93,7 +90,7 @@ public class Html5PlayerController {
         }
 
         String servletRealPath = httpServletRequest.getSession().getServletContext().getRealPath("");
-        String streamRootPath = commonUtilityService.getStreamRootPath(servletRealPath);
+        String streamRootPath = systemService.getStreamRootPath(servletRealPath);
         chukasaModel.setStreamRootPath(streamRootPath);
         chukasaModel = ChukasaUtility.createChukasaDerectory(chukasaModel);
         chukasaModel = ChukasaUtility.calculateTimerTaskParameter(chukasaModel);
@@ -132,7 +129,7 @@ public class Html5PlayerController {
         ChukasaSettings chukasaSettings = new ChukasaSettings();
         chukasaSettings.setAdaptiveBitrateStreaming(0);
         chukasaSettings.setStreamingType(streamingtype);
-        chukasaSettings.setPhysicalLogicalChannel(ch);
+        chukasaSettings.setChannelRecording(ch);
         chukasaSettings.setVideoBitrate(videobitrate);
         //chukasaSettings.setVideoResolutionType(VideoResolutionType.HD);
         //chukasaSettings.setCaptureResolutionType(VideoResolutionType.HD);

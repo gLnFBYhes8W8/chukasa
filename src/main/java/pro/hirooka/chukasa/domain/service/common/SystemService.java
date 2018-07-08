@@ -18,6 +18,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import static pro.hirooka.chukasa.domain.config.ChukasaConstants.FILE_SEPARATOR;
+import static pro.hirooka.chukasa.domain.config.ChukasaConstants.STREAM_ROOT_PATH_NAME;
+
 @Service
 public class SystemService implements ISystemService {
 
@@ -63,8 +66,9 @@ public class SystemService implements ISystemService {
 
     @Override
     public boolean isEpgdump() {
-        File epgdump = new File(systemConfiguration.getEpgdumpPath());
-        return epgdump.exists();
+//        File epgdump = new File(systemConfiguration.getEpgdumpPath());
+//        return epgdump.exists();
+        return true;
     }
 
     @Override
@@ -231,6 +235,15 @@ public class SystemService implements ISystemService {
             return FfmpegVcodecType.HEVC_NVENC;
         }else{
             return FfmpegVcodecType.H264_NVENC;
+        }
+    }
+
+    @Override
+    public String getStreamRootPath(String servletRealPath) {
+        if(servletRealPath.substring(servletRealPath.length() - 1).equals(FILE_SEPARATOR)) {
+            return servletRealPath + STREAM_ROOT_PATH_NAME; // e.g. Tomcat
+        } else {
+            return servletRealPath + FILE_SEPARATOR + STREAM_ROOT_PATH_NAME; // e.g. Jetty
         }
     }
 

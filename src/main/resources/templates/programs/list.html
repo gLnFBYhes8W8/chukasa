@@ -20,8 +20,8 @@
     <tbody>
         <tr th:each="program : ${programList}">
             <form th:action="@{/programs/create}" method="post" th:object="${reservedProgram}" th:scope="row">
-                <input th:value="${program.physicalLogicalChannel}" type = "hidden" id = "physicalLogicalChannel" name = "physicalLogicalChannel"/>
-                <input th:value="${program.remoteControllerChannel}" type = "hidden" id = "remoteControllerChannel" name = "remoteControllerChannel"/>
+                <input th:value="${program.channelRecording}" type = "hidden" id = "channelRecording" name = "channelRecording"/>
+                <input th:value="${program.channelRemoteControl}" type = "hidden" id = "channelRemoteControl" name = "channelRemoteControl"/>
                 <input th:value="${program.channelName}" type = "hidden" id = "channelName" name = "channelName"/>
                 <input th:value="${program.start}" type = "hidden" id = "start" name = "start"/>
                 <input th:value="${program.end}" type = "hidden" id = "end" name = "end"/>
@@ -32,7 +32,7 @@
                 <input th:value="${program.detail}" type = "hidden" id = "detail" name = "detail"/>
                 <input th:value="${program.channel}" type = "hidden" id = "channel" name = "channel"/>
                 <!--<td th:text="${program.physicalLogicalChannel}">physicalLogicalChannel</td>-->
-                <td th:text="${program.remoteControllerChannel}">remoteControllerChannel</td>
+                <td th:text="${program.channelRemoteControl}">channelRemoteControl</td>
                 <td th:text="${program.channelName}">channelName</td>
                 <!--<td th:text="${program.start}">start</td>-->
                 <!--<td th:text="${program.end}">end</td>-->

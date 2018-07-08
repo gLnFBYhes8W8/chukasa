@@ -8,15 +8,17 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import pro.hirooka.chukasa.domain.model.epg.Program;
 import pro.hirooka.chukasa.domain.model.recorder.M4vTranscodingStatus;
-import pro.hirooka.chukasa.domain.model.recorder.Program;
 import pro.hirooka.chukasa.domain.model.recorder.RecordingStatus;
 import pro.hirooka.chukasa.domain.model.recorder.ReservedProgram;
-import pro.hirooka.chukasa.domain.service.recorder.IProgramTableService;
+import pro.hirooka.chukasa.domain.service.epg.IProgramService;
 import pro.hirooka.chukasa.domain.service.recorder.IRecorderService;
 
 import java.util.Date;
 import java.util.List;
+
+// TODO: refactor
 
 @RestController
 @RequestMapping("api/v1/programs")
@@ -25,33 +27,33 @@ public class ProgramRestController {
     private static final Logger log = LoggerFactory.getLogger(ProgramRestController.class);
 
     @Autowired
-    IProgramTableService programTableService;
+    IProgramService programService;
     @Autowired
     IRecorderService recorderService;
 
     @RequestMapping(method = RequestMethod.GET)
     List<Program> read(){
         Date now = new Date();
-        List<Program> programList = programTableService.readOneDayByNow(now.getTime());
+        List<Program> programList = programService.readOneDayByNow(now.getTime());
         return programList;
     }
 
     @RequestMapping(value = "now", method = RequestMethod.GET)
     List<Program> readNow(){
         Date now = new Date();
-        List<Program> programList = programTableService.readByNow(now.getTime());
+        List<Program> programList = programService.readByNow(now.getTime());
         return programList;
     }
 
-    @RequestMapping(value = "{physicalLogicalChannel}", method = RequestMethod.GET)
-    List<Program> read(@PathVariable int physicalLogicalChannel){
-        List<Program> programList = programTableService.read(physicalLogicalChannel);
+    @RequestMapping(value = "{channelRecording}", method = RequestMethod.GET)
+    List<Program> read(@PathVariable int channelRecording){
+        List<Program> programList = programService.read(channelRecording);
         return programList;
     }
 
-    @RequestMapping(value = "{physicalLogicalChannel}/{date}", method = RequestMethod.GET)
-    List<Program> read(@PathVariable int physicalLogicalChannel, @PathVariable String date){
-        List<Program> programList = programTableService.read(physicalLogicalChannel, date);
+    @RequestMapping(value = "{channelRecording}/{date}", method = RequestMethod.GET)
+    List<Program> read(@PathVariable int channelRecording, @PathVariable String date){
+        List<Program> programList = programService.read(channelRecording, date);
         return programList;
     }
 
@@ -67,8 +69,8 @@ public class ProgramRestController {
         createdReservedProgram.setBegin(reservedProgram.getStart());
         createdReservedProgram.setEnd(reservedProgram.getEnd());
         createdReservedProgram.setDuration(reservedProgram.getDuration());
-        createdReservedProgram.setPhysicalLogicalChannel(reservedProgram.getPhysicalLogicalChannel());
-        createdReservedProgram.setRemoteControllerChannel(reservedProgram.getRemoteControllerChannel());
+        createdReservedProgram.setChannelRecording(reservedProgram.getChannelRecording());
+        createdReservedProgram.setChannelRemoteControl(reservedProgram.getChannelRemoteControl());
         createdReservedProgram.setChannelName(reservedProgram.getChannelName());
         createdReservedProgram.setBeginDate(reservedProgram.getBeginDate());
         createdReservedProgram.setEndDate(reservedProgram.getEndDate());

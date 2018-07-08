@@ -19,4 +19,5 @@ public interface ISystemService {
     HardwareAccelerationType getHardwareAccelerationType();
     FfmpegVcodecType getFfmpegVcodecType();
     FfmpegVcodecType getFfmpegVcodecType(String userAgent);
+    String getStreamRootPath(String servletRealPath);
 }

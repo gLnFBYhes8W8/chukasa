@@ -14,17 +14,14 @@ import pro.hirooka.chukasa.api.v1.helper.IChukasaBrowserDetector;
 import pro.hirooka.chukasa.domain.config.common.CommonConfiguration;
 import pro.hirooka.chukasa.domain.config.common.SystemConfiguration;
 import pro.hirooka.chukasa.domain.model.aaa.ChukasaUserDetails;
-import pro.hirooka.chukasa.domain.model.common.ChannelConfiguration;
+import pro.hirooka.chukasa.domain.model.epg.ChannelConfiguration;
 import pro.hirooka.chukasa.domain.model.common.VideoFile;
-import pro.hirooka.chukasa.domain.model.epg.type.EpgdumpStatus;
-import pro.hirooka.chukasa.domain.model.recorder.Program;
+import pro.hirooka.chukasa.domain.model.epg.Program;
 import pro.hirooka.chukasa.domain.model.recorder.RecordingProgramModel;
 import pro.hirooka.chukasa.domain.model.recorder.ReservedProgram;
-import pro.hirooka.chukasa.domain.service.common.ICommonUtilityService;
 import pro.hirooka.chukasa.domain.service.common.ISystemService;
-import pro.hirooka.chukasa.domain.service.epg.IEpgdumpService;
-import pro.hirooka.chukasa.domain.service.epg.ILastEpgdumpExecutedService;
-import pro.hirooka.chukasa.domain.service.recorder.IProgramTableService;
+import pro.hirooka.chukasa.domain.service.epg.IEpgService;
+import pro.hirooka.chukasa.domain.service.epg.IProgramService;
 import pro.hirooka.chukasa.domain.service.recorder.IRecorderService;
 import pro.hirooka.chukasa.domain.service.recorder.IRecordingProgramManagementComponent;
 
@@ -48,21 +45,17 @@ public class MenuController {
     @Autowired
     ISystemService systemService;
     @Autowired
-    IProgramTableService programTableService;
-    @Autowired
-    ILastEpgdumpExecutedService lastEpgdumpExecutedService;
+    IProgramService programService;
     @Autowired
     private HttpServletRequest httpServletRequest;
     @Autowired
     IRecordingProgramManagementComponent recordingProgramManagementComponent;
-    @Autowired
-    IRecorderService recorderService;
+//    @Autowired
+//    IRecorderService recorderService;
     @Autowired
     IChukasaBrowserDetector chukasaBrowserDetector;
     @Autowired
-    IEpgdumpService epgdumpService;
-    @Autowired
-    ICommonUtilityService commonUtilityService;
+    IEpgService epgService;
 
     // TODO: logic -> service
 
@@ -85,10 +78,10 @@ public class MenuController {
         }
         model.addAttribute("user", chukasaUserDetails);
 
-        if(epgdumpService.getStatus().equals(EpgdumpStatus.RUNNING)){
-            log.info("EpgdumpService is running.");
-            // TODO:
-        }
+//        if(epgdumpService.getStatus().equals(EpgdumpStatus.RUNNING)){
+//            log.info("EpgdumpService is running.");
+//            // TODO:
+//        }
 
         boolean isSupported = false;
         String userAgent = httpServletRequest.getHeader("user-agent");
@@ -100,7 +93,7 @@ public class MenuController {
         boolean isFFmpeg = systemService.isFFmpeg();
         boolean isPTx = systemService.isTuner();
         boolean isRecpt1 = systemService.isRecxxx();
-        boolean isEpgdump = epgdumpService.isEpgdump();
+        boolean isEpgdump = true;//epgdumpService.isEpgdump();
         boolean isMongoDB = systemService.isMongoDB();
         boolean isWebCamera = systemService.isWebCamera();
 
@@ -108,14 +101,14 @@ public class MenuController {
         List<Program> programList = new ArrayList<>();
         boolean isLastEpgdumpExecuted = false;
 
-        List<ChannelConfiguration> channelConfigurationList = commonUtilityService.getChannelConfigurationList();
+        List<ChannelConfiguration> channelConfigurationList = epgService.getChannelConfigurationList();
 
         if(isMongoDB && isEpgdump){
-            programList = programTableService.readByNow(new Date().getTime());
-            programList = programList.stream().sorted(Comparator.comparing(Program::getPhysicalLogicalChannel)).collect(Collectors.toList());
+            programList = programService.readByNow(new Date().getTime());
+            programList = programList.stream().sorted(Comparator.comparing(Program::getChannelRecording)).collect(Collectors.toList());
 //            if(programList != null && lastEpgdumpExecutedService.read(1) != null && programTableService.getNumberOfPhysicalChannels() >= epgdumpChannelMap.size()){
 //            if(programList != null && programList.size() > 0 && lastEpgdumpExecutedService.read(1) != null && programTableService.getNumberOfPhysicalLogicalChannels() >= channelConfigurationList.size()){
-            if(programList != null && programList.size() > 0 && lastEpgdumpExecutedService.read(1) != null){
+            if(programList != null && programList.size() > 0 && epgService.readLatestEpgAcquisition(1) != null){
                 isLastEpgdumpExecuted = true;
             }
         }
@@ -132,8 +125,8 @@ public class MenuController {
             for(ChannelConfiguration channelConfiguration : channelConfigurationList){
                 try {
                     Program program = new Program();
-                    program.setPhysicalLogicalChannel(channelConfiguration.getPhysicalLogicalChannel());
-                    program.setRemoteControllerChannel(channelConfiguration.getRemoteControllerChannel());
+                    program.setChannelRecording(channelConfiguration.getChannelRecording());
+                    program.setChannelRemoteControl(channelConfiguration.getChannelRemoteControl());
                     programList.add(program);
                 }catch (NumberFormatException e){
                     log.error("invalid value {} {}", e.getMessage(), e);
@@ -141,7 +134,7 @@ public class MenuController {
             }
         }
         assert programList != null;
-        programList.sort(Comparator.comparingInt(Program::getRemoteControllerChannel));
+        programList.sort(Comparator.comparingInt(Program::getChannelRemoteControl));
 
         // FILE
         List<VideoFile> videoFileModelList = new ArrayList<>();
@@ -179,27 +172,27 @@ public class MenuController {
             }
         }
         if(isMongoDB) {
-            List<ReservedProgram> reservedProgramList = recorderService.read();
-            for (ReservedProgram reservedProgram : reservedProgramList) {
-                Date now = new Date();
-                if (reservedProgram.getStopRecording() > now.getTime() && now.getTime() > reservedProgram.getStartRecording()) {
-                    String file = systemConfiguration.getFilePath() + FILE_SEPARATOR + reservedProgram.getFileName();
-                    if (new File(file).exists()) {
-                        boolean isDuplicated = false;
-                        for (RecordingProgramModel recordingProgramModel : recordingProgramModelList) {
-                            if (recordingProgramModel.getFileName().equals(reservedProgram.getFileName())) {
-                                isDuplicated = true;
-                                break;
-                            }
-                        }
-                        if (!isDuplicated) {
-                            VideoFile videoFileModel = new VideoFile();
-                            videoFileModel.setName(reservedProgram.getFileName());
-                            okkakeVideoFileModelList.add(videoFileModel);
-                        }
-                    }
-                }
-            }
+//            List<ReservedProgram> reservedProgramList = recorderService.read();
+//            for (ReservedProgram reservedProgram : reservedProgramList) {
+//                Date now = new Date();
+//                if (reservedProgram.getStopRecording() > now.getTime() && now.getTime() > reservedProgram.getStartRecording()) {
+//                    String file = systemConfiguration.getFilePath() + FILE_SEPARATOR + reservedProgram.getFileName();
+//                    if (new File(file).exists()) {
+//                        boolean isDuplicated = false;
+//                        for (RecordingProgramModel recordingProgramModel : recordingProgramModelList) {
+//                            if (recordingProgramModel.getFileName().equals(reservedProgram.getFileName())) {
+//                                isDuplicated = true;
+//                                break;
+//                            }
+//                        }
+//                        if (!isDuplicated) {
+//                            VideoFile videoFileModel = new VideoFile();
+//                            videoFileModel.setName(reservedProgram.getFileName());
+//                            okkakeVideoFileModelList.add(videoFileModel);
+//                        }
+//                    }
+//                }
+//            }
         }
 
         model.addAttribute("isSupported", isSupported);

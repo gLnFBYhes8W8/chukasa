@@ -15,8 +15,8 @@
             <input type = "hidden" id = "streamingType" name = "streamingType" value = "TUNER"/>
 
             <div class="form-group">
-                <select class="form-control" id="ch" name="physicalLogicalChannel">
-                    <option th:value="${program.physicalLogicalChannel}" th:text="${program.channelName + ' (' + program.remoteControllerChannel + '): ' + program.title}" th:each="program : ${programList}">...</option>
+                <select class="form-control" id="ch" name="channelRecording">
+                    <option th:value="${program.channelRecording}" th:text="${program.channelName + ' (' + program.channelRemoteControl + '): ' + program.title}" th:each="program : ${programList}">...</option>
                 </select>
             </div>
 

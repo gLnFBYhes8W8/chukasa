@@ -10,12 +10,11 @@ import org.springframework.stereotype.Service;
 import pro.hirooka.chukasa.domain.config.common.SystemConfiguration;
 import pro.hirooka.chukasa.domain.config.common.type.ChannelType;
 import pro.hirooka.chukasa.domain.config.common.type.FfmpegVcodecType;
-import pro.hirooka.chukasa.domain.model.common.ChannelConfiguration;
-import pro.hirooka.chukasa.domain.model.common.TunerStatus;
+import pro.hirooka.chukasa.domain.model.epg.ChannelConfiguration;
+import pro.hirooka.chukasa.domain.model.epg.TunerStatus;
 import pro.hirooka.chukasa.domain.model.recorder.ReservedProgram;
-import pro.hirooka.chukasa.domain.service.common.ICommonUtilityService;
 import pro.hirooka.chukasa.domain.service.common.ISystemService;
-import pro.hirooka.chukasa.domain.service.common.ITunerManagementService;
+import pro.hirooka.chukasa.domain.service.epg.IEpgService;
 
 import java.io.*;
 import java.util.Date;
@@ -34,16 +33,14 @@ public class RecorderRunnerService implements IRecorderRunnerService {
     @Autowired
     private SystemConfiguration systemConfiguration;
     @Autowired
-    private ICommonUtilityService commonUtilityService;
-    @Autowired
-    private ITunerManagementService tunerManagementService;
-    @Autowired
     private ISystemService systemService;
+    @Autowired
+    private IEpgService epgService;
 
     @Async
     @Override
     public Future<Integer> submit(ReservedProgram reservedProgram) {
-
+/*
         final int physicalLogicalChannel = reservedProgram.getPhysicalLogicalChannel();
         final long startRecording = reservedProgram.getStartRecording();
         final long stopRecording = reservedProgram.getStopRecording();
@@ -189,6 +186,7 @@ public class RecorderRunnerService implements IRecorderRunnerService {
         }
 
         tunerManagementService.update(tunerStatus, true);
+*/
         return new AsyncResult<>(0);
     }
 

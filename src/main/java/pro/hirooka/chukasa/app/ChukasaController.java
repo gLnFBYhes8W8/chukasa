@@ -18,20 +18,17 @@ import pro.hirooka.chukasa.domain.config.common.type.FfmpegVcodecType;
 import pro.hirooka.chukasa.domain.config.common.type.StreamingType;
 import pro.hirooka.chukasa.domain.config.hls.HlsConfiguration;
 import pro.hirooka.chukasa.domain.model.app.Html5Player;
-import pro.hirooka.chukasa.domain.model.common.ChannelConfiguration;
+import pro.hirooka.chukasa.domain.model.epg.ChannelConfiguration;
 import pro.hirooka.chukasa.domain.model.common.VideoFile;
+import pro.hirooka.chukasa.domain.model.epg.Program;
 import pro.hirooka.chukasa.domain.model.hls.ChukasaModel;
 import pro.hirooka.chukasa.domain.model.hls.ChukasaSettings;
-import pro.hirooka.chukasa.domain.model.recorder.Program;
-import pro.hirooka.chukasa.domain.service.common.HyarukaClientService;
-import pro.hirooka.chukasa.domain.service.common.ICommonUtilityService;
 import pro.hirooka.chukasa.domain.service.common.IHyarukaClientService;
 import pro.hirooka.chukasa.domain.service.common.ISystemService;
-import pro.hirooka.chukasa.domain.service.epg.IEpgdumpService;
-import pro.hirooka.chukasa.domain.service.epg.ILastEpgdumpExecutedService;
+import pro.hirooka.chukasa.domain.service.epg.IEpgService;
+import pro.hirooka.chukasa.domain.service.epg.IProgramService;
 import pro.hirooka.chukasa.domain.service.hls.IChukasaModelManagementComponent;
 import pro.hirooka.chukasa.domain.service.hls.ICoordinatorService;
-import pro.hirooka.chukasa.domain.service.recorder.IProgramTableService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
@@ -61,21 +58,17 @@ public class ChukasaController {
     @Autowired
     IChukasaBrowserDetector chukasaBrowserDetector;
     @Autowired
-    ICommonUtilityService commonUtilityService;
-    @Autowired
     ICoordinatorService taskCoordinatorService;
-
-    @Autowired
-    IProgramTableService programTableService;
-    @Autowired
-    ILastEpgdumpExecutedService lastEpgdumpExecutedService;
-    @Autowired
-    IEpgdumpService epgdumpService;
     @Autowired
     HyarukaConfiguration hyarukaConfiguration;
     @Autowired
     IHyarukaClientService hyarukaClientService;
+    @Autowired
+    IEpgService epgService;
+    @Autowired
+    IProgramService programService;
 
+    // TODO: refactor
 
     @GetMapping("")
     public String index(Model model){
@@ -87,21 +80,21 @@ public class ChukasaController {
         boolean isFFmpeg = systemService.isFFmpeg();
         boolean isPTx = systemService.isTuner();
         boolean isRecpt1 = systemService.isRecxxx();
-        boolean isEpgdump = epgdumpService.isEpgdump();
+        boolean isEpgdump = true;//epgdumpService.isEpgdump();
         boolean isMongoDB = systemService.isMongoDB();
         boolean isWebCamera = systemService.isWebCamera();
 // PTx
         List<Program> programList = new ArrayList<>();
         boolean isLastEpgdumpExecuted = false;
 
-        List<ChannelConfiguration> channelConfigurationList = commonUtilityService.getChannelConfigurationList();
+        List<ChannelConfiguration> channelConfigurationList = epgService.getChannelConfigurationList();
 
         if(isMongoDB && isEpgdump){
-            programList = programTableService.readByNow(new Date().getTime());
-            programList = programList.stream().sorted(Comparator.comparing(Program::getPhysicalLogicalChannel)).collect(Collectors.toList());
+            programList = programService.readByNow(new Date().getTime());
+            programList = programList.stream().sorted(Comparator.comparing(Program::getChannelRecording)).collect(Collectors.toList());
 //            if(programList != null && lastEpgdumpExecutedService.read(1) != null && programTableService.getNumberOfPhysicalChannels() >= epgdumpChannelMap.size()){
 //            if(programList != null && programList.size() > 0 && lastEpgdumpExecutedService.read(1) != null && programTableService.getNumberOfPhysicalLogicalChannels() >= channelConfigurationList.size()){
-            if(programList != null && programList.size() > 0 && lastEpgdumpExecutedService.read(1) != null){
+            if(programList != null && programList.size() > 0 && epgService.readLatestEpgAcquisition(1) != null){
                 isLastEpgdumpExecuted = true;
             }
         }
@@ -118,8 +111,8 @@ public class ChukasaController {
             for(ChannelConfiguration channelConfiguration : channelConfigurationList){
                 try {
                     Program program = new Program();
-                    program.setPhysicalLogicalChannel(channelConfiguration.getPhysicalLogicalChannel());
-                    program.setRemoteControllerChannel(channelConfiguration.getRemoteControllerChannel());
+                    program.setChannelRecording(channelConfiguration.getChannelRecording());
+                    program.setChannelRemoteControl(channelConfiguration.getChannelRemoteControl());
                     programList.add(program);
                 }catch (NumberFormatException e){
                     log.error("invalid value {} {}", e.getMessage(), e);
@@ -127,7 +120,7 @@ public class ChukasaController {
             }
         }
         assert programList != null;
-        programList.sort(Comparator.comparingInt(Program::getRemoteControllerChannel));
+        programList.sort(Comparator.comparingInt(Program::getChannelRemoteControl));
         model.addAttribute("programList", programList);
 
         // FILE
@@ -187,14 +180,15 @@ public class ChukasaController {
 
         String unixDomainSocketPath = "";
         if(hyarukaConfiguration.isEnabled() && hyarukaConfiguration.isUnixDomainSocketEnabled()){
-            unixDomainSocketPath = hyarukaClientService.getUnixDomainSocketPath(commonUtilityService.getTunerType(chukasaSettings.getPhysicalLogicalChannel()), chukasaSettings.getPhysicalLogicalChannel());
+            unixDomainSocketPath = hyarukaClientService.getUnixDomainSocketPath(epgService.getTunerType(chukasaSettings.getChannelRecording()), chukasaSettings.getChannelRecording());
         }
 
         ChukasaModel chukasaModel = new ChukasaModel();
         chukasaModel.setSystemConfiguration(systemConfiguration);
         chukasaModel.setHlsConfiguration(hlsConfiguration);
         chukasaModel.setUnixDomainSocketPath(unixDomainSocketPath);
-        chukasaSettings.setTunerType(commonUtilityService.getTunerType(chukasaSettings.getPhysicalLogicalChannel()));
+        chukasaSettings.setTunerType(epgService.getTunerType(chukasaSettings.getChannelRecording()));
+        log.info("ChukasaSettings -> {}", chukasaSettings.toString());
         chukasaModel.setChukasaSettings(chukasaSettings);
 
         chukasaModel.setUuid(UUID.randomUUID());
@@ -211,7 +205,7 @@ public class ChukasaController {
         }
 
         String servletRealPath = httpServletRequest.getSession().getServletContext().getRealPath("");
-        String streamRootPath = commonUtilityService.getStreamRootPath(servletRealPath);
+        String streamRootPath = systemService.getStreamRootPath(servletRealPath);
         chukasaModel.setStreamRootPath(streamRootPath);
         chukasaModel = ChukasaUtility.createChukasaDerectory(chukasaModel);
         chukasaModel = ChukasaUtility.calculateTimerTaskParameter(chukasaModel);
@@ -254,7 +248,7 @@ public class ChukasaController {
                 final String HYARUKA_API_VERSION = hyarukaConfiguration.getApiVersion();
                 final String HYARUKA_URI = HYARUKA_SCHEME.toLowerCase() + "://" + HYARUKA_HOST + ":" + HYARUKA_PORT
                         + "/api/" + HYARUKA_API_VERSION + "/streams/"
-                        + chukasaModel.getChukasaSettings().getTunerType().name() + "/" + chukasaModel.getChukasaSettings().getPhysicalLogicalChannel();
+                        + chukasaModel.getChukasaSettings().getTunerType().name() + "/" + chukasaModel.getChukasaSettings().getChannelRecording();
                 RestTemplate restTemplate = new RestTemplate();
                 restTemplate.delete(HYARUKA_URI);
             }

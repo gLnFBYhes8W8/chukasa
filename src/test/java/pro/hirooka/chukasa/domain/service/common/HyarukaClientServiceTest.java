@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
-import pro.hirooka.chukasa.domain.model.common.type.TunerType;
-import pro.hirooka.chukasa.domain.model.recorder.Program;
+import pro.hirooka.chukasa.domain.model.epg.Program;
+
 
 import java.io.File;
 import java.util.List;
@@ -52,15 +52,15 @@ public class HyarukaClientServiceTest {
     @Test
     public void testGetStream(){
         requireNonNull(hyarukaClientService);
-        File file = new File("/tmp/もきゅ.ts");
-        Future<ResponseEntity<File>> future = hyarukaClientService.getStream(TunerType.GR, 0, 10_000, file);
-        try {
-            Thread.sleep(10_000 + 3_000);
-            if(!future.isDone()){
-                future.cancel(true);
-            }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//        File file = new File("/tmp/もきゅ.ts");
+//        Future<ResponseEntity<File>> future = hyarukaClientService.getStream(TunerType.GR, 0, 10_000, file);
+//        try {
+//            Thread.sleep(10_000 + 3_000);
+//            if(!future.isDone()){
+//                future.cancel(true);
+//            }
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
     }
 }

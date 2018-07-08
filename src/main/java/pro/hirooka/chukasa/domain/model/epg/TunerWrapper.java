@@ -1,10 +1,11 @@
-package pro.hirooka.chukasa.domain.model.common;
+package pro.hirooka.chukasa.domain.model.epg;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
 public class TunerWrapper {
+
     @JsonProperty("tuner")
     private List<Tuner> tunerList;
 

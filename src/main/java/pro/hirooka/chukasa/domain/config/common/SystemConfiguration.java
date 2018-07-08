@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 public class SystemConfiguration {
     String ffmpegPath;
     String recxxxPath;
-    String epgdumpPath;
+//    String epgdumpPath;
     String webcamDeviceName;
     String webcamAudioName;
     int webcamAudioChannel;
@@ -32,13 +32,13 @@ public class SystemConfiguration {
         this.recxxxPath = recxxxPath;
     }
 
-    public String getEpgdumpPath() {
-        return epgdumpPath;
-    }
-
-    public void setEpgdumpPath(String epgdumpPath) {
-        this.epgdumpPath = epgdumpPath;
-    }
+//    public String getEpgdumpPath() {
+//        return epgdumpPath;
+//    }
+//
+//    public void setEpgdumpPath(String epgdumpPath) {
+//        this.epgdumpPath = epgdumpPath;
+//    }
 
     public String getWebcamDeviceName() {
         return webcamDeviceName;

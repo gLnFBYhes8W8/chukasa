@@ -9,7 +9,16 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.scheduling.TaskScheduler;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
 import org.springframework.stereotype.Service;
+import org.springframework.util.FileCopyUtils;
+import org.springframework.web.client.ResponseExtractor;
+import org.springframework.web.client.RestTemplate;
 import pro.hirooka.chukasa.domain.config.common.MongoDBConfiguration;
 import pro.hirooka.chukasa.domain.config.common.SystemConfiguration;
 import pro.hirooka.chukasa.domain.config.recorder.RecorderConfiguration;
@@ -19,9 +28,13 @@ import pro.hirooka.chukasa.domain.repository.recorder.IReservedProgramRepository
 import pro.hirooka.chukasa.domain.service.common.ISystemService;
 
 import javax.annotation.PostConstruct;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.stream.Collectors;
 
 @Service
@@ -45,6 +58,8 @@ public class RecorderService implements IRecorderService {
     private MongoDBConfiguration mongoDBConfiguration;
     @Autowired
     private Recorder recorder;
+
+    private Map<Integer, ScheduledFuture> scheduledFutureMap = new HashMap<>();
 
     @PostConstruct
     public void init(){
@@ -115,7 +130,7 @@ public class RecorderService implements IRecorderService {
         reservedProgram.setStopRecording(stopRecording);
         reservedProgram.setRecordingDuration(recordingDuration);
 
-        String fileName = reservedProgram.getPhysicalLogicalChannel() + "_" + reservedProgram.getBegin() + "_" + reservedProgram.getTitle()  + ".ts";
+        String fileName = reservedProgram.getChannelRecording() + "_" + reservedProgram.getBegin() + "_" + reservedProgram.getTitle()  + ".ts";
         reservedProgram.setFileName(fileName);
 
         long now = new Date().getTime();
@@ -186,5 +201,60 @@ public class RecorderService implements IRecorderService {
     public void deleteAll() {
         reservedProgramRepository.deleteAll();
     }
+
+    @Async
+    @Override
+    public void recordDirectly(ReservedProgram reservedProgram, String hyarukaUri) {
+
+        final int channelRecording = reservedProgram.getChannelRecording();
+        final long startRecording = reservedProgram.getStartRecording();
+        final long stopRecording = reservedProgram.getStopRecording();
+        final long duration = reservedProgram.getRecordingDuration();
+        final long thumbnailPoint = duration / 3;
+        final String title = reservedProgram.getTitle();
+        final String fileName = reservedProgram.getFileName();
+
+        log.info("start recording... [{}] {} --> {}", channelRecording, title, hyarukaUri);
+
+        final File file = new File(fileName);
+        final RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<File> responseEntity = restTemplate.execute(hyarukaUri, HttpMethod.GET, null, new ResponseExtractor<ResponseEntity<File>>() {
+            @Override
+            public ResponseEntity<File> extractData(ClientHttpResponse response) throws IOException {
+                FileCopyUtils.copy(response.getBody(), new FileOutputStream(file));
+                return ResponseEntity.status(response.getStatusCode()).headers(response.getHeaders()).body(file);
+            }
+        });
+        log.info("{}", responseEntity.getStatusCode());
+    }
+
+    @Override
+    public void reserve(RecorderRunnable recorderRunnable) {
+        final ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+        final TaskScheduler taskScheduler = new ConcurrentTaskScheduler(scheduledExecutorService);
+        final Date date = new Date(recorderRunnable.getReservedProgram().getStart());
+        final ScheduledFuture scheduledFuture = taskScheduler.schedule(recorderRunnable, date);
+        scheduledFutureMap.put(recorderRunnable.getReservedProgram().getId(), scheduledFuture);
+        log.info("scheduler: {}", date.toString());
+    }
+
+    @Override
+    public void cancel(int id) {
+        if(scheduledFutureMap.containsKey(id)){
+            scheduledFutureMap.get(id).cancel(true);
+        }
+    }
+
+    @Override
+    public void cancelAll() {
+
+    }
+
+    @Override
+    public Map<Integer, ScheduledFuture> getScheduledFutureMap() {
+        return scheduledFutureMap;
+    }
+
+
 }
 

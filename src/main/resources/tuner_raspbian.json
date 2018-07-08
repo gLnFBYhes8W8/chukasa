@@ -1,0 +1,18 @@
+{
+  "tuner": [
+    {
+      "displayName": "PX-S1UD V2.0",
+      "type": "GR",
+      "deviceName": "/dev/dvb/adapter0",
+      "index": 0,
+      "command": "recdvb --dev 0 <channel> <duration> <destination>"
+    },
+    {
+      "displayName": "PX-BCUD",
+      "type": "BS",
+      "deviceName": "/dev/dvb/adapter1",
+      "index": 0,
+      "command": "recdvb --dev 1 <channel> <duration> <destination>"
+    }
+  ]
+}

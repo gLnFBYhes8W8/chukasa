@@ -3,16 +3,21 @@ package pro.hirooka.chukasa.domain.service.recorder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.stereotype.Component;
+import org.springframework.util.FileCopyUtils;
+import org.springframework.web.client.ResponseExtractor;
+import org.springframework.web.client.RestTemplate;
 import pro.hirooka.chukasa.domain.config.common.SystemConfiguration;
 import pro.hirooka.chukasa.domain.config.common.type.ChannelType;
 import pro.hirooka.chukasa.domain.config.common.type.FfmpegVcodecType;
-import pro.hirooka.chukasa.domain.model.common.ChannelConfiguration;
-import pro.hirooka.chukasa.domain.model.common.TunerStatus;
+import pro.hirooka.chukasa.domain.model.epg.ChannelConfiguration;
+import pro.hirooka.chukasa.domain.model.epg.Tuner;
+import pro.hirooka.chukasa.domain.model.epg.TunerStatus;
 import pro.hirooka.chukasa.domain.model.recorder.ReservedProgram;
-import pro.hirooka.chukasa.domain.service.common.ICommonUtilityService;
 import pro.hirooka.chukasa.domain.service.common.ISystemService;
-import pro.hirooka.chukasa.domain.service.common.ITunerManagementService;
 
 import java.io.*;
 import java.util.Date;
@@ -29,18 +34,16 @@ public class RecorderRunner implements Runnable {
     @Autowired
     private SystemConfiguration systemConfiguration;
     @Autowired
-    private ICommonUtilityService commonUtilityService;
-    @Autowired
-    private ITunerManagementService tunerManagementService;
-    @Autowired
     private ISystemService systemService;
 
     private ReservedProgram reservedProgram;
+    private Tuner tuner;
+    private String hyarukaUri;
 
     @Override
     public void run() {
 
-        final int physicalLogicalChannel = reservedProgram.getPhysicalLogicalChannel();
+        final int channelRecording = reservedProgram.getChannelRecording();
         final long startRecording = reservedProgram.getStartRecording();
         final long stopRecording = reservedProgram.getStopRecording();
         final long duration = reservedProgram.getRecordingDuration();
@@ -48,25 +51,38 @@ public class RecorderRunner implements Runnable {
         final String title = reservedProgram.getTitle();
         final String fileName = reservedProgram.getFileName();
 
-        log.info("start recording... [{}] {}", physicalLogicalChannel, title);
+        log.info("start recording... [{}] {}", channelRecording, title);
 
         long now = new Date().getTime();
 
         // start recording immediately
         // Create do-record.sh (do-record_ch_yyyyMMdd_yyyyMMdd.sh)
-        final String doRecordFileName = "do-record_" + physicalLogicalChannel + "_" + startRecording + "_" + stopRecording + ".sh";
-        final List<ChannelConfiguration> channelConfigurationList = commonUtilityService.getChannelConfigurationList();
-        final ChannelType channelType = commonUtilityService.getChannelType(physicalLogicalChannel);
-        TunerStatus tunerStatus = tunerManagementService.findOne(channelType);
-        if(tunerStatus != null) {
-            tunerStatus = tunerManagementService.update(tunerStatus, false);
-        }else{
-            // TODO: priority
-            log.warn("Tuner for recording is not available.");
-            return;
-        }
-        final String DEVICE_OPTION = tunerManagementService.getDeviceOption();
-        final String DEVICE_ARGUMENT = tunerManagementService.getDeviceArgument(tunerStatus);
+        final String doRecordFileName = "do-record_" + channelRecording + "_" + startRecording + "_" + stopRecording + ".sh";
+//        final List<ChannelConfiguration> channelConfigurationList = commonUtilityService.getChannelConfigurationList();
+//        final ChannelType channelType = commonUtilityService.getChannelType(physicalLogicalChannel);
+//        TunerStatus tunerStatus = tunerManagementService.findOne(channelType);
+//        if(tunerStatus != null) {
+//            tunerStatus = tunerManagementService.update(tunerStatus, false);
+//        }else{
+//            // TODO: priority
+//            log.warn("Tuner for recording is not available.");
+//            return;
+//        }
+//        final String DEVICE_OPTION = tunerManagementService.getDeviceOption();
+//        final String DEVICE_ARGUMENT = tunerManagementService.getDeviceArgument(tunerStatus);
+
+        final File file = new File(fileName);
+        final RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<File> responseEntity = restTemplate.execute(hyarukaUri, HttpMethod.GET, null, new ResponseExtractor<ResponseEntity<File>>() {
+            @Override
+            public ResponseEntity<File> extractData(ClientHttpResponse response) throws IOException {
+                FileCopyUtils.copy(response.getBody(), new FileOutputStream(file));
+                return ResponseEntity.status(response.getStatusCode()).headers(response.getHeaders()).body(file);
+            }
+        });
+        log.info("{}", responseEntity.getStatusCode());
+
+/*
         try{
             final File doRecordFile = new File(systemConfiguration.getFilePath() + FILE_SEPARATOR + doRecordFileName);
             log.info("doRecordFile: {}", doRecordFileName);
@@ -185,6 +201,7 @@ public class RecorderRunner implements Runnable {
         }
 
         tunerManagementService.update(tunerStatus, true);
+*/
     }
 
     public ReservedProgram getReservedProgram() {
@@ -193,6 +210,22 @@ public class RecorderRunner implements Runnable {
 
     public void setReservedProgram(ReservedProgram reservedProgram) {
         this.reservedProgram = reservedProgram;
+    }
+
+    public Tuner getTuner() {
+        return tuner;
+    }
+
+    public void setTuner(Tuner tuner) {
+        this.tuner = tuner;
+    }
+
+    public String getHyarukaUri() {
+        return hyarukaUri;
+    }
+
+    public void setHyarukaUri(String hyarukaUri) {
+        this.hyarukaUri = hyarukaUri;
     }
 }
 

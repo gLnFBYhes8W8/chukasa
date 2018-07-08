@@ -46,8 +46,8 @@
 
                 <div class="form-group">
                     <label>Program</label>
-                    <select class="form-control" name="physicalLogicalChannel">
-                        <option th:value="${program.physicalLogicalChannel}" th:text="${program.channelName + ' (' + program.remoteControllerChannel + '): ' + program.title}" th:each="program : ${programList}">...</option>
+                    <select class="form-control" name="channelRecording">
+                        <option th:value="${program.channelRecording}" th:text="${program.channelName + ' (' + program.channelRemoteControl + '): ' + program.title}" th:each="program : ${programList}">...</option>
                     </select>
                 </div>
 
@@ -97,9 +97,9 @@
                 <input type = "hidden" name = "streamingType" value = "TUNER"/>
 
                 <div class="form-group">
-                    <label>Physical Channel</label>
-                    <select class="form-control" name="physicalLogicalChannel">
-                        <option th:value="${program.physicalLogicalChannel}" th:text="${program.remoteControllerChannel}" th:each="program : ${programList}">...</option>
+                    <label>Channel</label>
+                    <select class="form-control" name="channelRecording">
+                        <option th:value="${program.channelRecording}" th:text="${program.channelRemoteControl}" th:each="program : ${programList}">...</option>
                     </select>
                 </div>
 
@@ -387,7 +387,7 @@
                     "playlistType" : $('#' + formId + ' [name=playlistType]').val(),
                     "transcodingSettings" : $('#' + formId + ' [name=transcodingSettings]').val(),
                     "canEncrypt" : $('#' + formId + ' [name=canEncrypt]').val(),
-                    "physicalLogicalChannel" : $('#' + formId + ' [name=physicalLogicalChannel]').val(),
+                    "channelRecording" : $('#' + formId + ' [name=channelRecording]').val(),
                     "fileName" : $('#' + formId + ' [name=fileName]').val(),
                     "videoResolution" : null,
                     "videoBitrate" : "0",

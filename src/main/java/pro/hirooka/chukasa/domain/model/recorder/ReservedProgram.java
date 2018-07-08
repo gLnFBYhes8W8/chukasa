@@ -2,7 +2,10 @@ package pro.hirooka.chukasa.domain.model.recorder;
 
 import org.springframework.data.annotation.Id;
 
+import java.util.UUID;
+
 public class ReservedProgram {
+    private UUID uuid = UUID.randomUUID();
     @Id
     private int id;
     private String channel;
@@ -18,8 +21,10 @@ public class ReservedProgram {
     private String channelName;
     private String beginDate;
     private String endDate;
-    private int physicalLogicalChannel;
-    private int remoteControllerChannel;
+//    private int physicalLogicalChannel;
+//    private int remoteControllerChannel;
+    private int channelRecording;
+    private int channelRemoteControl;
 
     private long startRecording;
     private long stopRecording;
@@ -118,20 +123,37 @@ public class ReservedProgram {
         this.endDate = endDate;
     }
 
-    public int getPhysicalLogicalChannel() {
-        return physicalLogicalChannel;
+//    public int getPhysicalLogicalChannel() {
+//        return physicalLogicalChannel;
+//    }
+//
+//    public void setPhysicalLogicalChannel(int physicalLogicalChannel) {
+//        this.physicalLogicalChannel = physicalLogicalChannel;
+//    }
+//
+//    public int getRemoteControllerChannel() {
+//        return remoteControllerChannel;
+//    }
+//
+//    public void setRemoteControllerChannel(int remoteControllerChannel) {
+//        this.remoteControllerChannel = remoteControllerChannel;
+//    }
+
+
+    public int getChannelRecording() {
+        return channelRecording;
     }
 
-    public void setPhysicalLogicalChannel(int physicalLogicalChannel) {
-        this.physicalLogicalChannel = physicalLogicalChannel;
+    public void setChannelRecording(int channelRecording) {
+        this.channelRecording = channelRecording;
     }
 
-    public int getRemoteControllerChannel() {
-        return remoteControllerChannel;
+    public int getChannelRemoteControl() {
+        return channelRemoteControl;
     }
 
-    public void setRemoteControllerChannel(int remoteControllerChannel) {
-        this.remoteControllerChannel = remoteControllerChannel;
+    public void setChannelRemoteControl(int channelRemoteControl) {
+        this.channelRemoteControl = channelRemoteControl;
     }
 
     public long getStartRecording() {
@@ -180,5 +202,31 @@ public class ReservedProgram {
 
     public void setM4vTranscodingStatus(M4vTranscodingStatus m4vTranscodingStatus) {
         this.m4vTranscodingStatus = m4vTranscodingStatus;
+    }
+
+    @Override
+    public String toString() {
+        return "ReservedProgram{" +
+                "uuid=" + uuid +
+                ", id=" + id +
+                ", channel='" + channel + '\'' +
+                ", title='" + title + '\'' +
+                ", detail='" + detail + '\'' +
+                ", start=" + start +
+                ", end=" + end +
+                ", duration=" + duration +
+                ", begin=" + begin +
+                ", channelName='" + channelName + '\'' +
+                ", beginDate='" + beginDate + '\'' +
+                ", endDate='" + endDate + '\'' +
+                ", channelRecording=" + channelRecording +
+                ", channelRemoteControl=" + channelRemoteControl +
+                ", startRecording=" + startRecording +
+                ", stopRecording=" + stopRecording +
+                ", recordingDuration=" + recordingDuration +
+                ", fileName='" + fileName + '\'' +
+                ", recordingStatus=" + recordingStatus +
+                ", m4vTranscodingStatus=" + m4vTranscodingStatus +
+                '}';
     }
 }

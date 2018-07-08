@@ -19,13 +19,14 @@ import pro.hirooka.chukasa.domain.model.api.ChukasaResponse;
 import pro.hirooka.chukasa.domain.model.api.HlsPlaylist;
 import pro.hirooka.chukasa.domain.model.hls.ChukasaModel;
 import pro.hirooka.chukasa.domain.model.hls.ChukasaSettings;
-import pro.hirooka.chukasa.domain.service.common.ICommonUtilityService;
 import pro.hirooka.chukasa.domain.service.common.ISystemService;
 import pro.hirooka.chukasa.domain.service.hls.IChukasaModelManagementComponent;
 import pro.hirooka.chukasa.domain.service.hls.ICoordinatorService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.UUID;
+
+// TODO: refactor
 
 @RestController
 @RequestMapping("api/v1/hls")
@@ -43,9 +44,6 @@ public class  HlsPlayerRestController {
     HttpServletRequest httpServletRequest;
     @Autowired
     ISystemService systemService;
-    @Autowired
-    ICommonUtilityService commonUtilityService;
-
     @Autowired
     ICoordinatorService taskCoordinatorService;
 
@@ -89,7 +87,7 @@ public class  HlsPlayerRestController {
         }
 
         String servletRealPath = httpServletRequest.getSession().getServletContext().getRealPath("");
-        String streamRootPath = commonUtilityService.getStreamRootPath(servletRealPath);
+        String streamRootPath = systemService.getStreamRootPath(servletRealPath);
         chukasaModel.setStreamRootPath(streamRootPath);
         chukasaModel = ChukasaUtility.createChukasaDerectory(chukasaModel);
         chukasaModel = ChukasaUtility.calculateTimerTaskParameter(chukasaModel);

@@ -4,7 +4,7 @@ aaa:
 system:
   ffmpeg-path: /usr/local/bin/ffmpeg
   recxxx-path: /usr/local/bin/recdvb
-  epgdump-path: /usr/local/bin/epgdump
+#  epgdump-path: /usr/local/bin/epgdump
   webcam-device-name: /dev/video0
   webcam-audio-name: hw:0,0
   webcam-audio-channel: 2
@@ -13,15 +13,20 @@ system:
   ffmpeg-threads: 1
 
 common:
-  tuner: tuner.json
-  channel-configuration: channel_configuration.json
+#  tuner: tuner.json
+#  channel-configuration: channel_configuration.json
   video-file-extension: ts,m2t,mp4,mov,mpg,mpeg,vob,avi,divx,wmv,flv,ogg,ogm,iso
 
 epg:
- epgdump-temporary-path: /tmp/chukasa_epgdump
- epgdump-recording-duration: 32
- epgdump-execute-schedule-cron: 0 0 7 * * *
- epgdump-execute-on-boot-ignore-interval: 86400000
+# epgdump-temporary-path: /tmp/chukasa_epgdump
+# epgdump-recording-duration: 32
+# epgdump-execute-schedule-cron: 0 0 7 * * *
+# epgdump-execute-on-boot-ignore-interval: 86400000
+  tuner: tuner.json
+  channel-configuration: channel_configuration.json
+  acquisition-schedule-cron: 0 0 7 * * *
+  acquisition-on-boot-ignored-interval: 86400000 # ms (1 day)
+  old-program-deletion-schedule-cron: 0 0 6 * * *
 
 hls:
   duration: 2
@@ -53,7 +58,7 @@ logging:
 
 spring:
   profiles:
-    active: localhost-no-database
+    active: localhost-mongodb
   jpa:
     hibernate:
       ddl-auto: create-drop
