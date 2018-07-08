@@ -70,6 +70,7 @@ public class ChukasaModel {
 
     private boolean isTrascoding;
     private long ffmpegPID;
+    private Process ffmpegProcess;
 
     private UUID uuid;
 
@@ -142,6 +143,7 @@ public class ChukasaModel {
 
         this.isTrascoding = false;
         this.ffmpegPID = -1;
+        this.ffmpegProcess = null;
 
         this.uuid = null;
 
@@ -474,6 +476,14 @@ public class ChukasaModel {
 
     public void setFfmpegPID(long ffmpegPID) {
         this.ffmpegPID = ffmpegPID;
+    }
+
+    public Process getFfmpegProcess() {
+        return ffmpegProcess;
+    }
+
+    public void setFfmpegProcess(Process ffmpegProcess) {
+        this.ffmpegProcess = ffmpegProcess;
     }
 
     public UUID getUuid() {

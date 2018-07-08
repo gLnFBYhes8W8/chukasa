@@ -399,85 +399,41 @@ public class FfmpegAndRecxxxService implements IFfmpegAndRecxxxService {
         }
         log.info("{}", command);
 
-        final String captureShell = chukasaModel.getSystemConfiguration().getTemporaryPath() + FILE_SEPARATOR + "capture.sh";
-        File file = new File(captureShell);
-        try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file))) {
-            bufferedWriter.write("#!/bin/bash");
-            bufferedWriter.newLine();
-            bufferedWriter.write(command);
-        } catch (IOException e) {
-            log.error("{} {}", e.getMessage(), e);
-        }
-
-        // chmod 755 capture.sh
-        if(true){
-            final String[] chmodCommandArray = {"chmod", "755", captureShell};
-            final ProcessBuilder processBuilder = new ProcessBuilder(chmodCommandArray);
-            try {
-                final Process process = processBuilder.start();
-                final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-                String str = "";
-                while((str = bufferedReader.readLine()) != null){
-                    log.debug("{}", str);
-                }
-                process.getInputStream().close();
-                process.getErrorStream().close();
-                process.getOutputStream().close();
-                bufferedReader.close();
-                process.destroy();
-            } catch (IOException e) {
-                log.error("{} {}", e.getMessage(), e);
-            }
-        }
-
-        // run capture.sh
-        if(true){
-            final String[] capureCommandArray = {captureShell};
-            final ProcessBuilder processBuilder = new ProcessBuilder(capureCommandArray);
-            try {
-                final Process process = processBuilder.start();
-                final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-
-                // TODO: sh だから意味無し
-                long pid = -1;
-                try {
-                    if (process.getClass().getName().equals("java.lang.UNIXProcess")) {
-                        final Field field = process.getClass().getDeclaredField("pid");
-                        field.setAccessible(true);
-                        pid = field.getLong(process);
+        final ProcessBuilder processBuilder = new ProcessBuilder(commandArray);
+        final Process process;
+        try {
+            process = processBuilder.start();
+            final long pid = process.pid();
+            final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+            String str = "";
+            boolean isTranscoding = false;
+            while((str = bufferedReader.readLine()) != null){
+                log.debug("{}", str);
+                if(str.startsWith("frame=")){
+                    if(!isTranscoding){
+                        isTranscoding = true;
+                        chukasaModel.setTrascoding(isTranscoding);
                         chukasaModel.setFfmpegPID(pid);
+                        chukasaModel.setFfmpegProcess(process);
                         chukasaModel = chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
-                        field.setAccessible(false);
-                    }
-                } catch (Exception e) {
-                    log.error("{} {}", e.getMessage(), e);
-                }
-
-                String str = "";
-                boolean isTranscoding = false;
-                while((str = bufferedReader.readLine()) != null){
-                    log.debug("{}", str);
-                    if(str.startsWith("frame=")){
-                        if(!isTranscoding){
-                            isTranscoding = true;
-                            chukasaModel.setTrascoding(isTranscoding);
-                            chukasaModel = chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
-                        }
                     }
                 }
-                isTranscoding = false;
-                chukasaModel.setTrascoding(isTranscoding);
-                chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
-                process.getInputStream().close();
-                process.getErrorStream().close();
-                process.getOutputStream().close();
-                bufferedReader.close();
-                process.destroy();
-            } catch (IOException e) {
-                log.error("{} {}", e.getMessage(), e);
             }
+            isTranscoding = false;
+            chukasaModel.setTrascoding(isTranscoding);
+            chukasaModel.setFfmpegPID(-1);
+            chukasaModel.setFfmpegProcess(null);
+            chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
+            process.getInputStream().close();
+            process.getErrorStream().close();
+            process.getOutputStream().close();
+            bufferedReader.close();
+            process.destroy();
+        } catch (IOException e) {
+            log.warn("{}", e.getMessage());
+        } finally {
+            log.info("stream is closed.");
         }
-
         return new AsyncResult<>(0);
     }
 
@@ -490,6 +446,11 @@ public class FfmpegAndRecxxxService implements IFfmpegAndRecxxxService {
     public void cancel(int adaptiveBitrateStreaming) {
         ChukasaModel chukasaModel = chukasaModelManagementComponent.get(adaptiveBitrateStreaming);
         chukasaModel.setTunerDeviceName("");
+        chukasaModel.setFfmpegPID(-1);
+        if(chukasaModel.getFfmpegProcess() != null){
+            chukasaModel.getFfmpegProcess().destroy();
+            chukasaModel.setFfmpegProcess(null);
+        }
         chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
     }
 }
