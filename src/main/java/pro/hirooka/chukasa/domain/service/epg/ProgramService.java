@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import pro.hirooka.chukasa.domain.config.common.MongoDBConfiguration;
 import pro.hirooka.chukasa.domain.model.epg.Program;
 import pro.hirooka.chukasa.domain.repository.epg.IProgramRepository;
-import pro.hirooka.chukasa.domain.service.common.ISystemService;
 
 import java.time.Instant;
 import java.time.ZoneId;
@@ -31,9 +30,6 @@ public class ProgramService implements IProgramService {
 
     private final IProgramRepository programRepository;
     private final MongoDBConfiguration mongoDBConfiguration;
-
-    @Autowired
-    private ISystemService systemService;
 
     @Autowired
     public ProgramService(

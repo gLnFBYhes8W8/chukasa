@@ -1,12 +1,10 @@
 package pro.hirooka.chukasa.domain.model.aaa;
 
-import javax.persistence.Id;
 import java.io.Serializable;
 import java.util.UUID;
 
 public class ChukasaUserRole implements Serializable {
 
-    @Id
     private UUID uuid = UUID.randomUUID();
     private String name;
     private String authority;

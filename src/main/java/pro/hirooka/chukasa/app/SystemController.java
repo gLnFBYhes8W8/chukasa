@@ -28,8 +28,6 @@ public class SystemController {
     String index(Model model){
 
         boolean isFFmpeg = systemService.isFFmpeg();
-        boolean isPTx = systemService.isTuner();
-        boolean isRecpt1 = systemService.isRecxxx();
         boolean isMongoDB = systemService.isMongoDB();
         boolean isWebCamera = systemService.isWebCamera();
 
@@ -39,8 +37,8 @@ public class SystemController {
         log.info(systemProperties);
 
         model.addAttribute("isFFmpeg", isFFmpeg);
-        model.addAttribute("isPTx", isPTx);
-        model.addAttribute("isRecpt1", isRecpt1);
+        model.addAttribute("isPTx", true);
+        model.addAttribute("isRecpt1", true);
         model.addAttribute("isMongoDB", isMongoDB);
         model.addAttribute("isWebCamera", isWebCamera);
         model.addAttribute("systemProperties", systemProperties);

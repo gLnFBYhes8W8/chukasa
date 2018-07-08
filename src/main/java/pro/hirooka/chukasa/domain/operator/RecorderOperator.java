@@ -75,7 +75,9 @@ public class RecorderOperator implements IRecorderOperator {
                         log.info("reservation: {}", reservedProgram.toString());
                         final RecorderRunnable recorderRunnable = new RecorderRunnable();
                         recorderRunnable.setReservedProgram(reservedProgram);
-                        final String path = "/"
+                        final String path = "/streams/"
+                                + epgService.getTunerType(reservedProgram.getChannelRecording())
+                                + "/"
                                 + reservedProgram.getChannelRecording()
                                 + "/"
                                 + reservedProgram.getRecordingDuration();
@@ -87,7 +89,7 @@ public class RecorderOperator implements IRecorderOperator {
                         log.info("no reservation, direct recording");
                         long recordingDuration = (stopRecording - now) / 1000;
                         reservedProgram.setRecordingDuration(recordingDuration);
-                        final String path = "/"
+                        final String path = "/streams/"
                                 + epgService.getTunerType(reservedProgram.getChannelRecording())
                                 + "/"
                                 + reservedProgram.getChannelRecording()

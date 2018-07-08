@@ -5,11 +5,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import pro.hirooka.chukasa.domain.config.epg.EpgConfiguration;
 import pro.hirooka.chukasa.domain.model.epg.LatestEpgAcquisition;
 import pro.hirooka.chukasa.domain.model.epg.Program;
 import pro.hirooka.chukasa.domain.service.common.IHyarukaClientService;
-import pro.hirooka.chukasa.domain.service.common.ISystemService;
 import pro.hirooka.chukasa.domain.service.epg.IEpgService;
 
 import java.util.Date;
@@ -22,22 +20,16 @@ public class EpgOperator implements IEpgOperator {
 
     private static final Logger log = LoggerFactory.getLogger(EpgOperator.class);
 
-    private final EpgConfiguration epgConfiguration;
     private final IEpgService epgService;
     private final IHyarukaClientService hyarukaClientService;
-    private final ISystemService systemService;
 
     @Autowired
     public EpgOperator(
-            EpgConfiguration epgConfiguration,
             IEpgService epgService,
-            IHyarukaClientService hyarukaClientService,
-            ISystemService systemService
+            IHyarukaClientService hyarukaClientService
     ) {
-        this.epgConfiguration = requireNonNull(epgConfiguration);
         this.epgService = requireNonNull(epgService);
         this.hyarukaClientService = requireNonNull(hyarukaClientService);
-        this.systemService = requireNonNull(systemService);
     }
 
     @Async

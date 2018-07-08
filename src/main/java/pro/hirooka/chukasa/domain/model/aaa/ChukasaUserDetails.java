@@ -4,7 +4,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.Id;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -12,7 +11,6 @@ import java.util.stream.Collectors;
 
 public class ChukasaUserDetails implements UserDetails {
 
-    @Id
     private UUID uuid = UUID.randomUUID();
 
     private String username;

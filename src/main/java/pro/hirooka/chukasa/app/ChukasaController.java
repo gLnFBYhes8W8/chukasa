@@ -78,9 +78,6 @@ public class ChukasaController {
         model.addAttribute("html5Player", html5Player);
 
         boolean isFFmpeg = systemService.isFFmpeg();
-        boolean isPTx = systemService.isTuner();
-        boolean isRecpt1 = systemService.isRecxxx();
-        boolean isEpgdump = true;//epgdumpService.isEpgdump();
         boolean isMongoDB = systemService.isMongoDB();
         boolean isWebCamera = systemService.isWebCamera();
 // PTx
@@ -89,7 +86,7 @@ public class ChukasaController {
 
         List<ChannelConfiguration> channelConfigurationList = epgService.getChannelConfigurationList();
 
-        if(isMongoDB && isEpgdump){
+        if(isMongoDB){
             programList = programService.readByNow(new Date().getTime());
             programList = programList.stream().sorted(Comparator.comparing(Program::getChannelRecording)).collect(Collectors.toList());
 //            if(programList != null && lastEpgdumpExecutedService.read(1) != null && programTableService.getNumberOfPhysicalChannels() >= epgdumpChannelMap.size()){
@@ -101,11 +98,11 @@ public class ChukasaController {
 
         // PTx (switch Program/Channel)
         boolean isPTxByProgram = false;
-        if(isFFmpeg && isPTx && isRecpt1 && isLastEpgdumpExecuted){
+        if(isFFmpeg && isLastEpgdumpExecuted){
             isPTxByProgram = true;
         }
         boolean isPTxByChannel = false;
-        if(isFFmpeg && isPTx && isRecpt1 && !isLastEpgdumpExecuted){
+        if(isFFmpeg && !isLastEpgdumpExecuted){
             programList = new ArrayList<>();
             isPTxByChannel = true;
             for(ChannelConfiguration channelConfiguration : channelConfigurationList){

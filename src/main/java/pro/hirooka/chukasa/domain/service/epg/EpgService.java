@@ -12,7 +12,6 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
 import org.springframework.stereotype.Service;
 import pro.hirooka.chukasa.domain.config.common.MongoDBConfiguration;
-import pro.hirooka.chukasa.domain.config.common.type.ChannelType;
 import pro.hirooka.chukasa.domain.config.epg.EpgConfiguration;
 import pro.hirooka.chukasa.domain.model.epg.*;
 import pro.hirooka.chukasa.domain.repository.epg.ILatestEpgAcquisitionRepository;

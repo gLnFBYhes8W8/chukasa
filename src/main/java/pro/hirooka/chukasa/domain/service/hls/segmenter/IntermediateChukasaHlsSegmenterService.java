@@ -15,8 +15,6 @@ public class IntermediateChukasaHlsSegmenterService implements IIntermediateChuk
 
     private static final Logger log = LoggerFactory.getLogger(IntermediateChukasaHlsSegmenterService.class);
 
-    @Autowired
-    private ChukasaHlsSegmenter chukasaHLSSegmenter;
     private ThreadPoolTaskScheduler threadPoolTaskScheduler;
 
     @Autowired
@@ -26,12 +24,12 @@ public class IntermediateChukasaHlsSegmenterService implements IIntermediateChuk
     @Override
     public void schedule(int adaptiveBitrateStreaming, Date startTime, long period) {
         playlistCreator.create();
-        chukasaHLSSegmenter.setAdaptiveBitrateStreaming(adaptiveBitrateStreaming);
+        //chukasaHLSSegmenter.setAdaptiveBitrateStreaming(adaptiveBitrateStreaming);
         threadPoolTaskScheduler = new ThreadPoolTaskScheduler();
         threadPoolTaskScheduler.setThreadNamePrefix(Integer.toString(adaptiveBitrateStreaming));
         threadPoolTaskScheduler.setPoolSize(3);
         threadPoolTaskScheduler.initialize();
-        threadPoolTaskScheduler.scheduleAtFixedRate(chukasaHLSSegmenter, startTime, period);
+        //treadPoolTaskScheduler.scheduleAtFixedRate(chukasaHLSSegmenter, startTime, period);
     }
 
     @Override

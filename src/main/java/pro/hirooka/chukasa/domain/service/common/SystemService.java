@@ -11,7 +11,6 @@ import pro.hirooka.chukasa.domain.config.ChukasaConstants;
 import pro.hirooka.chukasa.domain.config.common.MongoDBConfiguration;
 import pro.hirooka.chukasa.domain.config.common.SystemConfiguration;
 import pro.hirooka.chukasa.domain.config.common.type.FfmpegVcodecType;
-import pro.hirooka.chukasa.domain.config.common.type.HardwareAccelerationType;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -53,25 +52,6 @@ public class SystemService implements ISystemService {
     }
 
     @Override
-    public boolean isTuner() {
-        return new File(DVB_DEVICE).exists() || new File(CHARACTER_DEVICE).exists();
-    }
-
-    @Override
-    public boolean isRecxxx() {
-        String recxxxPath = systemConfiguration.getRecxxxPath().split(" ")[0];
-        File recpt1 = new File(recxxxPath);
-        return recpt1.exists();
-    }
-
-    @Override
-    public boolean isEpgdump() {
-//        File epgdump = new File(systemConfiguration.getEpgdumpPath());
-//        return epgdump.exists();
-        return true;
-    }
-
-    @Override
     public boolean isMongoDB() {
         if(mongoDBConfiguration.getHost() == null){
             return false;
@@ -107,50 +87,12 @@ public class SystemService implements ISystemService {
 
     @Override
     public boolean canPTxStreaming() {
-        return isFFmpeg() && isTuner() && isRecxxx();
+        return isFFmpeg();
     }
 
     @Override
     public boolean canRecording() {
-        return isFFmpeg() && isTuner() && isRecxxx() && isMongoDB();
-    }
-
-    @Override
-    public HardwareAccelerationType getHardwareAccelerationType() {
-        final String H264_QSV = "--enable-libmfx";
-        final String H264_X264 = "--enable-libx264";
-        final String H264_OMX = "--enable-omx-rpi";
-        String ffmpeg = systemConfiguration.getFfmpegPath();
-        String[] command = {ffmpeg, "-version"};
-        ProcessBuilder processBuilder = new ProcessBuilder(command);
-        try {
-            Process process = processBuilder.start();
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            String str = "";
-            while((str = bufferedReader.readLine()) != null){
-                log.info(str);
-                if(str.contains(H264_QSV)){
-                    bufferedReader.close();
-                    process.destroy();
-                    return HardwareAccelerationType.H264_QSV;
-                }
-                if(str.contains(H264_OMX)){
-                    bufferedReader.close();
-                    process.destroy();
-                    return HardwareAccelerationType.H264_OMX;
-                }
-                if(str.contains(H264_X264)){
-                    bufferedReader.close();
-                    process.destroy();
-                    return HardwareAccelerationType.H264_X264;
-                }
-            }
-            bufferedReader.close();
-            process.destroy();
-        } catch (IOException e) {
-            log.error("{} {}", e.getMessage(), e);
-        }
-        return HardwareAccelerationType.H264_NVENC;
+        return isFFmpeg() && isMongoDB();
     }
 
     @Override

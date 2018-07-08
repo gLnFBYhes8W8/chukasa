@@ -91,9 +91,6 @@ public class MenuController {
         log.info("{} : {}", isSupported, userAgent);
 
         boolean isFFmpeg = systemService.isFFmpeg();
-        boolean isPTx = systemService.isTuner();
-        boolean isRecpt1 = systemService.isRecxxx();
-        boolean isEpgdump = true;//epgdumpService.isEpgdump();
         boolean isMongoDB = systemService.isMongoDB();
         boolean isWebCamera = systemService.isWebCamera();
 
@@ -103,7 +100,7 @@ public class MenuController {
 
         List<ChannelConfiguration> channelConfigurationList = epgService.getChannelConfigurationList();
 
-        if(isMongoDB && isEpgdump){
+        if(isMongoDB){
             programList = programService.readByNow(new Date().getTime());
             programList = programList.stream().sorted(Comparator.comparing(Program::getChannelRecording)).collect(Collectors.toList());
 //            if(programList != null && lastEpgdumpExecutedService.read(1) != null && programTableService.getNumberOfPhysicalChannels() >= epgdumpChannelMap.size()){
@@ -115,11 +112,11 @@ public class MenuController {
 
         // PTx (switch Program/Channel)
         boolean isPTxByProgram = false;
-        if(isFFmpeg && isPTx && isRecpt1 && isLastEpgdumpExecuted){
+        if(isFFmpeg && isLastEpgdumpExecuted){
             isPTxByProgram = true;
         }
         boolean isPTxByChannel = false;
-        if(isFFmpeg && isPTx && isRecpt1 && !isLastEpgdumpExecuted){
+        if(isFFmpeg && !isLastEpgdumpExecuted){
             programList = new ArrayList<>();
             isPTxByChannel = true;
             for(ChannelConfiguration channelConfiguration : channelConfigurationList){

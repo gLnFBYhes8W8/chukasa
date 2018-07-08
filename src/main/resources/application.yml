@@ -3,8 +3,6 @@ aaa:
 
 system:
   ffmpeg-path: /usr/local/bin/ffmpeg
-  recxxx-path: /usr/local/bin/recdvb
-#  epgdump-path: /usr/local/bin/epgdump
   webcam-device-name: /dev/video0
   webcam-audio-name: hw:0,0
   webcam-audio-channel: 2
@@ -13,15 +11,9 @@ system:
   ffmpeg-threads: 1
 
 common:
-#  tuner: tuner.json
-#  channel-configuration: channel_configuration.json
   video-file-extension: ts,m2t,mp4,mov,mpg,mpeg,vob,avi,divx,wmv,flv,ogg,ogm,iso
 
 epg:
-# epgdump-temporary-path: /tmp/chukasa_epgdump
-# epgdump-recording-duration: 32
-# epgdump-execute-schedule-cron: 0 0 7 * * *
-# epgdump-execute-on-boot-ignore-interval: 86400000
   tuner: tuner.json
   channel-configuration: channel_configuration.json
   acquisition-schedule-cron: 0 0 7 * * *
@@ -82,72 +74,6 @@ spring:
   data:
     mongodb:
       host: localhost
-      port: 27017
-      database: chukasa
-      server-selection-timeout: 500
----
-spring:
-  profiles: localhost-hsqldb
----
-spring:
-  profiles: localhost-postgresql
-  datasource:
-    url: jdbc:postgresql://localhost:5432/chukasa
-    username: chukasa
-    password: chukasa
----
-spring:
-  profiles: localhost-mongodb-postgresql
-  datasource:
-    url: jdbc:postgresql://localhost:5432/chukasa
-    username: chukasa
-    password: chukasa
-  data:
-    mongodb:
-      host: localhost
-      port: 27017
-      database: chukasa
-      server-selection-timeout: 500
----
-spring:
-  profiles: localhost-mysql
-  datasource:
-    url: jdbc:mysql://localhost:3306/chukasa # TODO: not working...
-    username: chukasa
-    password: chukasa
----
-spring:
-  profiles: localhost-mongodb-mysql
-  datasource:
-    url: jdbc:mysql://localhost:3306/chukasa # TODO: not working...
-    username: chukasa
-    password: chukasa
-  data:
-    mongodb:
-      host: localhost
-      port: 27017
-      database: chukasa
-      server-selection-timeout: 500
----
-spring:
-  profiles: gae-flexible-postgresql
-  datasource:
-    url: jdbc:postgresql://google/chukasa?socketFactory=com.google.cloud.sql.postgres.SocketFactory&socketFactoryArg=
-    username: chukasa
-    password: chukasa
-  jpa:
-     hibernate:
-       ddl-auto: create
----
-spring:
-  profiles: localhost-docker-mongodb-postgresql
-  datasource:
-    url: jdbc:postgresql://postgres:5432/chukasa
-    username: chukasa
-    password: chukasa
-  data:
-    mongodb:
-      host: mongo
       port: 27017
       database: chukasa
       server-selection-timeout: 500

@@ -28,11 +28,9 @@ public class FfmpegAndRecxxxService implements IFfmpegAndRecxxxService {
     @Autowired
     public FfmpegAndRecxxxService(
             IChukasaModelManagementComponent chukasaModelManagementComponent,
-            //ICommonUtilityService commonUtilityService,
             HyarukaConfiguration hyarukaConfiguration
     ){
         this.chukasaModelManagementComponent = chukasaModelManagementComponent;
-        //this.commonUtilityService = commonUtilityService;
         this.hyarukaConfiguration = hyarukaConfiguration;
     }
 
@@ -64,16 +62,6 @@ public class FfmpegAndRecxxxService implements IFfmpegAndRecxxxService {
             ffmpegM3U8OutputPath = chukasaModel.getStreamPath() + FILE_SEPARATOR + M3U8_FILE_NAME + M3U8_FILE_EXTENSION;
         }
 
-        //final List<ChannelConfiguration> channelConfigurationList = commonUtilityService.getChannelConfigurationList();
-//        final ChannelType channelType = commonUtilityService.getChannelType(chukasaModel.getChukasaSettings().getPhysicalLogicalChannel());
-//        TunerStatus tunerStatus = tunerManagementService.findOne(channelType);
-//        if(tunerStatus != null) {
-//            tunerStatus = tunerManagementService.update(tunerStatus, false);
-//        }else{
-//            log.warn("Tuner for HLS is not available.");
-//            return new AsyncResult<>(-1);
-//        }
-//        chukasaModel.setTunerDeviceName(tunerStatus.getDeviceName());
         chukasaModel = chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
 
         final String HYARUKA_SCHEME = hyarukaConfiguration.getScheme().name();
@@ -90,8 +78,6 @@ public class FfmpegAndRecxxxService implements IFfmpegAndRecxxxService {
                     + chukasaModel.getChukasaSettings().getTunerType().name() + "/" + chukasaModel.getChukasaSettings().getChannelRecording();
         }
 
-//        final String DEVICE_OPTION = tunerManagementService.getDeviceOption();
-//        final String DEVICE_ARGUMENT = tunerManagementService.getDeviceArgument(tunerStatus);
         final String[] commandArray;
 
         if(hyarukaConfiguration.isEnabled()){
@@ -503,7 +489,6 @@ public class FfmpegAndRecxxxService implements IFfmpegAndRecxxxService {
     @Override
     public void cancel(int adaptiveBitrateStreaming) {
         ChukasaModel chukasaModel = chukasaModelManagementComponent.get(adaptiveBitrateStreaming);
-        //tunerManagementService.update(chukasaModel.getTunerDeviceName(), true);
         chukasaModel.setTunerDeviceName("");
         chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
     }
