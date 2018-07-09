@@ -7,12 +7,31 @@ import pro.hirooka.chukasa.domain.config.common.type.SchemeType;
 @Configuration
 @ConfigurationProperties(prefix = "hyaruka")
 public class HyarukaConfiguration {
+
+    private String username;
+    private String password;
     private SchemeType scheme;
     private String host;
     private int port;
     private String apiVersion;
     private boolean enabled;
     private boolean unixDomainSocketEnabled;
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     public SchemeType getScheme() {
         return scheme;

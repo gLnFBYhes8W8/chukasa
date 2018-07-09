@@ -29,6 +29,8 @@ recorder:
   stop-margin: 0
 
 hyaruka:
+  username: guest
+  password: guest
   scheme: http
   host: localhost
   port: 49149

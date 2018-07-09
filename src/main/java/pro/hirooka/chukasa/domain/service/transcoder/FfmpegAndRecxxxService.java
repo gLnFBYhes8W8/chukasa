@@ -64,6 +64,8 @@ public class FfmpegAndRecxxxService implements IFfmpegAndRecxxxService {
 
         chukasaModel = chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
 
+        final String HYARUKA_USERNAME = hyarukaConfiguration.getUsername();
+        final String HYARUKA_PASSWORD = hyarukaConfiguration.getPassword();
         final String HYARUKA_SCHEME = hyarukaConfiguration.getScheme().name();
         final String HYARUKA_HOST = hyarukaConfiguration.getHost();
         final int HYARUKA_PORT = hyarukaConfiguration.getPort();
@@ -73,7 +75,7 @@ public class FfmpegAndRecxxxService implements IFfmpegAndRecxxxService {
         if(hyarukaConfiguration.isEnabled() && hyarukaConfiguration.isUnixDomainSocketEnabled()){
             HYARUKA_URI = "unix:" + chukasaModel.getUnixDomainSocketPath();
         }else{
-            HYARUKA_URI = HYARUKA_SCHEME.toLowerCase() + "://" + HYARUKA_HOST + ":" + HYARUKA_PORT
+            HYARUKA_URI = HYARUKA_SCHEME.toLowerCase() + "://" + HYARUKA_USERNAME + ":" + HYARUKA_PASSWORD + "@" + HYARUKA_HOST + ":" + HYARUKA_PORT
                     + "/api/" + HYARUKA_API_VERSION + "/streams/"
                     + chukasaModel.getChukasaSettings().getTunerType().name() + "/" + chukasaModel.getChukasaSettings().getChannelRecording();
         }

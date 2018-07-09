@@ -3,6 +3,8 @@ package pro.hirooka.chukasa.app;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.client.support.BasicAuthorizationInterceptor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -239,15 +241,23 @@ public class ChukasaController {
 
         chukasaModelManagementComponent.get().forEach(chukasaModel -> {
             if(hyarukaConfiguration.isEnabled() && chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.TUNER) {
+                final String HYARUKA_USERNAME = hyarukaConfiguration.getUsername();
+                final String HYARUKA_PASSWORD = hyarukaConfiguration.getPassword();
                 final String HYARUKA_SCHEME = hyarukaConfiguration.getScheme().name();
                 final String HYARUKA_HOST = hyarukaConfiguration.getHost();
                 final int HYARUKA_PORT = hyarukaConfiguration.getPort();
                 final String HYARUKA_API_VERSION = hyarukaConfiguration.getApiVersion();
-                final String HYARUKA_URI = HYARUKA_SCHEME.toLowerCase() + "://" + HYARUKA_HOST + ":" + HYARUKA_PORT
+                final String HYARUKA_URI = HYARUKA_SCHEME.toLowerCase() + "://"
+                        //+ HYARUKA_USERNAME + ":" + HYARUKA_PASSWORD + "@"
+                        + HYARUKA_HOST + ":" + HYARUKA_PORT
                         + "/api/" + HYARUKA_API_VERSION + "/streams/"
                         + chukasaModel.getChukasaSettings().getTunerType().name() + "/" + chukasaModel.getChukasaSettings().getChannelRecording();
+                log.info("{}", HYARUKA_URI);
                 RestTemplate restTemplate = new RestTemplate();
-                restTemplate.delete(HYARUKA_URI);
+                restTemplate.getInterceptors().add(
+                        new BasicAuthorizationInterceptor(HYARUKA_USERNAME, HYARUKA_PASSWORD));
+                //restTemplate.delete(HYARUKA_URI);
+                restTemplate.exchange(HYARUKA_URI, HttpMethod.DELETE, null, String.class);
             }
         });
 

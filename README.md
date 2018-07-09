@@ -6,7 +6,7 @@ HTTP Live Streaming (HLS) server that distributes...
 
 - video file on demand
 - live stream of webcam
-- live stream of tuner (with [hyakaruka (https://github.com/hirooka/hyaruka)](https://github.com/hirooka/hyaruka))
+- live stream of capture device (with [hyakaruka (https://github.com/hirooka/hyaruka)](https://github.com/hirooka/hyaruka))
 - captured video file by okkake
 
 to cross-platform.

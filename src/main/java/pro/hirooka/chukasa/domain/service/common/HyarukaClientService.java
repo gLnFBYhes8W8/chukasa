@@ -85,11 +85,15 @@ public class HyarukaClientService implements IHyarukaClientService {
     }
 
     private String getHyarukaUri(String path){
+        final String HYARUKA_USERNAME = hyarukaConfiguration.getUsername();
+        final String HYARUKA_PASSWORD = hyarukaConfiguration.getPassword();
         final String HYARUKA_SCHEME = hyarukaConfiguration.getScheme().name().toLowerCase();
         final String HYARUKA_HOST = hyarukaConfiguration.getHost();
         final int HYARUKA_PORT = hyarukaConfiguration.getPort();
         final String HYARUKA_API_VERSION = hyarukaConfiguration.getApiVersion();
-        final String HYARUKA_URI = HYARUKA_SCHEME.toLowerCase() + "://" + HYARUKA_HOST + ":" + HYARUKA_PORT
+        final String HYARUKA_URI = HYARUKA_SCHEME.toLowerCase() + "://"
+                + HYARUKA_USERNAME + ":" + HYARUKA_PASSWORD + "@"
+                + HYARUKA_HOST + ":" + HYARUKA_PORT
                 + "/api/" + HYARUKA_API_VERSION + path;
         return HYARUKA_URI;
     }
