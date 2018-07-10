@@ -30,4 +30,4 @@ bin
 *.log
 *.swp
 *.bak
-logs/
+logs

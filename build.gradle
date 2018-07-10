@@ -18,12 +18,12 @@ repositories {
 
 ext {
     // HLS
-    bcprovVersion = '1.59'
-    commonsTextVersion = '1.3'
+    bcprovVersion = '1.60'
+    commonsTextVersion = '1.4'
     commonsIoVersion = '2.6'
 
     // UI
-    bootstrapVersion = '4.1.0'
+    bootstrapVersion = '4.1.1'
     jQueryVersion = '3.3.1'
     popperJsVersion = '1.14.3'
 
