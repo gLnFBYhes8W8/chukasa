@@ -13,6 +13,8 @@ to cross-platform.
 
 And it records stream of tuner by scheduler. (EXPERIMENTAL)
 
+![](docs/a.png)
+
 ## Server
 
 ### Ubuntu 18.04 (with NVENC)
