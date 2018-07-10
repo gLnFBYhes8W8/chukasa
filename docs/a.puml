@@ -1,0 +1,65 @@
+@startuml a
+
+'left to right direction
+
+title My HTTP Live Streaming (HLS) System
+
+actor me
+
+rectangle "iOS" as ios
+rectangle "macOS" as macos
+rectangle "tvOS" as tvos
+rectangle "Windows" as windows
+rectangle "Linux" as linux
+rectangle "Android" as android
+rectangle "Oculus Go" as oculus_go
+
+frame "chukasa server" as chukasa_server {
+    rectangle "chukasa\n(Java App)" as chukasa
+    database chukasadb [
+        MongoDB
+    ]
+    note left : Meta Data\nAccount
+}
+chukasadb - chukasa
+note left of chukasa_server : OS : Linux, Raspbian on Raspberry Pi, Windows\nSoftware : Java, FFmpeg, MongoDB\nHardware : NVIDIA GeForce GTX 10 Series or Intel CPU (QSV support)
+
+frame "hyaruka server" as hyaruka_server {
+    rectangle "hyaruka\n(Java App)" as hyaruka
+    database hyarukadb [
+        MySQL
+    ]
+    note left : Meta Data\nAccount
+}
+hyarukadb - hyaruka
+note left of hyaruka_server : OS : Linux, Raspbian on Raspberry Pi\nSoftware : Java, MySQL, Software that outputs captured content to stdout
+
+rectangle "Capture\nDevice" as capture
+
+rectangle "Webcam" as webcam
+rectangle "Video File" as file
+
+file -(0- chukasa : Local or Network
+webcam -(0- chukasa : Video4Linux2
+hyaruka -(0- chukasa : .HTTP
+capture -(0- hyaruka : ..stdout
+
+chukasa --> ios : native (Safari)\nHEVC/H.265/fMP4
+chukasa --> macos : native (Safari)\nHEVC/H.265/fMP4
+ios --> tvos : AirPlay
+macos --> tvos : AirPlay
+chukasa --> windows : native (Microsoft Edge)\nHEVC/H.265/fMP4
+
+chukasa --> linux: hls.js (Google Chrome)\nH.264/MPEG2-TS
+chukasa --> android  : hls.js (Google Chrome)\nH.264/MPEG2-TS
+chukasa --> oculus_go : hls.js (Browser)\nH.264/MPEG2-TS
+
+ios --> me
+macos --> me
+tvos --> me
+windows --> me
+linux --> me
+android --> me
+oculus_go --> me
+
+@enduml
