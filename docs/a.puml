@@ -51,8 +51,8 @@ macos --> tvos : AirPlay
 chukasa --> windows : native (Microsoft Edge)\nHEVC/H.265/fMP4
 
 chukasa --> linux: hls.js (Google Chrome)\nH.264/MPEG2-TS
-chukasa --> android  : hls.js (Google Chrome)\nH.264/MPEG2-TS
-chukasa --> oculus_go : hls.js (Browser)\nH.264/MPEG2-TS
+chukasa --> android  : native (Google Chrome)\nH.264/MPEG2-TS
+chukasa --> oculus_go : native (Browser)\nH.264/MPEG2-TS
 
 ios --> me
 macos --> me
