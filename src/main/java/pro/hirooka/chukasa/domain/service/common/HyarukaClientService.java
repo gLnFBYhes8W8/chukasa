@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.http.client.support.BasicAuthorizationInterceptor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
@@ -41,6 +42,7 @@ public class HyarukaClientService implements IHyarukaClientService {
     public List<Program> getProgramListNow() {
         final String HYARUKA_URI = getHyarukaUri("/programs/now");
         final RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getInterceptors().add(new BasicAuthorizationInterceptor(hyarukaConfiguration.getUsername(), hyarukaConfiguration.getPassword()));
         final ResponseEntity<Program[]> responseEntity = restTemplate.getForEntity(HYARUKA_URI, Program[].class);
         return Arrays.asList(responseEntity.getBody());
     }
@@ -49,6 +51,7 @@ public class HyarukaClientService implements IHyarukaClientService {
     public List<Program> getProgramListByChannelRecording(int channelRecording) {
         final String HYARUKA_URI = getHyarukaUri("/programs/" + channelRecording);
         final RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getInterceptors().add(new BasicAuthorizationInterceptor(hyarukaConfiguration.getUsername(), hyarukaConfiguration.getPassword()));
         final ResponseEntity<Program[]> responseEntity = restTemplate.getForEntity(HYARUKA_URI, Program[].class);
         return Arrays.asList(responseEntity.getBody());
     }
@@ -57,6 +60,7 @@ public class HyarukaClientService implements IHyarukaClientService {
     public Program getProgramByChannelRecordingNow(int channelRecording) {
         final String HYARUKA_URI = getHyarukaUri("/programs/" + channelRecording + "/now");
         final RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getInterceptors().add(new BasicAuthorizationInterceptor(hyarukaConfiguration.getUsername(), hyarukaConfiguration.getPassword()));
         final ResponseEntity<Program> responseEntity = restTemplate.getForEntity(HYARUKA_URI, Program.class);
         return responseEntity.getBody();
     }
@@ -66,6 +70,7 @@ public class HyarukaClientService implements IHyarukaClientService {
     public Future<ResponseEntity<File>> getStream(TunerType tunerType, int channelRecording, long duration, File file) {
         final String HYARUKA_URI = getHyarukaUri("/streams/" + tunerType.name().toUpperCase() + "/" + channelRecording);
         final RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getInterceptors().add(new BasicAuthorizationInterceptor(hyarukaConfiguration.getUsername(), hyarukaConfiguration.getPassword()));
         ResponseEntity<File> responseEntity = restTemplate.execute(HYARUKA_URI, HttpMethod.GET, null, new ResponseExtractor<ResponseEntity<File>>() {
             @Override
             public ResponseEntity<File> extractData(ClientHttpResponse response) throws IOException {
@@ -80,6 +85,7 @@ public class HyarukaClientService implements IHyarukaClientService {
     public String getUnixDomainSocketPath(TunerType tunerType, int channelRecording) {
         final String HYARUKA_URI = getHyarukaUri("/streams/" + tunerType.name().toUpperCase() + "/" + channelRecording);
         final RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getInterceptors().add(new BasicAuthorizationInterceptor(hyarukaConfiguration.getUsername(), hyarukaConfiguration.getPassword()));
         ResponseEntity<String> responseEntity = restTemplate.getForEntity(HYARUKA_URI, String.class);
         return responseEntity.getBody().toString();
     }

@@ -4,6 +4,7 @@ public enum WebBrowserType {
     SAFARI,
     CHROME,
     EDGE,
+    OCULUS,
     IE,
     FIREFOX,
     UNKNOWN

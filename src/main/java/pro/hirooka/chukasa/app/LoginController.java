@@ -4,12 +4,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import pro.hirooka.chukasa.domain.config.SpringConfiguration;
 import pro.hirooka.chukasa.domain.service.aaa.IChukasaUserDetailsService;
 
-import java.util.Objects;
+import static java.util.Objects.requireNonNull;
 
+@RequestMapping("/login")
 @Controller
 public class LoginController {
 
@@ -19,15 +21,15 @@ public class LoginController {
     private final IChukasaUserDetailsService chukasaUserDetailsService;
 
     @Autowired
-    public LoginController(SpringConfiguration springConfiguration,
-                           IChukasaUserDetailsService chukasaUserDetailsService) {
-        this.springConfiguration =
-                Objects.requireNonNull(springConfiguration, "springConfiguration");
-        this.chukasaUserDetailsService =
-                Objects.requireNonNull(chukasaUserDetailsService, "chukasaUserDetailsService");
+    public LoginController(
+            SpringConfiguration springConfiguration,
+            IChukasaUserDetailsService chukasaUserDetailsService
+    ) {
+        this.springConfiguration = requireNonNull(springConfiguration);
+        this.chukasaUserDetailsService = requireNonNull(chukasaUserDetailsService);
     }
 
-    @RequestMapping("/login")
+    @GetMapping("")
     public String login() {
 
         if(springConfiguration.getProfiles().contains("mongodb")

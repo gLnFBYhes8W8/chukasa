@@ -5,9 +5,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import pro.hirooka.chukasa.domain.model.epg.Program;
 import pro.hirooka.chukasa.domain.operator.IProgramOperator;
 
 import javax.annotation.PostConstruct;
+
+import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
@@ -34,5 +37,10 @@ public class ProgramActivity implements IProgramActivity {
     void cron(){
         log.info("cron -----> ");
         programOperator.deleteOldProgramList();
+    }
+
+    @Override
+    public List<Program> getProgramListNow() {
+        return programOperator.getProgramListNow();
     }
 }

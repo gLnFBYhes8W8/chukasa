@@ -9,4 +9,5 @@ import java.util.List;
 public interface IVideoFileService {
     List<VideoFile> getAll();
     List<M4vFile> getAllM4v(M4vType m4vType);
+    List<VideoFile> getVideoFileList();
 }
