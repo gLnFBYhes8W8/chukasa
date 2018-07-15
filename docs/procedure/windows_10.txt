@@ -1,0 +1,106 @@
+# Diginnos Stick DG-STK4D
+
+Windows 10 Home 1709 64bit
+Intel Atom x5-Z8550 @ 1.44GHz
+4.00GB
+
+/****************************************************************
+ BEGIN
+****************************************************************/
+
+/****************************************************************
+ Networking
+****************************************************************/
+# IP  192.168.115.11/24
+# G/W 192.168.115.1
+# DNS 192.168.115.1
+
+/****************************************************************
+ Time
+****************************************************************/
+#
+
+/****************************************************************
+ Windows Update
+****************************************************************/
+#
+
+/****************************************************************
+ Working Folder
+****************************************************************/
+C:\Users\hirooka\chukasa
+
+/****************************************************************
+ FFmpeg
+****************************************************************/
+install msys2-x86_64-20161025.exe (http://www.msys2.org/)
+
+# MSYS2 MinGW 64-bit
+pacman -Syuu
+pacman -S wget tar gcc make git autoconf automake libtool pkg-config yasm mingw-w64-x86_64-gcc
+
+# mfx_dispatch
+cd C:\Users\hirooka\chukasa
+git clone https://github.com/lu-zero/mfx_dispatch
+cd mfx_dispatch
+autoreconf -i
+./configure --prefix=/mingw64
+make -j$(nproc)
+make install
+
+# FFmpeg
+cd C:\Users\hirooka\chukasa
+wget http://ffmpeg.org/releases/ffmpeg-4.0.1.tar.bz2
+tar jxvf ffmpeg-4.0.1.tar.bz2
+cd ffmpeg-4.0.1
+./configure --enable-libmfx --disable-shared --enable-static --extra-ldflags=-static --extra-libs="-lsupc++ -lstdc++"
+make -j$(nproc)
+make install
+
+# ffmpeg.exe
+C:\msys64\usr\local\bin\ffmpeg.exe
+
+/****************************************************************
+ MongoDB
+****************************************************************/
+MongoDB Download Center
+https://www.mongodb.com/download-center#community
+Community Server
+Stable Release (4.0.0)
+06/21/2018
+Windows 64bit msi
+
+Install MongoDB Community Edition on Windows
+https://docs.mongodb.com/manual/tutorial/install-mongodb-on-windows/
+
+/****************************************************************
+ Git for Windows
+****************************************************************/
+https://gitforwindows.org/
+
+/****************************************************************
+ Java 10
+****************************************************************/
+http://www.oracle.com/technetwork/java/javase/downloads/index.html
+jdk-10.0.1_windows-x64_bin.exe
+
+/****************************************************************
+ chukasa
+****************************************************************/
+cd C:\Users\hirooka\chukasa
+git clone https://github.com/hirooka/chukasa
+cd chukasa
+# EDIT src/main/resources/application.yml
+# ffmpeg-path: C:\Users\hirooka\chukasa\ffmpeg.exe
+# temporary-path: C:\Users\hirooka\chukasa\tmp
+# file-path: C:\Users\hirooka\chukasa
+# hyaruka:host
+./gradlew build
+cp build/libs/chukasa-0.0.1-SNAPSHOT.jar C:\Users\hirooka\chukasa
+java -jar C:\Users\hirooka\chukasa\chukasa-0.0.1-SNAPSHOT.jar
+
+# TODO: Windows service
+
+/****************************************************************
+ EOF
+****************************************************************/

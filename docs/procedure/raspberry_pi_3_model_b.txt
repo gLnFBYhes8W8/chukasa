@@ -1,0 +1,197 @@
+# Raspberry Pi 3 Model B
+
+# https://www.raspberrypi.org/downloads/raspbian/
+# RASPBIAN STRETCH WITH DESKTOP Version:June 2018
+# unzip 2018-06-27-raspbian-stretch.zip
+# sudo dd bs=4M if=2018-06-27-raspbian-stretch.img of=/dev/sdXXX
+#   1150+0 records in
+#   1150+0 records out
+#   4823449600 bytes (4.8 GB, 4.5 GiB) copied, 237.371 s, 20.3 MB/s
+# sudo sync
+
+/****************************************************************
+Welcome to Raspberry Pi
+Set Country
+  Country: Japan
+  Language: Japanese
+  Timezone: Tokyo
+Chanhe Passsord
+Select WiFi Network
+Enter WiFi Password
+Check For Updates
+  Skip
+Setup Complete
+  Reboot
+****************************************************************/
+
+/****************************************************************
+Preferences - Raspberry Pi Configuration
+Interfaces
+  SSH: Enabled
+Localisation
+  Locale: ja(Japanese), JP(Japan), UTF-8
+  Timezone: Asia, Tokyo
+  Keyboard: Generic 105-key (intl) PC, English (US), English (US)
+  WiFi Country: JP Japan
+****************************************************************/
+
+# uname -a
+# Linux raspberrypi 4.14.50-v7+ #1122 SMP Tue Jun 19 12:26:26 BST 2018 armv7l GNU/Linux
+
+# sudo adduser XXX
+# sudo gpasswd -a XXX sudo
+
+/****************************************************************
+cat /etc/os-release
+PRETTY_NAME="Raspbian GNU/Linux 9 (stretch)"
+NAME="Raspbian GNU/Linux"
+VERSION_ID="9"
+VERSION="9 (stretch)"
+ID=raspbian
+ID_LIKE=debian
+HOME_URL="http://www.raspbian.org/"
+SUPPORT_URL="http://www.raspbian.org/RaspbianForums"
+BUG_REPORT_URL="http://www.raspbian.org/RaspbianBugs"
+
+df -h
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/root         30G  4.0G   25G   14% /
+devtmpfs         460M     0  460M    0% /dev
+tmpfs            464M     0  464M    0% /dev/shm
+tmpfs            464M   13M  452M    3% /run
+tmpfs            5.0M  4.0K  5.0M    1% /run/lock
+tmpfs            464M     0  464M    0% /sys/fs/cgroup
+/dev/mmcblk0p1    43M   22M   21M   51% /boot
+tmpfs             93M     0   93M    0% /run/user/1000
+****************************************************************/
+
+/****************************************************************
+ BEGIN
+****************************************************************/
+
+/****************************************************************
+ Networking
+****************************************************************/
+sudo sh -c "echo '' >> /etc/dhcpcd.conf"
+sudo sh -c "echo 'interface eth0' >> /etc/dhcpcd.conf"
+sudo sh -c "echo 'static ip_address=192.168.115.7/24' >> /etc/dhcpcd.conf"
+sudo sh -c "echo 'static routers=192.168.115.1' >> /etc/dhcpcd.conf"
+sudo sh -c "echo 'static domain_name_servers=192.168.115.1' >> /etc/dhcpcd.conf"
+
+sudo sh -c "echo '' >> /etc/dhcpcd.conf"
+sudo sh -c "echo 'interface wlan0' >> /etc/dhcpcd.conf"
+sudo sh -c "echo 'static ip_address=192.168.115.8/24' >> /etc/dhcpcd.conf"
+sudo sh -c "echo 'static routers=192.168.115.1' >> /etc/dhcpcd.conf"
+sudo sh -c "echo 'static domain_name_servers=192.168.115.1' >> /etc/dhcpcd.conf"
+
+/****************************************************************
+ Time
+****************************************************************/
+#sudo timedatectl status
+#sudo timedatectl set-ntp true
+
+/****************************************************************
+ Apt
+****************************************************************/
+#sudo apt-get update
+#sudo apt-get -y upgrade
+#sudo apt-get -y dist-upgrade
+#sudo reboot
+
+/****************************************************************
+ Package
+****************************************************************/
+sudo apt-get -y install autoconf libpcsclite-dev pcsc-tools pcscd cmake libasound2-dev
+sudo apt-get -y install ttf-kochi-gothic xfonts-intl-japanese xfonts-intl-japanese-big xfonts-kaname jfbterm
+sudo apt-get -y install openjdk-9-jdk
+
+/****************************************************************
+ Temprary Directory
+****************************************************************/
+mkdir ~/chukasa_temporary
+
+/****************************************************************
+ Video / Audio
+****************************************************************/
+sudo gpasswd -a $USER video
+sudo gpasswd -a $USER audio
+
+/****************************************************************
+ Webcam (Audio)
+****************************************************************/
+#cat /proc/asound/modules
+sudo touch /etc/modprobe.d/alsa-base.conf
+sudo sh -c "echo 'options snd slots=snd_usb_audio,snd_bcm2835' >> /etc/modprobe.d/alsa-base.conf"
+sudo sh -c "echo 'options snd_usb_audio index=0' >> /etc/modprobe.d/alsa-base.conf"
+sudo sh -c "echo 'options snd_bcm2835 index=1' >> /etc/modprobe.d/alsa-base.conf"
+
+/****************************************************************
+ FFmpeg
+****************************************************************/
+cd ~/chukasa_temporary && \
+    wget http://ffmpeg.org/releases/ffmpeg-4.0.1.tar.bz2 && \
+    tar jxvf ffmpeg-4.0.1.tar.bz2 && \
+    cd ffmpeg-4.0.1 && \
+    ./configure --disable-shared --enable-static --enable-omx-rpi --enable-mmal && \
+    make -j$(nproc) && \
+    sudo make install
+
+/****************************************************************
+ nginx
+****************************************************************/
+cd ~/chukasa_temporary && \
+    sudo apt-get -y install libpcre3-dev libpcre++-dev libssl-dev && \
+    wget http://nginx.org/download/nginx-1.15.1.tar.gz && \
+    tar zxvf nginx-1.15.1.tar.gz && \
+    cd nginx-1.15.1 && \
+    ./configure --with-http_ssl_module --with-ipv6 --with-http_v2_module && \
+    make -j$(nproc) && \
+    sudo make install
+
+/****************************************************************
+ MongoDB
+****************************************************************/
+sudo mkdir -p /data/db
+cd ~/chukasa_temporary
+wget https://andyfelong.com/downloads/mongodb_stretch_3_0_14_core.zip
+unzip mongodb_stretch_3_0_14_core.zip
+sudo cp core/* /usr/local/bin/
+
+/****************************************************************
+ Reboot
+****************************************************************/
+sudo reboot
+
+/****************************************************************
+ chukasa
+****************************************************************/
+sudo mkdir -p /opt/chukasa/video
+sudo chown $USER:$USER -R /opt/chukasa
+
+cd /opt/chukasa
+git clone https://github.com/hirooka/chukasa
+cd chukasa
+sed -i -e 's/JavaVersion.VERSION_1_10/JavaVersion.VERSION_1_9/g' build.gradle
+./gradlew build
+cp build/libs/chukasa-0.0.1-SNAPSHOT.jar /opt/chukasa/
+
+# MongoDB service
+sudo cp raspbian/mongod.service /lib/systemd/system/
+sudo systemctl enable mongod
+sudo systemctl start mongod
+
+# chukasa service
+sudo cp config/linux/chukasa.service /etc/systemd/system/
+sudo sh -c "sed -i -e 's/User=hirooka/User=$USER/g' /etc/systemd/system/chukasa.service"
+sudo systemctl enable chukasa
+sudo systemctl start chukasa
+
+#　nginx service
+sudo cp ubuntu/nginx/nginx.conf /usr/local/nginx/conf/nginx.conf
+sudo cp ubuntu/systemd/nginx.service /etc/systemd/system/
+sudo systemctl enable nginx
+sudo systemctl start nginx
+
+/****************************************************************
+ EOF
+****************************************************************/
