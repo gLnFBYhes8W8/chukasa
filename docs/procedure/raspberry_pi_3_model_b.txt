@@ -181,8 +181,8 @@ sudo systemctl enable mongod
 sudo systemctl start mongod
 
 # chukasa service
-sudo cp config/linux/chukasa.service /etc/systemd/system/
-sudo sh -c "sed -i -e 's/User=hirooka/User=$USER/g' /etc/systemd/system/chukasa.service"
+sudo cp ubuntu/systemd/chukasa.service /etc/systemd/system/
+sudo sh -c "sed -i -e 's/User=chukasa/User=$USER/g' /etc/systemd/system/chukasa.service"
 sudo systemctl enable chukasa
 sudo systemctl start chukasa
 

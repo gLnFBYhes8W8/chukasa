@@ -232,3 +232,32 @@ sudo reboot
 #*******************************************************************************************************************
 # End Of File
 #*******************************************************************************************************************
+
+
+curl \
+-u guest:guest \
+--header "Content-type: application/json" \
+-H "User-Agent: chukasa-ios" \
+--request POST \
+--data \
+'{
+  "adaptiveBitrateStreaming":0,
+  "streamingType":"TUNER",
+  "playlistType":"LIVE",
+  "transcodingSettings":"CELLULAR_LOW",
+  "canEncrypt":true,
+  "channelRecording":XX,
+  "tunerType":null,
+  "fileName":null,
+  "videoResolution":null,
+  "videoBitrate":0,
+  "audioBitrate":0
+}' \
+http://localhost:8080/api/v1/chukasa/start
+
+curl \
+-u guest:guest \
+--header "Content-type: application/json" \
+-H "User-Agent: chukasa-ios" \
+--request GET \
+http://localhost:8080/api/v1/chukasa/stop
