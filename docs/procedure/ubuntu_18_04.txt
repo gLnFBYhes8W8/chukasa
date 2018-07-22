@@ -1,0 +1,231 @@
+# Ubuntu 18.04, ubuntu-18.04-desktop-amd64
+# GeForce GTX 1050 NVENC
+
+# uname -a
+# Linux ubuntu 4.15.0-20-generic #21-Ubuntu SMP Tue Apr 24 06:16:15 UTC 2018 x86_64 x86_64 x86_64 GNU/Linux
+
+/*******************************************************
+# cat /etc/lsb-release
+DISTRIB_ID=Ubuntu
+DISTRIB_RELEASE=18.04
+DISTRIB_CODENAME=bionic
+DISTRIB_DESCRIPTION="Ubuntu 18.04 LTS"
+/*******************************************************
+
+/*******************************************************
+# df -h
+Filesystem      Size  Used Avail Use% Mounted on
+udev            7.8G     0  7.8G   0% /dev
+tmpfs           1.6G  1.7M  1.6G   1% /run
+/dev/sda1       110G  6.0G   99G   6% /
+tmpfs           7.8G     0  7.8G   0% /dev/shm
+tmpfs           5.0M  4.0K  5.0M   1% /run/lock
+tmpfs           7.8G     0  7.8G   0% /sys/fs/cgroup
+tmpfs           1.6G   52K  1.6G   1% /run/user/1000
+/dev/loop0       87M   87M     0 100% /snap/core/4486
+/dev/loop1      141M  141M     0 100% /snap/gnome-3-26-1604/59
+/dev/loop2      1.7M  1.7M     0 100% /snap/gnome-calculator/154
+/dev/loop3       13M   13M     0 100% /snap/gnome-characters/69
+/dev/loop4       21M   21M     0 100% /snap/gnome-logs/25
+/dev/loop5      3.4M  3.4M     0 100% /snap/gnome-system-monitor/36
+/*******************************************************
+
+/****************************************************************
+ BEGIN
+****************************************************************/
+
+/****************************************************************
+ Networking
+****************************************************************/
+#
+
+/****************************************************************
+ Time
+****************************************************************/
+#sudo timedatectl status
+#sudo timedatectl set-ntp true
+
+/****************************************************************
+ Apt
+****************************************************************/
+sudo apt-get update
+#sudo apt-get -y upgrade
+#sudo apt-get -y dist-upgrade
+#sudo reboot
+
+/****************************************************************
+ Package
+****************************************************************/
+sudo apt-get -y install build-essential git wget libasound2-dev autoconf libtool pcsc-tools pkg-config libpcsclite-dev pcscd cmake yasm curl ssh
+
+/****************************************************************
+ NVIDIA Driver
+****************************************************************/
+sudo ubuntu-drivers autoinstall
+sudo reboot
+
+/****************************************************************
+ Temprary Directory
+****************************************************************/
+mkdir ~/chukasa_temporary
+
+/****************************************************************
+ Video / Audio
+****************************************************************/
+sudo gpasswd -a $USER video
+sudo gpasswd -a $USER audio
+
+/****************************************************************
+ Webcam (Audio)
+****************************************************************/
+# 環境により異なる．
+# cat /proc/asound/modules にて事前に確認する．
+sudo touch /etc/modprobe.d/alsa-base.conf
+
+# ASUS Z170I PRO GAMING の場合
+# cat /proc/asound/modules
+#  0 snd_hda_intel
+#  1 snd_usb_audio
+# sudo sh -c "echo 'options snd slots=snd_usb_audio,snd_hda_intel' >> /etc/modprobe.d/alsa-base.conf"
+# sudo sh -c "echo 'options snd_usb_audio index=0' >> /etc/modprobe.d/alsa-base.conf"
+# sudo sh -c "echo 'options snd_hda_intel index=1' >> /etc/modprobe.d/alsa-base.conf"
+
+# ASUS B85M-E の場合
+sudo sh -c "echo 'options snd slots=snd_usb_audio,snd_hda_intel,snd_hda_intel' >> /etc/modprobe.d/alsa-base.conf"
+sudo sh -c "echo 'options snd_usb_audio index=0' >> /etc/modprobe.d/alsa-base.conf"
+sudo sh -c "echo 'options snd_hda_intel index=1' >> /etc/modprobe.d/alsa-base.conf"
+sudo sh -c "echo 'options snd_hda_intel index=2' >> /etc/modprobe.d/alsa-base.conf"
+
+/****************************************************************
+ FFmpeg
+****************************************************************/
+cd ~/chukasa_temporary && \
+    git clone https://git.videolan.org/git/ffmpeg/nv-codec-headers && \
+    cd nv-codec-headers && \
+    make && \
+    sudo make install
+
+cd ~/chukasa_temporary && \
+    wget http://ffmpeg.org/releases/ffmpeg-4.0.2.tar.bz2 && \
+    tar jxvf ffmpeg-4.0.2.tar.bz2 && \
+    cd ffmpeg-4.0.2 && \
+    ./configure --disable-shared --enable-static && \
+    make -j$(nproc) && \
+    sudo make install
+
+/****************************************************************
+ nginx
+****************************************************************/
+cd ~/chukasa_temporary && \
+    sudo apt-get -y install libpcre3-dev libpcre++-dev libssl-dev zlibc zlib1g zlib1g-dev && \
+    wget http://nginx.org/download/nginx-1.15.1.tar.gz && \
+    tar zxvf nginx-1.15.1.tar.gz && \
+    cd nginx-1.15.1 && \
+    ./configure --with-http_ssl_module --with-ipv6 --with-http_v2_module && \
+    make -j$(nproc) && \
+    sudo make install
+
+/****************************************************************
+ MongoDB
+****************************************************************/
+// TODO: MongoDB 4.0 (libcurl3) <-- conflict --> Ubuntu 18.04 (libcurl4)
+sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5
+echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.6 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.6.list
+sudo apt-get update
+sudo apt-get install -y mongodb-org
+sudo systemctl enable mongod
+sudo systemctl start mongod
+
+/****************************************************************
+ Java
+****************************************************************/
+sudo add-apt-repository ppa:linuxuprising/java
+sudo apt-get update
+sudo apt-get -y install oracle-java10-installer
+
+/****************************************************************
+ Reboot
+****************************************************************/
+sudo reboot
+
+/****************************************************************
+ chukasa
+****************************************************************/
+sudo mkdir -p /opt/chukasa/video
+sudo chown $USER:$USER -R /opt/chukasa
+
+cd /opt/chukasa
+git clone https://github.com/hirooka/chukasa
+cd chukasa
+./gradlew build
+cp build/libs/chukasa-0.0.1-SNAPSHOT.jar /opt/chukasa/
+
+#　nginx service
+sudo cp ubuntu/nginx/nginx.conf /usr/local/nginx/conf/nginx.conf
+sudo cp ubuntu/systemd/nginx.service /etc/systemd/system/
+sudo systemctl enable nginx
+sudo systemctl start nginx
+
+# chukasa service
+sudo cp ubuntu/systemd/chukasa.service /etc/systemd/system/
+sudo sh -c "sed -i -e 's/User=chukasa/User=$USER/g' /etc/systemd/system/chukasa.service"
+sudo systemctl enable chukasa
+sudo systemctl start chukasa
+
+/****************************************************************
+ Test
+****************************************************************/
+# Start
+
+curl \
+-u guest:guest \
+--header "Content-type: application/json" \
+-H "User-Agent: chukasa-ios" \
+--request POST \
+--data \
+'{
+  "adaptiveBitrateStreaming":0,
+  "streamingType":"TUNER",
+  "playlistType":"LIVE",
+  "transcodingSettings":"CELLULAR_LOW",
+  "canEncrypt":true,
+  "channelRecording":XX,
+  "tunerType":null,
+  "fileName":null,
+  "videoResolution":null,
+  "videoBitrate":0,
+  "audioBitrate":0
+}' \
+http://localhost:8080/api/v1/chukasa/start
+
+# Stop
+
+curl \
+-u guest:guest \
+--header "Content-type: application/json" \
+-H "User-Agent: chukasa-ios" \
+--request GET \
+http://localhost:8080/api/v1/chukasa/stop
+
+/****************************************************************
+ End Of Procedure
+****************************************************************/
+
+/****************************************************************
+ Tools
+****************************************************************/
+# Input Japanase
+# https://hirooka.pro/?p=9679
+
+# Google Chrome
+sudo dpkg -i google-chrome-stable_current_amd64.deb
+
+# VLC
+sudo apt-get -y install vlc
+
+# VirtualBox
+#sudo apt-get -y install libqt5printsupport5 libqt5opengl5
+#wget https://download.virtualbox.org/virtualbox/5.2.10/virtualbox-5.2_5.2.10-122088~Ubuntu~bionic_amd64.deb
+#sudo dpkg -i virtualbox-5.2_5.2.10-122088~Ubuntu~bionic_amd64.deb
+
+# SDKMAN!, IntelliJ IDEA
