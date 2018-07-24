@@ -151,9 +151,11 @@ sudo reboot
 /****************************************************************
  chukasa
 ****************************************************************/
+# Deployment path
 sudo mkdir -p /opt/chukasa/video
 sudo chown $USER:$USER -R /opt/chukasa
 
+# Build
 cd /opt/chukasa
 git clone https://github.com/hirooka/chukasa
 cd chukasa

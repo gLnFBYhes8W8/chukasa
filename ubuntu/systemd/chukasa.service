@@ -1,9 +1,8 @@
 [Unit]
 Description=chukasa
-After=syslog.target mongod.service postgresql.service
+After=syslog.target mongod.service
 
 [Service]
-# chenge it to your username
 User=chukasa
 ExecStart=/opt/chukasa/chukasa-0.0.1-SNAPSHOT.jar
 SuccessExitStatus=143

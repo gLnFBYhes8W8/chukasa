@@ -95,12 +95,10 @@ sudo apt-get update
 sudo apt-get -y install apt-transport-https ca-certificates curl software-properties-common
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 sudo apt-key fingerprint 0EBFCD88
-// TODO: test -> stable
-sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) test"
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
 sudo apt-get update
 sudo apt-get -y install docker-ce
 sudo usermod -aG docker $USER
-sudo systemctl enable docker
 
 #*******************************************************************************************************************
 # Java 8
@@ -130,24 +128,33 @@ git clone https://github.com/hirooka/chukasa.git
 cd chukasa
 ./gradlew build
 
-# build chukasa Docker image
-docker build -t hirooka/chukasa:0.0.1-SNAPSHOT .
+# Docker
+# docker network create jayichi
+docker build -t $USER/chukasa:0.0.1-SNAPSHOT .
 # or pull Docker image
-# docker pull hirooka/chukasa:0.0.1-SNAPSHOT
-
+# docker pull $USER/chukasa:0.0.1-SNAPSHOT
 # push if needed
-# docker push hirooka/chukasa:0.0.1-SNAPSHOT
+# docker push $USER/chukasa:0.0.1-SNAPSHOT
 
-# pull and run MongoDB Docker image
+# MongoDB
 docker pull mongo
-docker run --name some-mongo -d mongo
+docker run --name chukasa-mongo --net jayichi mongo
 
 # pull and run PostgreSQL Docker image
-docker pull postgres
-docker run --name some-postgres -e POSTGRES_USER=chukasa -d postgres
+#docker pull postgres
+#docker run --name some-postgres -e POSTGRES_USER=chukasa -d postgres
 
 # run chukasa Docker image with MongoDB Docker image
-docker run --link some-mongo:mongo --link some-postgres:postgres --privileged --volume /dev/:/dev/ --volume /var/run/pcscd/pcscd.comm:/var/run/pcscd/pcscd.comm -v /opt/chukasa/video:/opt/chukasa/video -p 80:80 -v /etc/localtime:/etc/localtime:ro -it hirooka/chukasa:0.0.1-SNAPSHOT /bin/bash
+docker run \
+    --name chuaksa \
+    --net jayichi \
+    --privileged \
+    --volume /dev/:/dev/ \
+    --volume /opt/chukasa/video:/opt/chukasa/video \
+    --volume /etc/localtime:/etc/localtime:ro
+    -p 80:80 \
+    -it hirooka/chukasa:0.0.1-SNAPSHOT \
+    /bin/bash
 
 #*******************************************************************************************************************
 # End Of File

@@ -52,7 +52,7 @@ logging:
 
 spring:
   profiles:
-    active: localhost-mongodb
+    active: chukasa-mongodb
   jpa:
     hibernate:
       ddl-auto: create-drop
@@ -69,7 +69,7 @@ server:
   port: 8080
 ---
 spring:
-  profiles: localhost-mongodb
+  profiles: chukasa-mongodb
   # MongoDB
   # if want to use this application on Docker, change -> ex. "spring.data.mongodb.host=mongo"
   # spring.data.mongodb.host=mongo
@@ -79,3 +79,21 @@ spring:
       port: 27017
       database: chukasa
       server-selection-timeout: 500
+---
+spring:
+  profiles: chukasa-docker
+  data:
+    mongodb:
+      host: chukasa-mongo
+      port: 27017
+      database: chukasa
+      server-selection-timeout: 500
+hyaruka:
+  username: guest
+  password: guest
+  scheme: http
+  host: hyaruka
+  port: 49149
+  api-version: v1
+  enabled: true
+  unix-domain-socket-enabled: false

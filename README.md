@@ -7,9 +7,9 @@ HTTP Live Streaming (HLS) server that distributes...
 - video file on demand
 - live stream of webcam
 - live stream of capture device (with [hyaruka](https://github.com/hirooka/hyaruka))
-- captured video file by okkake
+- captured video file (okkake playback) 
 
-to cross-platform.
+using hardware acceleration to cross-platform.
 
 And it records stream of capture device by scheduler. (EXPERIMENTAL)
 
@@ -107,6 +107,7 @@ And it records stream of capture device by scheduler. (EXPERIMENTAL)
 #### Confirmed device
 
 - iOS (Safari on iPhone, iPad, iPod)
+- iOS (iOS App [chukasa-ios](https://github.com/hirooka/chukasa-ios))
 - macOS (Safari)
 - tvOS (via AirPlay from iOS or macOS)
 - Windows 10 (Microsoft Edge)
