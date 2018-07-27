@@ -26,6 +26,8 @@ ext {
     bootstrapVersion = '4.1.1'
     jQueryVersion = '3.3.1'
     popperJsVersion = '1.14.3'
+    uikit = '3.0.0-rc.6'
+    vue = '2.5.16'
 
     // API
     springfoxSwaggerVersion = '2.8.0'
@@ -57,6 +59,8 @@ dependencies {
     compile group: 'org.webjars', name: 'bootstrap', version: bootstrapVersion
     compile group: 'org.webjars', name: 'jquery', version: jQueryVersion
     compile group: 'org.webjars.npm', name: 'popper.js', version: popperJsVersion
+    compile group: 'org.webjars.npm', name: 'uikit', version: uikit
+    compile group: 'org.webjars.npm', name: 'vue', version: vue
 
     // API
     compile group: 'io.springfox', name: 'springfox-swagger2', version: springfoxSwaggerVersion

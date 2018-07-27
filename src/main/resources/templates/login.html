@@ -6,26 +6,34 @@
 </head>
 
 <body>
-<div class="container">
+
+<div class="uk-container">
+
 <a href="#" title="chukasa"><span><img src="/images/chukasa.jpg" height="180" width="211"></img></span></a>
+
 <form th:action="@{/login}" method="post">
-    <div class="form-group">
-        <label for="username">Username</label>
-        <input type="text" class="form-control" id="username" name="username" placeholder="">
+
+    <div class="uk-margin">
+        <input type="text" class="uk-input" id="username" name="username" placeholder="username">
     </div>
-    <div class="form-group">
-        <label for="password">Password</label>
-        <input type="password" class="form-control" id="password" name="password" placeholder="">
+
+    <div class="uk-margin">
+        <input type="password" class="uk-input" id="password" name="password" placeholder="password">
     </div>
-    <div class="form-group">
-        <input class="btn btn-default" type="submit" value="login"/>
+
+    <div class="uk-margin">
+        <input type="submit" class="uk-button uk-button-primary" value="login"/>
     </div>
+
 </form>
+
 <hr />
+
 <div th:insert="footer :: footer"></div>
+
 </div>
 
-<div id="bootstrap4-js" th:replace="bootstrap4-js :: bootstrap4-js"></div>
+<div th:replace="uikit-js :: uikit-js"></div>
 
 </body>
 </html>
