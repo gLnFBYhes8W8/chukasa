@@ -179,11 +179,10 @@ public class RecorderOperator implements IRecorderOperator {
         final String HYARUKA_SCHEME = hyarukaConfiguration.getScheme().name().toLowerCase();
         final String HYARUKA_HOST = hyarukaConfiguration.getHost();
         final int HYARUKA_PORT = hyarukaConfiguration.getPort();
-        final String HYARUKA_API_VERSION = hyarukaConfiguration.getApiVersion();
         final String HYARUKA_URI = HYARUKA_SCHEME.toLowerCase() + "://"
                 + HYARUKA_USERNAME + ":" + HYARUKA_PASSWORD + "@"
                 + HYARUKA_HOST + ":" + HYARUKA_PORT
-                + "/api/" + HYARUKA_API_VERSION + path;
+                + "/api" + path;
         return HYARUKA_URI;
     }
 }

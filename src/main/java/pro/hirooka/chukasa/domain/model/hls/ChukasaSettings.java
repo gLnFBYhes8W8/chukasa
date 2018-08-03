@@ -13,7 +13,7 @@ public class ChukasaSettings {
     private PlaylistType playlistType;
     private TranscodingSettings transcodingSettings;
     private boolean canEncrypt;
-    private int channelRecording;
+    private int channelRemoteControl;
     private TunerType tunerType;
     private String fileName;
 
@@ -61,12 +61,12 @@ public class ChukasaSettings {
         this.canEncrypt = canEncrypt;
     }
 
-    public int getChannelRecording() {
-        return channelRecording;
+    public int getChannelRemoteControl() {
+        return channelRemoteControl;
     }
 
-    public void setChannelRecording(int channelRecording) {
-        this.channelRecording = channelRecording;
+    public void setChannelRemoteControl(int channelRemoteControl) {
+        this.channelRemoteControl = channelRemoteControl;
     }
 
     public TunerType getTunerType() {
@@ -117,7 +117,7 @@ public class ChukasaSettings {
                 ", playlistType=" + playlistType +
                 ", transcodingSettings=" + transcodingSettings +
                 ", canEncrypt=" + canEncrypt +
-                ", channelRecording=" + channelRecording +
+                ", channelRemoteControl=" + channelRemoteControl +
                 ", tunerType=" + tunerType +
                 ", fileName='" + fileName + '\'' +
                 ", videoResolution='" + videoResolution + '\'' +

@@ -50,8 +50,8 @@
 
                 <div class="form-group">
                     <label>Program</label>
-                    <select class="form-control" name="channelRecording">
-                        <option th:value="${program.channelRecording}" th:text="${program.channelName + ' (' + program.channelRemoteControl + '): ' + program.title}" th:each="program : ${programList}">...</option>
+                    <select class="form-control" name="channelRemoteControl">
+                        <option th:value="${program.channelRemoteControl}" th:text="${program.channelName + ' (' + program.channelRemoteControl + '): ' + program.title}" th:each="program : ${programList}">...</option>
                     </select>
                 </div>
 
@@ -102,8 +102,8 @@
 
                 <div class="form-group">
                     <label>Channel</label>
-                    <select class="form-control" name="channelRecording">
-                        <option th:value="${program.channelRecording}" th:text="${program.channelRemoteControl}" th:each="program : ${programList}">...</option>
+                    <select class="form-control" name="channelRemoteControl">
+                        <option th:value="${program.channelRemoteControl}" th:text="${program.channelRemoteControl}" th:each="program : ${programList}">...</option>
                     </select>
                 </div>
 
@@ -387,7 +387,7 @@
                     "playlistType" : $('#' + formId + ' [name=playlistType]').val(),
                     "transcodingSettings" : $('#' + formId + ' [name=transcodingSettings]').val(),
                     "canEncrypt" : $('#' + formId + ' [name=canEncrypt]').val(),
-                    "channelRecording" : $('#' + formId + ' [name=channelRecording]').val(),
+                    "channelRemoteControl" : $('#' + formId + ' [name=channelRemoteControl]').val(),
                     "fileName" : $('#' + formId + ' [name=fileName]').val(),
                     "videoResolution" : null,
                     "videoBitrate" : "0",

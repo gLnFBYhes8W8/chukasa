@@ -74,7 +74,7 @@ public class ProgramOperator implements IProgramOperator {
         final List<ChannelConfiguration> channelConfigurationList = epgService.getChannelConfigurationList();
         if(systemService.isMongoDB()){
             programList = programService.readByNow(new Date().getTime()).stream()
-                    .sorted(Comparator.comparing(Program::getChannelRecording))
+                    .sorted(Comparator.comparing(Program::getChannelRemoteControl))
                     .collect(Collectors.toList());
             if(programList != null
                     && programList.size() > 0

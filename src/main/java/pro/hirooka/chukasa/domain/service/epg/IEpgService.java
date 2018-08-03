@@ -7,7 +7,7 @@ import java.util.List;
 public interface IEpgService {
     List<ChannelConfiguration> getChannelConfigurationList();
     List<Tuner> getTunerList();
-    TunerType getTunerType(int channelRecording);
+    TunerType getTunerType(int channelRemoteControl);
     Program create(Program program);
 
     LatestEpgAcquisition createLatestEpgAcquisition(LatestEpgAcquisition latestEpgAcquisition);

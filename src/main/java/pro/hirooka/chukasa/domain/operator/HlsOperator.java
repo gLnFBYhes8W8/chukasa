@@ -99,14 +99,14 @@ public class HlsOperator implements IHlsOperator {
 
         String unixDomainSocketPath = "";
         if(hyarukaConfiguration.isEnabled() && hyarukaConfiguration.isUnixDomainSocketEnabled()){
-            unixDomainSocketPath = hyarukaClientService.getUnixDomainSocketPath(epgService.getTunerType(chukasaSettings.getChannelRecording()), chukasaSettings.getChannelRecording());
+            unixDomainSocketPath = hyarukaClientService.getUnixDomainSocketPath(chukasaSettings.getChannelRemoteControl());
         }
 
         ChukasaModel chukasaModel = new ChukasaModel();
         chukasaModel.setSystemConfiguration(systemConfiguration);
         chukasaModel.setHlsConfiguration(hlsConfiguration);
         chukasaModel.setUnixDomainSocketPath(unixDomainSocketPath);
-        chukasaSettings.setTunerType(epgService.getTunerType(chukasaSettings.getChannelRecording()));
+        chukasaSettings.setTunerType(epgService.getTunerType(chukasaSettings.getChannelRemoteControl()));
         log.info("ChukasaSettings -> {}", chukasaSettings.toString());
         chukasaModel.setChukasaSettings(chukasaSettings);
 
@@ -204,12 +204,11 @@ public class HlsOperator implements IHlsOperator {
                 final String HYARUKA_SCHEME = hyarukaConfiguration.getScheme().name();
                 final String HYARUKA_HOST = hyarukaConfiguration.getHost();
                 final int HYARUKA_PORT = hyarukaConfiguration.getPort();
-                final String HYARUKA_API_VERSION = hyarukaConfiguration.getApiVersion();
                 final String HYARUKA_URI = HYARUKA_SCHEME.toLowerCase() + "://"
                         //+ HYARUKA_USERNAME + ":" + HYARUKA_PASSWORD + "@"
                         + HYARUKA_HOST + ":" + HYARUKA_PORT
-                        + "/api/" + HYARUKA_API_VERSION + "/streams/"
-                        + chukasaModel.getChukasaSettings().getTunerType().name() + "/" + chukasaModel.getChukasaSettings().getChannelRecording();
+                        + "/api" + "/streams"
+                        + "/" + chukasaModel.getChukasaSettings().getChannelRemoteControl();
                 log.info("{}", HYARUKA_URI);
                 RestTemplate restTemplate = new RestTemplate();
                 restTemplate.getInterceptors().add(

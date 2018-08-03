@@ -13,7 +13,6 @@ public class HyarukaConfiguration {
     private SchemeType scheme;
     private String host;
     private int port;
-    private String apiVersion;
     private boolean enabled;
     private boolean unixDomainSocketEnabled;
 
@@ -55,14 +54,6 @@ public class HyarukaConfiguration {
 
     public void setPort(int port) {
         this.port = port;
-    }
-
-    public String getApiVersion() {
-        return apiVersion;
-    }
-
-    public void setApiVersion(String apiVersion) {
-        this.apiVersion = apiVersion;
     }
 
     public boolean isEnabled() {

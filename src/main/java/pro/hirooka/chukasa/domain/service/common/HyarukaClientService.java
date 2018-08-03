@@ -57,6 +57,15 @@ public class HyarukaClientService implements IHyarukaClientService {
     }
 
     @Override
+    public List<Program> getProgramListByChannelRemoteControl(int channelRemoteControl) {
+        final String HYARUKA_URI = getHyarukaUri("/programs/" + channelRemoteControl);
+        final RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getInterceptors().add(new BasicAuthorizationInterceptor(hyarukaConfiguration.getUsername(), hyarukaConfiguration.getPassword()));
+        final ResponseEntity<Program[]> responseEntity = restTemplate.getForEntity(HYARUKA_URI, Program[].class);
+        return Arrays.asList(responseEntity.getBody());
+    }
+
+    @Override
     public Program getProgramByChannelRecordingNow(int channelRecording) {
         final String HYARUKA_URI = getHyarukaUri("/programs/" + channelRecording + "/now");
         final RestTemplate restTemplate = new RestTemplate();
@@ -65,10 +74,19 @@ public class HyarukaClientService implements IHyarukaClientService {
         return responseEntity.getBody();
     }
 
+    @Override
+    public Program getProgramByChannelRemoteControlNow(int channelRemoteControl) {
+        final String HYARUKA_URI = getHyarukaUri("/programs/" + channelRemoteControl + "/now");
+        final RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getInterceptors().add(new BasicAuthorizationInterceptor(hyarukaConfiguration.getUsername(), hyarukaConfiguration.getPassword()));
+        final ResponseEntity<Program> responseEntity = restTemplate.getForEntity(HYARUKA_URI, Program.class);
+        return responseEntity.getBody();
+    }
+
     @Async
     @Override
-    public Future<ResponseEntity<File>> getStream(TunerType tunerType, int channelRecording, long duration, File file) {
-        final String HYARUKA_URI = getHyarukaUri("/streams/" + tunerType.name().toUpperCase() + "/" + channelRecording);
+    public Future<ResponseEntity<File>> getStream(int channelRemoteControl, long duration, File file) {
+        final String HYARUKA_URI = getHyarukaUri("/streams" + "/" + channelRemoteControl);
         final RestTemplate restTemplate = new RestTemplate();
         restTemplate.getInterceptors().add(new BasicAuthorizationInterceptor(hyarukaConfiguration.getUsername(), hyarukaConfiguration.getPassword()));
         ResponseEntity<File> responseEntity = restTemplate.execute(HYARUKA_URI, HttpMethod.GET, null, new ResponseExtractor<ResponseEntity<File>>() {
@@ -82,8 +100,8 @@ public class HyarukaClientService implements IHyarukaClientService {
     }
 
     @Override
-    public String getUnixDomainSocketPath(TunerType tunerType, int channelRecording) {
-        final String HYARUKA_URI = getHyarukaUri("/streams/" + tunerType.name().toUpperCase() + "/" + channelRecording);
+    public String getUnixDomainSocketPath(int channelRemoteControl) {
+        final String HYARUKA_URI = getHyarukaUri("/streams" + "/" + channelRemoteControl);
         final RestTemplate restTemplate = new RestTemplate();
         restTemplate.getInterceptors().add(new BasicAuthorizationInterceptor(hyarukaConfiguration.getUsername(), hyarukaConfiguration.getPassword()));
         ResponseEntity<String> responseEntity = restTemplate.getForEntity(HYARUKA_URI, String.class);
@@ -96,11 +114,10 @@ public class HyarukaClientService implements IHyarukaClientService {
         final String HYARUKA_SCHEME = hyarukaConfiguration.getScheme().name().toLowerCase();
         final String HYARUKA_HOST = hyarukaConfiguration.getHost();
         final int HYARUKA_PORT = hyarukaConfiguration.getPort();
-        final String HYARUKA_API_VERSION = hyarukaConfiguration.getApiVersion();
         final String HYARUKA_URI = HYARUKA_SCHEME.toLowerCase() + "://"
                 + HYARUKA_USERNAME + ":" + HYARUKA_PASSWORD + "@"
                 + HYARUKA_HOST + ":" + HYARUKA_PORT
-                + "/api/" + HYARUKA_API_VERSION + path;
+                + "/api" + path;
         return HYARUKA_URI;
     }
 }

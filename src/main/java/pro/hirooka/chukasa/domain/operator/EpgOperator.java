@@ -40,7 +40,7 @@ public class EpgOperator implements IEpgOperator {
                 .forEach(channelConfiguration -> {
                     List<Program> programList =
                             hyarukaClientService
-                                    .getProgramListByChannelRecording(channelConfiguration.getChannelRecording());
+                                    .getProgramListByChannelRemoteControl(channelConfiguration.getChannelRemoteControl());
                     programList.forEach(epgService::create);
                 });
 

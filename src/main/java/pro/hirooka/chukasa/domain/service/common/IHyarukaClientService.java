@@ -11,7 +11,9 @@ import java.util.concurrent.Future;
 public interface IHyarukaClientService {
     List<Program> getProgramListNow();
     List<Program> getProgramListByChannelRecording(int channelRecording);
+    List<Program> getProgramListByChannelRemoteControl(int channelRemoteControl);
     Program getProgramByChannelRecordingNow(int channelRecording);
-    Future<ResponseEntity<File>> getStream(TunerType tunerType, int channelRecording, long duration, File file);
-    String getUnixDomainSocketPath(TunerType tunerType, int channelRecording);
+    Program getProgramByChannelRemoteControlNow(int channelRemoteControl);
+    Future<ResponseEntity<File>> getStream(int channelRemoteControl, long duration, File file);
+    String getUnixDomainSocketPath(int channelRemoteControl);
 }

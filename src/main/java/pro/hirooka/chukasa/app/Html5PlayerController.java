@@ -129,7 +129,7 @@ public class Html5PlayerController {
         ChukasaSettings chukasaSettings = new ChukasaSettings();
         chukasaSettings.setAdaptiveBitrateStreaming(0);
         chukasaSettings.setStreamingType(streamingtype);
-        chukasaSettings.setChannelRecording(ch);
+        chukasaSettings.setChannelRemoteControl(ch);
         chukasaSettings.setVideoBitrate(videobitrate);
         //chukasaSettings.setVideoResolutionType(VideoResolutionType.HD);
         //chukasaSettings.setCaptureResolutionType(VideoResolutionType.HD);

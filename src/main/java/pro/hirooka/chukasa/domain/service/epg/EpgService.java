@@ -87,9 +87,9 @@ public class EpgService implements IEpgService {
     }
 
     @Override
-    public TunerType getTunerType(int channelRecording) {
+    public TunerType getTunerType(int channelRemoteControl) {
         for(ChannelConfiguration channelConfiguration : getChannelConfigurationList()){
-            if(channelConfiguration.getChannelRecording() == channelRecording){
+            if(channelConfiguration.getChannelRemoteControl() == channelRemoteControl){
                 if(channelConfiguration.getType() == TunerType.GR){
                     return TunerType.GR;
                 }else if(channelConfiguration.getType() == TunerType.BS){
