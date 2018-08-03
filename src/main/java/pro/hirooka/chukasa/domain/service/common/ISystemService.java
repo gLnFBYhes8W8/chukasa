@@ -11,7 +11,6 @@ public interface ISystemService {
     boolean canFileStreaming();
     boolean canPTxStreaming();
     boolean canRecording();
-    FfmpegVcodecType getFfmpegVcodecType();
     FfmpegVcodecType getFfmpegVcodecType(String userAgent);
     String getStreamRootPath(String servletRealPath);
 }

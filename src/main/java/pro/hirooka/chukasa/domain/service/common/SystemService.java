@@ -96,48 +96,11 @@ public class SystemService implements ISystemService {
     }
 
     @Override
-    public FfmpegVcodecType getFfmpegVcodecType() {
-        final String H264_QSV = "--enable-libmfx";
-        final String H264_X264 = "--enable-libx264";
-        final String H264_OMX = "--enable-omx-rpi";
-        final String ffmpeg = systemConfiguration.getFfmpegPath();
-        final String[] command = {ffmpeg, "-version"};
-        final ProcessBuilder processBuilder = new ProcessBuilder(command);
-        try {
-            final Process process = processBuilder.start();
-            final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            String str = "";
-            while((str = bufferedReader.readLine()) != null){
-                log.info(str);
-                if(str.contains(H264_QSV)){
-                    bufferedReader.close();
-                    process.destroy();
-                    return FfmpegVcodecType.H264_QSV;
-                }
-                if(str.contains(H264_OMX)){
-                    bufferedReader.close();
-                    process.destroy();
-                    return FfmpegVcodecType.H264_OMX;
-                }
-                if(str.contains(H264_X264)){
-                    bufferedReader.close();
-                    process.destroy();
-                    return FfmpegVcodecType.H264_X264;
-                }
-            }
-            bufferedReader.close();
-            process.destroy();
-        } catch (IOException e) {
-            log.error("{} {}", e.getMessage(), e);
-        }
-        return FfmpegVcodecType.H264_NVENC;
-    }
-
-    @Override
     public FfmpegVcodecType getFfmpegVcodecType(String userAgent) {
         final String H264_QSV = "--enable-libmfx";
         final String H264_X264 = "--enable-libx264";
         final String H264_OMX = "--enable-omx-rpi";
+        final String VIDEOTOOLBOX = "--enable-videotoolbox";
         final String ffmpeg = systemConfiguration.getFfmpegPath();
         final String[] command = {ffmpeg, "-version"};
         final ProcessBuilder processBuilder = new ProcessBuilder(command);
@@ -155,6 +118,15 @@ public class SystemService implements ISystemService {
                         return FfmpegVcodecType.H264_QSV; // TODO: check FFmpeg
                     }else{
                         return FfmpegVcodecType.H264_QSV;
+                    }
+                }
+                if(str.contains(VIDEOTOOLBOX)){
+                    bufferedReader.close();
+                    process.destroy();
+                    if(canHevc(userAgent)){
+                        return FfmpegVcodecType.H264_VIDEOTOOLBOX; // TODO: check
+                    }else{
+                        return FfmpegVcodecType.H264_VIDEOTOOLBOX;
                     }
                 }
                 if(str.contains(H264_OMX)){

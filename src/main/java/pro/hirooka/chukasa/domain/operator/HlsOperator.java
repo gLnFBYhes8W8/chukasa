@@ -114,7 +114,7 @@ public class HlsOperator implements IHlsOperator {
         chukasaModel.setAdaptiveBitrateStreaming(0);
         chukasaModel.setFfmpegVcodecType(ffmpegVcodecType);
         // TODO: -> system service
-        if(ffmpegVcodecType == FfmpegVcodecType.HEVC_NVENC || ffmpegVcodecType == FfmpegVcodecType.HEVC_QSV){
+        if(ffmpegVcodecType == FfmpegVcodecType.HEVC_NVENC || ffmpegVcodecType == FfmpegVcodecType.HEVC_QSV || ffmpegVcodecType == FfmpegVcodecType.HEVC_VIDEOTOOLBOX){
             chukasaModel.setStreamFileExtension(".m4s");
         }
 
