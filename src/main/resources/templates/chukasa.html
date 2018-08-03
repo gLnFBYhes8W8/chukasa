@@ -17,24 +17,24 @@
 
     <div id="tabs">
 
-        <ul class="nav nav-tabs">
+        <ul class="nav md-pills pills-secondary">
             <li class="nav-item" th:if="${isPTxByProgram == true}">
-                <a class="nav-link active" href="#tab-now-content" data-toggle="tab" id="tab-now">Tuner</a>
+                <a class="nav-link active" href="#tab-now-content" data-toggle="tab" id="tab-now" role="tab">Tuner</a>
             </li>
             <li class="nav-item" th:if="${isPTxByChannel == true}">
-                <a class="nav-link active" href="#tab-channel-content" data-toggle="tab" id="tab-channel">Tuner</a>
+                <a class="nav-link active" href="#tab-channel-content" data-toggle="tab" id="tab-channel" role="tab">Tuner</a>
             </li>
             <li class="nav-item" th:if="${isPTxByChannel == true or isPTxByProgram == true}">
-                <a class="nav-link" href="#tab-file-content" data-toggle="tab" id="tab-file">Video File</a>
+                <a class="nav-link" href="#tab-file-content" data-toggle="tab" id="tab-file" role="tab">Video File</a>
             </li>
             <li class="nav-item" th:if="${isPTxByChannel == false and isPTxByProgram == false}">
-                <a class="nav-link active" href="#tab-file-content-active" data-toggle="tab" id="tab-file-active">Video File</a>
+                <a class="nav-link active" href="#tab-file-content-active" data-toggle="tab" id="tab-file-active" role="tab">Video File</a>
             </li>
             <li class="nav-item" th:if="${isWebCamera == true}">
-                <a class="nav-link" href="#tab-webcam-content" data-toggle="tab" id="tab-webcam">Webcam</a>
+                <a class="nav-link" href="#tab-webcam-content" data-toggle="tab" id="tab-webcam" role="tab">Webcam</a>
             </li>
             <li class="nav-item" th:if="${isPTxByProgram == true}">
-                <a class="nav-link" href="#tab-okkake-content" data-toggle="tab" id="tab-okkake">Okkake(EXPERIMENTAL)</a>
+                <a class="nav-link" href="#tab-okkake-content" data-toggle="tab" id="tab-okkake" role="tab">Okkake(EXPERIMENTAL)</a>
             </li>
         </ul>
 
@@ -42,7 +42,7 @@
 
         <!-- Now -->
 
-        <div th:if="${isPTxByProgram == true}" class="tab-pane fade show active" id="tab-now-content">
+        <div th:if="${isPTxByProgram == true}" class="tab-pane fade show active" id="tab-now-content" role="tabpanel">
 
             <form id="form-tab-now">
 
@@ -94,7 +94,7 @@
 
         <!-- CAPTURE -->
 
-        <div th:if="${isPTxByChannel == true}" class="tab-pane fade show active" id="tab-channel-content">
+        <div th:if="${isPTxByChannel == true}" class="tab-pane fade show active" id="tab-channel-content" role="tabpanel">
 
             <form id="form-tab-channel">
 
@@ -146,7 +146,7 @@
 
         <!-- FILE -->
 
-        <div th:if="${isPTxByChannel == false and isPTxByProgram == false}" class="tab-pane fade show active" id="tab-file-content-active">
+        <div th:if="${isPTxByChannel == false and isPTxByProgram == false}" class="tab-pane fade show active" id="tab-file-content-active" role="tabpanel">
 
             <form id="form-tab-file-active">
 
@@ -196,7 +196,7 @@
 
         </div>
 
-        <div th:if="${isPTxByChannel == true or isPTxByProgram == true}" class="tab-pane fade" id="tab-file-content">
+        <div th:if="${isPTxByChannel == true or isPTxByProgram == true}" class="tab-pane fade" id="tab-file-content" role="tabpanel">
 
             <form id="form-tab-file">
 
@@ -248,7 +248,7 @@
 
         <!-- OKKAKE -->
 
-        <div class="tab-pane fade" id="tab-okkake-content">
+        <div class="tab-pane fade" id="tab-okkake-content" role="tabpanel">
 
             <form id="form-tab-okkake">
 
@@ -300,7 +300,7 @@
 
         <!-- WEB_CAMERA -->
 
-        <div class="tab-pane fade" id="tab-webcam-content">
+        <div class="tab-pane fade" id="tab-webcam-content" role="tabpanel">
 
             <form id="form-tab-webcam">
 
@@ -351,7 +351,7 @@
 
 </div>
 
-<div id="bootstrap4-js" th:replace="bootstrap4-js :: bootstrap4-js"></div>
+<div id="mdbootstrap-js" th:replace="mdbootstrap-js :: mdbootstrap-js"></div>
 
 <script th:inline="javascript">
 

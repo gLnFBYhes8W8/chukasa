@@ -4,14 +4,15 @@
 <head th:fragment="common_header(title,links)">
 
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
     <title th:replace="${title}">title</title>
 
     <link rel="shortcut icon" th:href="@{/images/favicon.ico}">
 
-    <link rel="stylesheet" href="/webjars/bootstrap/4.1.1/css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="/webjars/uikit/3.0.0-rc.6/dist/css/uikit.min.css"/>
+    <link rel="stylesheet" href="/webjars/font-awesome/4.7.0/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="/webjars/bootstrap/4.0.0/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/webjars/mdbootstrap-bootstrap-material-design/4.5.3/css/mdb.min.css"/>
 
     <th:block th:replace="${links}" />
 

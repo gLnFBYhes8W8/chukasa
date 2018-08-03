@@ -23,11 +23,11 @@ ext {
     commonsIoVersion = '2.6'
 
     // UI
-    bootstrapVersion = '4.1.1'
-    jQueryVersion = '3.3.1'
-    popperJsVersion = '1.14.3'
-    uikit = '3.0.0-rc.6'
-    vue = '2.5.16'
+    fontAwesome = '4.7.0'
+    jQuery = '3.2.1'
+    popperJs = '1.13.0'
+    bootstrap = '4.0.0'
+    mdbootstrap = '4.5.3'
 
     // API
     springfoxSwaggerVersion = '2.8.0'
@@ -56,11 +56,11 @@ dependencies {
     compile group: 'commons-io', name: 'commons-io', version: commonsIoVersion // EPG too
 
     // UI
-    compile group: 'org.webjars', name: 'bootstrap', version: bootstrapVersion
-    compile group: 'org.webjars', name: 'jquery', version: jQueryVersion
-    compile group: 'org.webjars.npm', name: 'popper.js', version: popperJsVersion
-    compile group: 'org.webjars.npm', name: 'uikit', version: uikit
-    compile group: 'org.webjars.npm', name: 'vue', version: vue
+    compile group: 'org.webjars', name: 'font-awesome', version: fontAwesome
+    compile group: 'org.webjars', name: 'jquery', version: jQuery
+    compile group: 'org.webjars.npm', name: 'popper.js', version: popperJs
+    compile group: 'org.webjars', name: 'bootstrap', version: bootstrap
+    compile group: 'org.webjars', name: 'mdbootstrap-bootstrap-material-design', version: mdbootstrap
 
     // API
     compile group: 'io.springfox', name: 'springfox-swagger2', version: springfoxSwaggerVersion
@@ -74,4 +74,8 @@ dependencies {
 
 bootJar {
     launchScript()
+}
+
+bootRun {
+    sourceResources sourceSets.main
 }
