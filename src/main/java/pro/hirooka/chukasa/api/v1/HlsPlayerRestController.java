@@ -22,8 +22,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import static java.util.Objects.requireNonNull;
 
+@RequestMapping("${api.root}/chukasa")
 @RestController
-@RequestMapping("api/v1/chukasa")
 public class  HlsPlayerRestController {
 
     private static final Logger log = LoggerFactory.getLogger(HlsPlayerRestController.class);

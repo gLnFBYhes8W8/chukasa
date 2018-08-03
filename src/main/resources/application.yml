@@ -1,5 +1,7 @@
 aaa:
   enabled: true
+  initial-username:
+  initial-password:
 
 system:
   ffmpeg-path: /usr/local/bin/ffmpeg
@@ -29,8 +31,8 @@ recorder:
   stop-margin: 0
 
 hyaruka:
-  username: guest
-  password: guest
+  username:
+  password:
   scheme: http
   host: localhost
   port: 49149
@@ -39,6 +41,9 @@ hyaruka:
 
 server:
   port: 8080
+
+api:
+  root: /api
 
 logging:
   path: logs
@@ -88,8 +93,8 @@ spring:
       database: chukasa
       server-selection-timeout: 500
 hyaruka:
-  username: guest
-  password: guest
+  username:
+  password:
   scheme: http
   host: hyaruka
   port: 49149

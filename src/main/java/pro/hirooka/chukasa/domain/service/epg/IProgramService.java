@@ -7,7 +7,7 @@ import java.util.List;
 public interface IProgramService {
     Program create(Program program);
     List<Program> read();
-    List<Program> read(int channelRecording);
+    List<Program> read(int channelRemoteControl);
     List<Program> readByBeginDate(String beginDate);
     List<Program> read(int ch, String beginDate);
     List<Program> readByNow(long now);

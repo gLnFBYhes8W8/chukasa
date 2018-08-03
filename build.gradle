@@ -1,7 +1,7 @@
 plugins {
     id 'java'
     id 'idea'
-    id 'org.springframework.boot' version '2.0.3.RELEASE'
+    id 'org.springframework.boot' version '2.0.4.RELEASE'
 }
 
 apply plugin: 'io.spring.dependency-management'
@@ -78,4 +78,7 @@ bootJar {
 
 bootRun {
     sourceResources sourceSets.main
+    if(project.hasProperty('jvmArgs')){
+        jvmArgs = (project.jvmArgs.split("\\s+") as List)
+    }
 }

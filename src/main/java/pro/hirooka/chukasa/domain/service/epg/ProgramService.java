@@ -51,8 +51,8 @@ public class ProgramService implements IProgramService {
     }
 
     @Override
-    public List<Program> read(int channelRecording) {
-        return programRepository.findAllByChannelRecording(channelRecording);
+    public List<Program> read(int channelRemoteControl) {
+        return programRepository.findAllByChannelRemoteControl(channelRemoteControl);
     }
 
     @Override

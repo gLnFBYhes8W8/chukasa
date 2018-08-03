@@ -11,8 +11,8 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
+@RequestMapping("${api.root}/hello")
 @RestController
-@RequestMapping("api/v1/hello")
 public class HelloRestController {
 
     @GetMapping("")

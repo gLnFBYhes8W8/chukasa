@@ -12,6 +12,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.http.client.support.BasicAuthorizationInterceptor;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.client.ResponseExtractor;
 import org.springframework.web.client.RestTemplate;
+import pro.hirooka.chukasa.domain.config.common.HyarukaConfiguration;
 import pro.hirooka.chukasa.domain.config.common.MongoDBConfiguration;
 import pro.hirooka.chukasa.domain.model.recorder.ReservedProgram;
 import pro.hirooka.chukasa.domain.repository.recorder.IReservedProgramRepository;
@@ -40,16 +42,19 @@ public class RecorderService implements IRecorderService {
 
     private final MongoDBConfiguration mongoDBConfiguration;
     private final IReservedProgramRepository reservedProgramRepository;
+    private final HyarukaConfiguration hyarukaConfiguration;
 
     private Map<Integer, ScheduledFuture> scheduledFutureMap = new HashMap<>();
 
     @Autowired
     public RecorderService(
             MongoDBConfiguration mongoDBConfiguration,
-            IReservedProgramRepository reservedProgramRepository
+            IReservedProgramRepository reservedProgramRepository,
+            HyarukaConfiguration hyarukaConfiguration
     ) {
         this.mongoDBConfiguration = requireNonNull(mongoDBConfiguration);
         this.reservedProgramRepository = requireNonNull(reservedProgramRepository);
+        this.hyarukaConfiguration = requireNonNull(hyarukaConfiguration);
     }
 
     @Override
@@ -106,6 +111,7 @@ public class RecorderService implements IRecorderService {
 
         final File file = new File(fileName);
         final RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getInterceptors().add(new BasicAuthorizationInterceptor(hyarukaConfiguration.getUsername(), hyarukaConfiguration.getPassword()));
         ResponseEntity<File> responseEntity = restTemplate.execute(hyarukaUri, HttpMethod.GET, null, new ResponseExtractor<ResponseEntity<File>>() {
             @Override
             public ResponseEntity<File> extractData(ClientHttpResponse response) throws IOException {

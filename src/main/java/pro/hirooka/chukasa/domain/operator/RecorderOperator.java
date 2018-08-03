@@ -130,7 +130,7 @@ public class RecorderOperator implements IRecorderOperator {
         reservedProgram.setStopRecording(stopRecording);
         reservedProgram.setRecordingDuration(recordingDuration);
 
-        String fileName = systemConfiguration.getFilePath() + FILE_SEPARATOR + reservedProgram.getChannelRecording() + "_" + reservedProgram.getBegin() + "_" + reservedProgram.getTitle()  + ".ts";
+        String fileName = systemConfiguration.getFilePath() + FILE_SEPARATOR + reservedProgram.getChannelRemoteControl() + "_" + reservedProgram.getBegin() + "_" + reservedProgram.getTitle()  + ".ts";
         reservedProgram.setFileName(fileName);
 
         final long now = new Date().getTime();
@@ -140,10 +140,9 @@ public class RecorderOperator implements IRecorderOperator {
             log.info("reservation: {}", reservedProgram.toString());
             final RecorderRunnable recorderRunnable = new RecorderRunnable();
             recorderRunnable.setReservedProgram(reservedProgram);
-            final String path = "/streams/"
-                    + epgService.getTunerType(reservedProgram.getChannelRecording())
+            final String path = "/streams"
                     + "/"
-                    + reservedProgram.getChannelRecording()
+                    + reservedProgram.getChannelRemoteControl()
                     + "/"
                     + reservedProgram.getRecordingDuration();
             final String hyarukaUri = getHyarukaUri(path);
@@ -154,10 +153,9 @@ public class RecorderOperator implements IRecorderOperator {
             log.info("no reservation, direct recording");
             recordingDuration = (stopRecording - now) / 1000;
             reservedProgram.setRecordingDuration(recordingDuration);
-            final String path = "/streams/"
-                    + epgService.getTunerType(reservedProgram.getChannelRecording())
+            final String path = "/streams"
                     + "/"
-                    + reservedProgram.getChannelRecording()
+                    + reservedProgram.getChannelRemoteControl()
                     + "/"
                     + reservedProgram.getRecordingDuration();
             final String hyarukaUri = getHyarukaUri(path);

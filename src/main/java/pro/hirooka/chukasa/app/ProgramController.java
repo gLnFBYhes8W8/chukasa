@@ -7,46 +7,50 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import pro.hirooka.chukasa.domain.activity.IRecorderActivity;
 import pro.hirooka.chukasa.domain.model.epg.Program;
 import pro.hirooka.chukasa.domain.model.recorder.M4vTranscodingStatus;
 import pro.hirooka.chukasa.domain.model.recorder.RecordingStatus;
 import pro.hirooka.chukasa.domain.model.recorder.ReservedProgram;
 import pro.hirooka.chukasa.domain.service.epg.IProgramService;
-import pro.hirooka.chukasa.domain.service.recorder.IRecorderService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
 
+import static java.util.Objects.requireNonNull;
+
+@RequestMapping("/programs")
 @Controller
-@RequestMapping("programs")
 public class ProgramController {
 
     private static final Logger log = LoggerFactory.getLogger(ProgramController.class);
 
-    @Autowired
-    IProgramService programService;
-    @Autowired
-    IRecorderService recorderService;
-    @Autowired
-    private HttpServletRequest httpServletRequest;
-    @Autowired
-    private IRecorderActivity recorderActivity;
+    private final IProgramService programService;
+    private final HttpServletRequest httpServletRequest;
+    private final IRecorderActivity recorderActivity;
 
-    @RequestMapping(method = RequestMethod.GET)
+    @Autowired
+    public ProgramController(
+            IProgramService programService,
+            HttpServletRequest httpServletRequest,
+            IRecorderActivity recorderActivity
+    ) {
+        this.programService = requireNonNull(programService);
+        this.httpServletRequest = requireNonNull(httpServletRequest);
+        this.recorderActivity = requireNonNull(recorderActivity);
+    }
+
+    @GetMapping
     String read(Model model){
-        //List<Program> programList = programTableService.read();
         Date now = new Date();
         List<Program> programList = programService.readOneDayByNow(now.getTime());
         model.addAttribute("programList", programList);
         return "programs/list";
     }
 
-    @RequestMapping(value = "now", method = RequestMethod.GET)
+    @GetMapping(value = "now")
     String readNow(Model model){
         Date now = new Date();
         List<Program> programList = programService.readByNow(now.getTime());
@@ -54,21 +58,21 @@ public class ProgramController {
         return "programs/list";
     }
 
-    @RequestMapping(value = "{channelRecording}", method = RequestMethod.GET)
-    String read(@PathVariable int channelRecording, Model model){
-        List<Program> programList = programService.read(channelRecording);
+    @GetMapping(value = "{channelRemoteControl}")
+    String read(@PathVariable int channelRemoteControl, Model model){
+        List<Program> programList = programService.read(channelRemoteControl);
         model.addAttribute("programList", programList);
         return "programs/list";
     }
 
-    @RequestMapping(value = "{channelRecording}/{date}", method = RequestMethod.GET)
-    String read(@PathVariable int channelRecording, @PathVariable String date, Model model){
-        List<Program> programList = programService.read(channelRecording, date);
+    @GetMapping(value = "{channelRemoteControl}/{date}")
+    String read(@PathVariable int channelRemoteControl, @PathVariable String date, Model model){
+        List<Program> programList = programService.read(channelRemoteControl, date);
         model.addAttribute("programList", programList);
         return "programs/list";
     }
 
-    @RequestMapping(value = "create", method = RequestMethod.POST)
+    @PostMapping(value = "create")
     String create(@Validated ReservedProgram reservedProgram, BindingResult bindingResult, Model model){
         if(bindingResult.hasErrors()){
             return read(model);
