@@ -30,6 +30,8 @@ import java.util.UUID;
 import java.util.concurrent.Future;
 
 import static java.util.Objects.requireNonNull;
+import static pro.hirooka.chukasa.domain.config.ChukasaConstants.DEFAULT_HYARUKA_PASSWORD;
+import static pro.hirooka.chukasa.domain.config.ChukasaConstants.DEFAULT_HYARUKA_USERNAME;
 
 @Service
 public class HlsOperator implements IHlsOperator {
@@ -199,8 +201,8 @@ public class HlsOperator implements IHlsOperator {
     public void stopPlayback() {
         chukasaModelManagementComponent.get().forEach(chukasaModel -> {
             if(hyarukaConfiguration.isEnabled() && chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.TUNER) {
-                final String HYARUKA_USERNAME = hyarukaConfiguration.getUsername();
-                final String HYARUKA_PASSWORD = hyarukaConfiguration.getPassword();
+                final String HYARUKA_USERNAME = getHyarukaUsername();
+                final String HYARUKA_PASSWORD = getHyarukaPassword();
                 final String HYARUKA_SCHEME = hyarukaConfiguration.getScheme().name();
                 final String HYARUKA_HOST = hyarukaConfiguration.getHost();
                 final int HYARUKA_PORT = hyarukaConfiguration.getPort();
@@ -224,5 +226,22 @@ public class HlsOperator implements IHlsOperator {
     @Override
     public void removeStream() {
         remove();
+    }
+
+    // TODO:
+    private String getHyarukaUsername(){
+        if(hyarukaConfiguration.getUsername().equals("")) {
+            return DEFAULT_HYARUKA_USERNAME;
+        }else{
+            return hyarukaConfiguration.getUsername();
+        }
+    }
+
+    private String getHyarukaPassword(){
+        if(hyarukaConfiguration.getPassword().equals("")) {
+            return DEFAULT_HYARUKA_PASSWORD;
+        }else{
+            return hyarukaConfiguration.getPassword();
+        }
     }
 }

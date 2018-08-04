@@ -34,6 +34,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 
 import static java.util.Objects.requireNonNull;
+import static pro.hirooka.chukasa.domain.config.ChukasaConstants.DEFAULT_HYARUKA_PASSWORD;
+import static pro.hirooka.chukasa.domain.config.ChukasaConstants.DEFAULT_HYARUKA_USERNAME;
 
 @Service
 public class RecorderService implements IRecorderService {
@@ -111,7 +113,7 @@ public class RecorderService implements IRecorderService {
 
         final File file = new File(fileName);
         final RestTemplate restTemplate = new RestTemplate();
-        restTemplate.getInterceptors().add(new BasicAuthorizationInterceptor(hyarukaConfiguration.getUsername(), hyarukaConfiguration.getPassword()));
+        restTemplate.getInterceptors().add(new BasicAuthorizationInterceptor(getHyarukaUsername(), getHyarukaPassword()));
         ResponseEntity<File> responseEntity = restTemplate.execute(hyarukaUri, HttpMethod.GET, null, new ResponseExtractor<ResponseEntity<File>>() {
             @Override
             public ResponseEntity<File> extractData(ClientHttpResponse response) throws IOException {
@@ -147,6 +149,23 @@ public class RecorderService implements IRecorderService {
     @Override
     public Map<Integer, ScheduledFuture> getScheduledFutureMap() {
         return scheduledFutureMap;
+    }
+
+    // TODO:
+    private String getHyarukaUsername(){
+        if(hyarukaConfiguration.getUsername().equals("")) {
+            return DEFAULT_HYARUKA_USERNAME;
+        }else{
+            return hyarukaConfiguration.getUsername();
+        }
+    }
+
+    private String getHyarukaPassword(){
+        if(hyarukaConfiguration.getPassword().equals("")) {
+            return DEFAULT_HYARUKA_PASSWORD;
+        }else{
+            return hyarukaConfiguration.getPassword();
+        }
     }
 }
 

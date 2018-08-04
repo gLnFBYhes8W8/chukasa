@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
+import static pro.hirooka.chukasa.domain.config.ChukasaConstants.DEFAULT_HYARUKA_PASSWORD;
+import static pro.hirooka.chukasa.domain.config.ChukasaConstants.DEFAULT_HYARUKA_USERNAME;
 import static pro.hirooka.chukasa.domain.config.ChukasaConstants.FILE_SEPARATOR;
 
 @Service
@@ -172,8 +174,8 @@ public class RecorderOperator implements IRecorderOperator {
     }
 
     private String getHyarukaUri(String path){
-        final String HYARUKA_USERNAME = hyarukaConfiguration.getUsername();
-        final String HYARUKA_PASSWORD = hyarukaConfiguration.getPassword();
+        final String HYARUKA_USERNAME = getHyarukaUsername();
+        final String HYARUKA_PASSWORD = getHyarukaPassword();
         final String HYARUKA_SCHEME = hyarukaConfiguration.getScheme().name().toLowerCase();
         final String HYARUKA_HOST = hyarukaConfiguration.getHost();
         final int HYARUKA_PORT = hyarukaConfiguration.getPort();
@@ -182,5 +184,22 @@ public class RecorderOperator implements IRecorderOperator {
                 + HYARUKA_HOST + ":" + HYARUKA_PORT
                 + "/api" + path;
         return HYARUKA_URI;
+    }
+
+    // TODO:
+    private String getHyarukaUsername(){
+        if(hyarukaConfiguration.getUsername().equals("")) {
+            return DEFAULT_HYARUKA_USERNAME;
+        }else{
+            return hyarukaConfiguration.getUsername();
+        }
+    }
+
+    private String getHyarukaPassword(){
+        if(hyarukaConfiguration.getPassword().equals("")) {
+            return DEFAULT_HYARUKA_PASSWORD;
+        }else{
+            return hyarukaConfiguration.getPassword();
+        }
     }
 }

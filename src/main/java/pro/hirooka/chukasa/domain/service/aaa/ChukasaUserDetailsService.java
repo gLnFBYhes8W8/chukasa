@@ -16,6 +16,8 @@ import pro.hirooka.chukasa.domain.repository.aaa.*;
 import java.util.*;
 
 import static java.util.Objects.requireNonNull;
+import static pro.hirooka.chukasa.domain.config.ChukasaConstants.DEFAULT_PASSWORD;
+import static pro.hirooka.chukasa.domain.config.ChukasaConstants.DEFAULT_USERNAME;
 
 @Service
 public class ChukasaUserDetailsService implements IChukasaUserDetailsService {
@@ -58,6 +60,18 @@ public class ChukasaUserDetailsService implements IChukasaUserDetailsService {
         chukasaUserRoleList.add(adminChukasaUserRole);
         chukasaUserRoleList.add(guestChukasaUserRole);
 
+        final String username;
+        if(aaaConfiguration.getInitialUsername().equals("")){
+            username = DEFAULT_USERNAME;
+        }else{
+            username = aaaConfiguration.getInitialUsername();
+        }
+        final String password;
+        if(aaaConfiguration.getInitialPassword().equals("")){
+            password = DEFAULT_PASSWORD;
+        }else{
+            password = aaaConfiguration.getInitialPassword();
+        }
         ChukasaUserDetails chukasaUserDetails = new ChukasaUserDetails();
         chukasaUserDetails.setUsername(aaaConfiguration.getInitialUsername());
         chukasaUserDetails.setPassword(passwordEncoder.encode(aaaConfiguration.getInitialPassword()));

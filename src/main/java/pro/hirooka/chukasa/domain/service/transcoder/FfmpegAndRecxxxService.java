@@ -64,8 +64,8 @@ public class FfmpegAndRecxxxService implements IFfmpegAndRecxxxService {
 
         chukasaModel = chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
 
-        final String HYARUKA_USERNAME = hyarukaConfiguration.getUsername();
-        final String HYARUKA_PASSWORD = hyarukaConfiguration.getPassword();
+        final String HYARUKA_USERNAME = getHyarukaUsername();
+        final String HYARUKA_PASSWORD = getHyarukaPassword();
         final String HYARUKA_SCHEME = hyarukaConfiguration.getScheme().name();
         final String HYARUKA_HOST = hyarukaConfiguration.getHost();
         final int HYARUKA_PORT = hyarukaConfiguration.getPort();
@@ -326,5 +326,22 @@ public class FfmpegAndRecxxxService implements IFfmpegAndRecxxxService {
             chukasaModel.setFfmpegProcess(null);
         }
         chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
+    }
+
+    // TODO:
+    private String getHyarukaUsername(){
+        if(hyarukaConfiguration.getUsername().equals("")) {
+            return DEFAULT_HYARUKA_USERNAME;
+        }else{
+            return hyarukaConfiguration.getUsername();
+        }
+    }
+
+    private String getHyarukaPassword(){
+        if(hyarukaConfiguration.getPassword().equals("")) {
+            return DEFAULT_HYARUKA_PASSWORD;
+        }else{
+            return hyarukaConfiguration.getPassword();
+        }
     }
 }
