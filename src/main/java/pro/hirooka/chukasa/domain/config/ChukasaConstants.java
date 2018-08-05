@@ -24,7 +24,7 @@ public class ChukasaConstants {
     public static final String DEFAULT_USERNAME = "chukasa";
     public static final String DEFAULT_PASSWORD = DEFAULT_USERNAME;
     public static final String DEFAULT_HYARUKA_USERNAME = "hyaruka";
-    public static final String DEFAULT_HYARUKA_PASSWORD = DEFAULT_USERNAME;
+    public static final String DEFAULT_HYARUKA_PASSWORD = DEFAULT_HYARUKA_USERNAME;
 }
 
 // Mozilla/5.0 (iPhone; CPU iPhone OS 11_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/11.0 Mobile/15E148 Safari/604.1

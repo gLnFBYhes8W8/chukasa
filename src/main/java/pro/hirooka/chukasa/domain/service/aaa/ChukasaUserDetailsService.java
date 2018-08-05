@@ -73,8 +73,8 @@ public class ChukasaUserDetailsService implements IChukasaUserDetailsService {
             password = aaaConfiguration.getInitialPassword();
         }
         ChukasaUserDetails chukasaUserDetails = new ChukasaUserDetails();
-        chukasaUserDetails.setUsername(aaaConfiguration.getInitialUsername());
-        chukasaUserDetails.setPassword(passwordEncoder.encode(aaaConfiguration.getInitialPassword()));
+        chukasaUserDetails.setUsername(username);
+        chukasaUserDetails.setPassword(passwordEncoder.encode(password));
         chukasaUserDetails.setUserRoleList(chukasaUserRoleList);
         chukasaUserDetailsRepository.save(chukasaUserDetails);
     }
