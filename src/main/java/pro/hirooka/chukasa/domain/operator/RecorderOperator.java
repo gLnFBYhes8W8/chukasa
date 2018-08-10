@@ -182,7 +182,7 @@ public class RecorderOperator implements IRecorderOperator {
         final String HYARUKA_URI = HYARUKA_SCHEME.toLowerCase() + "://"
                 + HYARUKA_USERNAME + ":" + HYARUKA_PASSWORD + "@"
                 + HYARUKA_HOST + ":" + HYARUKA_PORT
-                + "/api" + path;
+                + "/api/v1" + path;
         return HYARUKA_URI;
     }
 

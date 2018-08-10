@@ -26,6 +26,7 @@ import pro.hirooka.chukasa.domain.service.transcoder.IFfmpegAndRecxxxService;
 import pro.hirooka.chukasa.domain.service.transcoder.IFfmpegService;
 
 import java.util.Date;
+import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.Future;
 
@@ -209,7 +210,7 @@ public class HlsOperator implements IHlsOperator {
                 final String HYARUKA_URI = HYARUKA_SCHEME.toLowerCase() + "://"
                         //+ HYARUKA_USERNAME + ":" + HYARUKA_PASSWORD + "@"
                         + HYARUKA_HOST + ":" + HYARUKA_PORT
-                        + "/api" + "/streams"
+                        + "/api/v1" + "/streams"
                         + "/" + chukasaModel.getChukasaSettings().getChannelRemoteControl();
                 log.info("{}", HYARUKA_URI);
                 RestTemplate restTemplate = new RestTemplate();
