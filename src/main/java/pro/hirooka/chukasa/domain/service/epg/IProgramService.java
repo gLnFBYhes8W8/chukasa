@@ -19,4 +19,5 @@ public interface IProgramService {
     List<Program> deleteByEnd(long threshold);
     void deleteAll();
     int getNumberOfPhysicalLogicalChannels();
+    List<Program> getOneDayFromNowByChannelRemoteControl(int channelRemoteControl);
 }

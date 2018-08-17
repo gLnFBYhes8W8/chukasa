@@ -11,7 +11,7 @@ import pro.hirooka.chukasa.domain.service.aaa.IChukasaUserDetailsService;
 
 import static java.util.Objects.requireNonNull;
 
-@RequestMapping("/login")
+@RequestMapping("login")
 @Controller
 public class LoginController {
 

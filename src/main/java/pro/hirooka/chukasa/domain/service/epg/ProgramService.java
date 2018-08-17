@@ -18,6 +18,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,6 +31,7 @@ public class ProgramService implements IProgramService {
 
     private final IProgramRepository programRepository;
     private final MongoDBConfiguration mongoDBConfiguration;
+    private final MongoTemplate mongoTemplate;
 
     @Autowired
     public ProgramService(
@@ -38,6 +40,13 @@ public class ProgramService implements IProgramService {
     ) {
         this.programRepository = requireNonNull(programRepository);
         this.mongoDBConfiguration = requireNonNull(mongoDBConfiguration);
+        this.mongoTemplate = new MongoTemplate(
+                new SimpleMongoDbFactory(new MongoClient(
+                        mongoDBConfiguration.getHost(),
+                        mongoDBConfiguration.getPort()),
+                        mongoDBConfiguration.getDatabase()
+                )
+        );
     }
 
     @Override
@@ -52,7 +61,8 @@ public class ProgramService implements IProgramService {
 
     @Override
     public List<Program> read(int channelRemoteControl) {
-        return programRepository.findAllByChannelRemoteControl(channelRemoteControl);
+        final Query query = new Query(Criteria.where("channelRemoteControl").is(channelRemoteControl)).with(new Sort(Sort.Direction.ASC, "start"));
+        return mongoTemplate.find(query, Program.class);
     }
 
     @Override
@@ -62,7 +72,23 @@ public class ProgramService implements IProgramService {
 
     @Override
     public List<Program> read(int ch, String beginDate) {
-        return null;
+
+        final Instant instant = Instant.ofEpochMilli(new Date().getTime());
+        final ZonedDateTime beginZonedDateTime = ZonedDateTime.ofInstant(instant, ZoneId.systemDefault());
+        final ZonedDateTime endZonedDateTime = ZonedDateTime.from(instant.atZone(ZoneId.systemDefault())).plusDays(1);
+        final long begin = beginZonedDateTime.toEpochSecond() * 1000;
+        final long end = endZonedDateTime.toEpochSecond() * 1000;
+
+        final MongoTemplate mongoTemplate = new MongoTemplate(
+                new SimpleMongoDbFactory(new MongoClient(
+                        mongoDBConfiguration.getHost(),
+                        mongoDBConfiguration.getPort()),
+                        mongoDBConfiguration.getDatabase()
+                )
+        );
+        final Query query = new Query(Criteria.where("channelRemoteControl").is(ch).and("end").gte(begin).and("start").lte(end)).with(new Sort(Sort.Direction.ASC, "start"));
+
+        return mongoTemplate.find(query, Program.class);
     }
 
     @Override
@@ -130,5 +156,20 @@ public class ProgramService implements IProgramService {
     @Override
     public int getNumberOfPhysicalLogicalChannels() {
         return programRepository.findAll().stream().map(Program::getChannel).collect(Collectors.toSet()).size();
+    }
+
+    @Override
+    public List<Program> getOneDayFromNowByChannelRemoteControl(int channelRemoteControl) {
+        final Instant instant = Instant.ofEpochMilli(new Date().getTime());
+        final ZonedDateTime beginZonedDateTime = ZonedDateTime.ofInstant(instant, ZoneId.systemDefault());
+        final ZonedDateTime endZonedDateTime = ZonedDateTime.from(instant.atZone(ZoneId.systemDefault())).plusDays(1);
+        final long begin = beginZonedDateTime.toEpochSecond() * 1000;
+        final long end = endZonedDateTime.toEpochSecond() * 1000;
+        final Query query = new Query(
+                Criteria.where("channelRemoteControl").is(channelRemoteControl)
+                        .and("end").gte(begin)
+                        .and("start").lte(end))
+                .with(new Sort(Sort.Direction.ASC, "start"));
+        return mongoTemplate.find(query, Program.class);
     }
 }

@@ -21,7 +21,7 @@ import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
-@RequestMapping("/programs")
+@RequestMapping("programs")
 @Controller
 public class ProgramController {
 
@@ -52,16 +52,19 @@ public class ProgramController {
 
     @GetMapping(value = "now")
     String readNow(Model model){
-        Date now = new Date();
-        List<Program> programList = programService.readByNow(now.getTime());
-        model.addAttribute("programList", programList);
+        model.addAttribute("programList", programService.readByNow(new Date().getTime()));
         return "programs/list";
     }
 
     @GetMapping(value = "{channelRemoteControl}")
     String read(@PathVariable int channelRemoteControl, Model model){
-        List<Program> programList = programService.read(channelRemoteControl);
-        model.addAttribute("programList", programList);
+        model.addAttribute("programList", programService.read(channelRemoteControl));
+        return "programs/list";
+    }
+
+    @GetMapping(value = "{channelRemoteControl}/day")
+    String getOneDayFromNowByChannelRemoteControl(@PathVariable int channelRemoteControl, Model model){
+        model.addAttribute("programList", programService.getOneDayFromNowByChannelRemoteControl(channelRemoteControl));
         return "programs/list";
     }
 
