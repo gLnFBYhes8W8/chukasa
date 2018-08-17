@@ -56,6 +56,7 @@ dependencies {
     compile group: 'commons-io', name: 'commons-io', version: commonsIoVersion // EPG too
 
     // UI
+    compile group: 'org.webjars.npm', name: 'material-components-web', version: '0.38.2'
     compile group: 'org.webjars', name: 'font-awesome', version: fontAwesome
     compile group: 'org.webjars', name: 'jquery', version: jQuery
     compile group: 'org.webjars.npm', name: 'popper.js', version: popperJs

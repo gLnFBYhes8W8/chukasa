@@ -5,25 +5,22 @@
     <title>chukasa</title>
 </head>
 
-<body>
+<body class="mdc-typography">
 
-<div class="container">
+<div class="mdc-layout-grid">
 
-    <hr/>
+    <a href="/chukasa"><button type="button" class="mdc-button mdc-button--raised">chukasa</button></a>
 
-    <a href="/chukasa"><button type="button" class="btn btn-primary">chukasa</button></a>
+    <br><br>
 
-    <hr/>
-
-    <a href="/programs/now"><button type="button" class="btn btn-primary">Program Table</button></a>
-
-    <hr/>
+    <a href="/programs/now"><button type="button" class="mdc-button mdc-button--raised">Program Table</button></a>
 
     <div th:replace="footer :: footer"></div>
 
-    <div th:replace="mdbootstrap-js :: mdbootstrap-js"></div>
-
 </div>
+
+<div th:replace="material-components-web-js :: material-components-web-js"></div>
+<script>mdc.autoInit()</script>
 
 </body>
 </html>

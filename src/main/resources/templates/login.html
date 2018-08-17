@@ -5,35 +5,42 @@
     <title>chukasa</title>
 </head>
 
-<body>
+<body class="mdc-typography">
 
-<div class="container">
+<div class="mdc-layout-grid">
 
 <a href="#" title="chukasa"><span><img src="/images/chukasa.jpg" height="180" width="211"></img></span></a>
 
+    <h2 class="mdc-typography--display2">chukasa</h2>
+    <p class="mdc-typography--body1">HTTP Live Streaming Server</p>
+
 <form th:action="@{/login}" method="post">
 
-    <div class="form-group">
-        <input type="text" class="form-control" id="username" name="username" placeholder="username">
+    <div class="mdc-text-field" data-mdc-auto-init="MDCTextField">
+        <input type="text" class="mdc-text-field__input" id="username" name="username">
+        <label for="username" class="mdc-floating-label">Username</label>
     </div>
 
-    <div class="form-group">
-        <input type="password" class="form-control" id="password" name="password" placeholder="password">
+    <br>
+
+    <div class="mdc-text-field" data-mdc-auto-init="MDCTextField">
+        <input type="password" class="mdc-text-field__input" id="password" name="password">
+        <label for="password" class="mdc-floating-label">Password</label>
     </div>
 
-    <div class="form-group">
-        <input  type="submit" class="btn btn-default" value="login"/>
-    </div>
+    <br><br>
+
+    <input type="submit" class="mdc-button mdc-button--raised" value="login"/>
+
+    <br><br>
 
 </form>
-
-<hr />
 
 <div th:insert="footer :: footer"></div>
 
 </div>
 
-<div th:replace="mdbootstrap-js :: mdbootstrap-js"></div>
-
+<div th:replace="material-components-web-js :: material-components-web-js"></div>
+<script>mdc.autoInit()</script>
 </body>
 </html>

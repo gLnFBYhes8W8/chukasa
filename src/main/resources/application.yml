@@ -66,6 +66,8 @@ spring:
   http:
     encoding:
       force: false
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.web.ErrorMvcAutoConfiguration
 ---
 spring:
   profiles: localhost-no-database
