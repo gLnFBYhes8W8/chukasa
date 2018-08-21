@@ -101,5 +101,16 @@ public class ProgramOperator implements IProgramOperator {
         return programList;
     }
 
+    @Override
+    public List<List<Program>> getOneDayFromNow() {
+        final List<List<Program>> listOfProgramList = new ArrayList<>(new ArrayList<>());
+        final List<ChannelConfiguration> channelConfigurationList = epgService.getChannelConfigurationList();
+        for(ChannelConfiguration channelConfiguration : channelConfigurationList){
+            final List<Program> programList = programService.getOneDayFromNowByChannelRemoteControl(channelConfiguration.getChannelRemoteControl());
+            listOfProgramList.add(programList);
+        }
+        return listOfProgramList;
+    }
+
 
 }

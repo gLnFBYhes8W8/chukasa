@@ -13,6 +13,7 @@ import pro.hirooka.chukasa.domain.model.epg.Program;
 import pro.hirooka.chukasa.domain.model.recorder.M4vTranscodingStatus;
 import pro.hirooka.chukasa.domain.model.recorder.RecordingStatus;
 import pro.hirooka.chukasa.domain.model.recorder.ReservedProgram;
+import pro.hirooka.chukasa.domain.operator.IProgramOperator;
 import pro.hirooka.chukasa.domain.service.epg.IProgramService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,6 +31,9 @@ public class ProgramController {
     private final IProgramService programService;
     private final HttpServletRequest httpServletRequest;
     private final IRecorderActivity recorderActivity;
+
+    @Autowired
+    IProgramOperator programOperator;
 
     @Autowired
     public ProgramController(
@@ -65,6 +69,12 @@ public class ProgramController {
     @GetMapping(value = "{channelRemoteControl}/day")
     String getOneDayFromNowByChannelRemoteControl(@PathVariable int channelRemoteControl, Model model){
         model.addAttribute("programList", programService.getOneDayFromNowByChannelRemoteControl(channelRemoteControl));
+        return "programs/list";
+    }
+
+    @GetMapping(value = "day")
+    String getOneDayFromNow(Model model){
+        model.addAttribute("listOfProgramList", programOperator.getOneDayFromNow());
         return "programs/list";
     }
 

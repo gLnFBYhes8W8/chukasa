@@ -3,7 +3,6 @@ plugins {
     id 'idea'
     id 'org.springframework.boot' version '2.0.4.RELEASE'
 }
-
 apply plugin: 'io.spring.dependency-management'
 
 group 'pro.hirooka'
@@ -17,23 +16,7 @@ repositories {
 }
 
 ext {
-    // HLS
-    bcprovVersion = '1.60'
-    commonsTextVersion = '1.4'
-    commonsIoVersion = '2.6'
 
-    // UI
-    fontAwesome = '4.7.0'
-    jQuery = '3.2.1'
-    popperJs = '1.13.0'
-    bootstrap = '4.0.0'
-    mdbootstrap = '4.5.3'
-
-    // API
-    springfoxSwaggerVersion = '2.8.0'
-
-    jaxbApiVersion = '2.3.0'
-    junitVersion = '4.12'
 }
 
 dependencies {
@@ -51,26 +34,26 @@ dependencies {
     testCompile 'org.springframework.boot:spring-boot-starter-test'
 
     // HLS
-    compile group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: bcprovVersion
-    compile group: 'org.apache.commons', name: 'commons-text', version: commonsTextVersion
-    compile group: 'commons-io', name: 'commons-io', version: commonsIoVersion // EPG too
+    compile group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.60'
+    compile group: 'org.apache.commons', name: 'commons-text', version: '1.4'
+    compile group: 'commons-io', name: 'commons-io', version: '2.6' // EPG too
 
     // UI
     compile group: 'org.webjars.npm', name: 'material-components-web', version: '0.38.2'
-    compile group: 'org.webjars', name: 'font-awesome', version: fontAwesome
-    compile group: 'org.webjars', name: 'jquery', version: jQuery
-    compile group: 'org.webjars.npm', name: 'popper.js', version: popperJs
-    compile group: 'org.webjars', name: 'bootstrap', version: bootstrap
-    compile group: 'org.webjars', name: 'mdbootstrap-bootstrap-material-design', version: mdbootstrap
+    compile group: 'org.webjars', name: 'font-awesome', version: '4.7.0'
+    compile group: 'org.webjars', name: 'jquery', version: '3.2.1'
+    compile group: 'org.webjars.npm', name: 'popper.js', version: '1.13.0'
+    compile group: 'org.webjars', name: 'bootstrap', version: '4.0.0'
+    compile group: 'org.webjars', name: 'mdbootstrap-bootstrap-material-design', version: '4.5.3'
 
     // API
-    compile group: 'io.springfox', name: 'springfox-swagger2', version: springfoxSwaggerVersion
-    compile group: 'io.springfox', name: 'springfox-swagger-ui', version: springfoxSwaggerVersion
+    compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.8.0'
+    compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.8.0'
 
     // Test
-    testCompile group: 'junit', name: 'junit', version: junitVersion
+    testCompile group: 'junit', name: 'junit', version: '4.12'
 
-    compile group: 'javax.xml.bind', name: 'jaxb-api', version: jaxbApiVersion // Spring Boot 2 + Java 10 + JPA workaround
+    compile group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.0' // Spring Boot 2 + Java 10 + JPA workaround
 }
 
 bootJar {

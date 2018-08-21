@@ -3,15 +3,14 @@ package pro.hirooka.chukasa.api.v1;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pro.hirooka.chukasa.domain.model.epg.Program;
 import pro.hirooka.chukasa.domain.model.recorder.M4vTranscodingStatus;
 import pro.hirooka.chukasa.domain.model.recorder.RecordingStatus;
 import pro.hirooka.chukasa.domain.model.recorder.ReservedProgram;
+import pro.hirooka.chukasa.domain.operator.IProgramOperator;
 import pro.hirooka.chukasa.domain.service.epg.IProgramService;
 import pro.hirooka.chukasa.domain.service.recorder.IRecorderService;
 
@@ -25,6 +24,9 @@ import java.util.List;
 public class ProgramRestController {
 
     private static final Logger log = LoggerFactory.getLogger(ProgramRestController.class);
+
+    @Autowired
+    IProgramOperator programOperator;
 
     @Autowired
     IProgramService programService;
@@ -55,6 +57,11 @@ public class ProgramRestController {
     List<Program> read(@PathVariable int channelRecording, @PathVariable String date){
         List<Program> programList = programService.read(channelRecording, date);
         return programList;
+    }
+
+    @GetMapping(value = "day")
+    List<List<Program>> getOneDayFromNow(Model model){
+        return programOperator.getOneDayFromNow();
     }
 
     @RequestMapping(value = "create", method = RequestMethod.POST)

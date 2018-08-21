@@ -172,4 +172,9 @@ public class ProgramService implements IProgramService {
                 .with(new Sort(Sort.Direction.ASC, "start"));
         return mongoTemplate.find(query, Program.class);
     }
+
+    @Override
+    public List<List<Program>> getOneDayFromNow() {
+        return null;
+    }
 }

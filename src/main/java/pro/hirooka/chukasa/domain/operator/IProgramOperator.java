@@ -7,4 +7,5 @@ import java.util.List;
 public interface IProgramOperator {
     void deleteOldProgramList();
     List<Program> getProgramListNow();
+    List<List<Program>> getOneDayFromNow();
 }
