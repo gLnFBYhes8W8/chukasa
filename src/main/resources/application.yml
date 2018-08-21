@@ -62,12 +62,9 @@ spring:
       ddl-auto: create-drop
   thymeleaf:
     cache: false
-      # m3u8, ts の Content-Type に ; charset=UTF-8 が付くのを防ぐ
   http:
     encoding:
-      force: false
-  autoconfigure:
-    exclude: org.springframework.boot.autoconfigure.web.ErrorMvcAutoConfiguration
+      force: false # m3u8, ts の Content-Type に ; charset=UTF-8 が付くのを防ぐ
 ---
 spring:
   profiles: localhost-no-database
