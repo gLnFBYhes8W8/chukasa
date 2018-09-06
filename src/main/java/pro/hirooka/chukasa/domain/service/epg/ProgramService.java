@@ -61,7 +61,7 @@ public class ProgramService implements IProgramService {
 
     @Override
     public List<Program> read(int channelRemoteControl) {
-        final Query query = new Query(Criteria.where("channelRemoteControl").is(channelRemoteControl)).with(new Sort(Sort.Direction.ASC, "start"));
+        final Query query = new Query(Criteria.where("channelRemoteControl").is(channelRemoteControl)).with(new Sort(Sort.Direction.ASC, "begin"));
         return mongoTemplate.find(query, Program.class);
     }
 
@@ -86,7 +86,7 @@ public class ProgramService implements IProgramService {
                         mongoDBConfiguration.getDatabase()
                 )
         );
-        final Query query = new Query(Criteria.where("channelRemoteControl").is(ch).and("end").gte(begin).and("start").lte(end)).with(new Sort(Sort.Direction.ASC, "start"));
+        final Query query = new Query(Criteria.where("channelRemoteControl").is(ch).and("end").gte(begin).and("begin").lte(end)).with(new Sort(Sort.Direction.ASC, "begin"));
 
         return mongoTemplate.find(query, Program.class);
     }
@@ -94,7 +94,7 @@ public class ProgramService implements IProgramService {
     @Override
     public List<Program> readByNow(long now) {
         MongoTemplate mongoTemplate = new MongoTemplate(new SimpleMongoDbFactory(new MongoClient(mongoDBConfiguration.getHost(), mongoDBConfiguration.getPort()), mongoDBConfiguration.getDatabase()));
-        Query query = new Query(Criteria.where("start").lte(now).and("end").gte(now)).with(new Sort(Sort.Direction.ASC, "channelRemoteControl"));
+        Query query = new Query(Criteria.where("begin").lte(now).and("end").gte(now)).with(new Sort(Sort.Direction.ASC, "channelRemoteControl"));
         return mongoTemplate.find(query, Program.class);
     }
 
@@ -168,8 +168,8 @@ public class ProgramService implements IProgramService {
         final Query query = new Query(
                 Criteria.where("channelRemoteControl").is(channelRemoteControl)
                         .and("end").gte(begin)
-                        .and("start").lte(end))
-                .with(new Sort(Sort.Direction.ASC, "start"));
+                        .and("begin").lte(end))
+                .with(new Sort(Sort.Direction.ASC, "begin"));
         return mongoTemplate.find(query, Program.class);
     }
 
