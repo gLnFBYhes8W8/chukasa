@@ -1,33 +1,35 @@
-# Ubuntu 18.04, ubuntu-18.04-desktop-amd64
+# Ubuntu 18.04.1, ubuntu-18.04.1-desktop-amd64.iso
 # GeForce GTX 1050 NVENC
 
 # uname -a
-# Linux ubuntu 4.15.0-20-generic #21-Ubuntu SMP Tue Apr 24 06:16:15 UTC 2018 x86_64 x86_64 x86_64 GNU/Linux
+# Linux dev 4.15.0-29-generic #31-Ubuntu SMP Tue Jul 17 15:39:52 UTC 2018 x86_64 x86_64 x86_64 GNU/Linux
 
 /*******************************************************
 # cat /etc/lsb-release
 DISTRIB_ID=Ubuntu
 DISTRIB_RELEASE=18.04
 DISTRIB_CODENAME=bionic
-DISTRIB_DESCRIPTION="Ubuntu 18.04 LTS"
+DISTRIB_DESCRIPTION="Ubuntu 18.04.1 LTS"
 /*******************************************************
 
 /*******************************************************
 # df -h
 Filesystem      Size  Used Avail Use% Mounted on
 udev            7.8G     0  7.8G   0% /dev
-tmpfs           1.6G  1.7M  1.6G   1% /run
-/dev/sda1       110G  6.0G   99G   6% /
-tmpfs           7.8G     0  7.8G   0% /dev/shm
+tmpfs           1.6G  1.9M  1.6G   1% /run
+/dev/sda1       110G  6.2G   98G   6% /
+tmpfs           7.8G  101M  7.7G   2% /dev/shm
 tmpfs           5.0M  4.0K  5.0M   1% /run/lock
 tmpfs           7.8G     0  7.8G   0% /sys/fs/cgroup
-tmpfs           1.6G   52K  1.6G   1% /run/user/1000
-/dev/loop0       87M   87M     0 100% /snap/core/4486
-/dev/loop1      141M  141M     0 100% /snap/gnome-3-26-1604/59
-/dev/loop2      1.7M  1.7M     0 100% /snap/gnome-calculator/154
-/dev/loop3       13M   13M     0 100% /snap/gnome-characters/69
-/dev/loop4       21M   21M     0 100% /snap/gnome-logs/25
-/dev/loop5      3.4M  3.4M     0 100% /snap/gnome-system-monitor/36
+tmpfs           1.6G   16K  1.6G   1% /run/user/121
+/dev/loop0       87M   87M     0 100% /snap/core/4917
+/dev/loop1       35M   35M     0 100% /snap/gtk-common-themes/319
+/dev/loop2      141M  141M     0 100% /snap/gnome-3-26-1604/70
+/dev/loop3      2.4M  2.4M     0 100% /snap/gnome-calculator/180
+/dev/loop4       13M   13M     0 100% /snap/gnome-characters/103
+/dev/loop5       15M   15M     0 100% /snap/gnome-logs/37
+/dev/loop6      3.8M  3.8M     0 100% /snap/gnome-system-monitor/51
+tmpfs           1.6G   60K  1.6G   1% /run/user/1000
 /*******************************************************
 
 /****************************************************************
@@ -56,13 +58,47 @@ sudo apt-get update
 /****************************************************************
  Package
 ****************************************************************/
-sudo apt-get -y install build-essential git wget libasound2-dev autoconf libtool pcsc-tools pkg-config libpcsclite-dev pcscd cmake yasm curl ssh
+sudo apt-get -y install build-essential git wget libasound2-dev \
+  autoconf libtool pcsc-tools pkg-config libpcsclite-dev pcscd \
+  cmake yasm curl ssh
 
 /****************************************************************
  NVIDIA Driver
 ****************************************************************/
-sudo ubuntu-drivers autoinstall
+###sudo ubuntu-drivers autoinstall
+# CUDA Toolkit 10.0 https://developer.nvidia.com/cuda-toolkit
+sudo dpkg -i cuda-repo-ubuntu1804-10-0-local-10.0.130-410.48_1.0-1_amd64.deb
+sudo apt-key add /var/cuda-repo-10-0-local-10.0.130-410.48/7fa2af80.pub
+sudo apt-get update
+sudo apt-get install cuda
+echo '' >> ~/.profile
+echo 'export PATH=/usr/local/cuda/bin:$PATH' >> ~/.profile
+echo 'export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH' >> ~/.profile
+source ~/.profile
 sudo reboot
+
+nvidia-smi
+Fri Dec 21 21:36:35 2018
++-----------------------------------------------------------------------------+
+| NVIDIA-SMI 410.48                 Driver Version: 410.48                    |
+|-------------------------------+----------------------+----------------------+
+| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|===============================+======================+======================|
+|   0  GeForce GTX 1050    Off  | 00000000:01:00.0  On |                  N/A |
+| 45%   45C    P0    N/A /  75W |    512MiB /  1999MiB |      4%      Default |
++-------------------------------+----------------------+----------------------+
+
++-----------------------------------------------------------------------------+
+| Processes:                                                       GPU Memory |
+|  GPU       PID   Type   Process name                             Usage      |
+|=============================================================================|
+|    0       908      G   /usr/lib/xorg/Xorg                            40MiB |
+|    0       959      G   /usr/bin/gnome-shell                          49MiB |
+|    0      1219      G   /usr/lib/xorg/Xorg                           211MiB |
+|    0      1362      G   /usr/bin/gnome-shell                         132MiB |
+|    0     10075      G   ...quest-channel-token=4410927296771017467    76MiB |
++-----------------------------------------------------------------------------+
 
 /****************************************************************
  Temprary Directory
@@ -106,9 +142,9 @@ cd ~/chukasa_temporary && \
     sudo make install
 
 cd ~/chukasa_temporary && \
-    wget http://ffmpeg.org/releases/ffmpeg-4.0.2.tar.bz2 && \
-    tar jxvf ffmpeg-4.0.2.tar.bz2 && \
-    cd ffmpeg-4.0.2 && \
+    wget http://ffmpeg.org/releases/ffmpeg-4.1.tar.bz2 && \
+    tar jxvf ffmpeg-4.1.tar.bz2 && \
+    cd ffmpeg-4.1 && \
     ./configure --disable-shared --enable-static && \
     make -j$(nproc) && \
     sudo make install
@@ -118,9 +154,9 @@ cd ~/chukasa_temporary && \
 ****************************************************************/
 cd ~/chukasa_temporary && \
     sudo apt-get -y install libpcre3-dev libpcre++-dev libssl-dev zlibc zlib1g zlib1g-dev && \
-    wget http://nginx.org/download/nginx-1.15.1.tar.gz && \
-    tar zxvf nginx-1.15.1.tar.gz && \
-    cd nginx-1.15.1 && \
+    wget http://nginx.org/download/nginx-1.15.7.tar.gz && \
+    tar zxvf nginx-1.15.7.tar.gz && \
+    cd nginx-1.15.7 && \
     ./configure --with-http_ssl_module --with-ipv6 --with-http_v2_module && \
     make -j$(nproc) && \
     sudo make install
@@ -128,9 +164,8 @@ cd ~/chukasa_temporary && \
 /****************************************************************
  MongoDB
 ****************************************************************/
-// TODO: MongoDB 4.0 (libcurl3) <-- conflict --> Ubuntu 18.04 (libcurl4)
-sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5
-echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.6 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.6.list
+sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 9DA31620334BD75D9DCB49F368818C72E52529D4
+echo "deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.0.list
 sudo apt-get update
 sudo apt-get install -y mongodb-org
 sudo systemctl enable mongod
@@ -139,9 +174,13 @@ sudo systemctl start mongod
 /****************************************************************
  Java
 ****************************************************************/
-sudo add-apt-repository ppa:linuxuprising/java
-sudo apt-get update
-sudo apt-get -y install oracle-java10-installer
+cd ~/chukasa_temporary
+curl -O https://download.java.net/java/GA/jdk11/13/GPL/openjdk-11.0.1_linux-x64_bin.tar.gz
+sudo mkdir /usr/lib/jvm
+sudo tar zxvf openjdk-11.0.1_linux-x64_bin.tar.gz -C /usr/lib/jvm/
+sudo sh -c "echo 'export JAVA_HOME=/usr/lib/jvm/jdk-11.0.1' >> /etc/profile.d/jdk.sh"
+sudo sh -c "echo 'export PATH=\$JAVA_HOME/bin:\$PATH' >> /etc/profile.d/jdk.sh"
+source /etc/profile.d/jdk.sh
 
 /****************************************************************
  Reboot
@@ -218,6 +257,9 @@ http://localhost:8080/api/v1/chukasa/stop
 ****************************************************************/
 # Input Japanase
 # https://hirooka.pro/?p=9679
+
+# mount HDD
+# https://hirooka.pro/?p=8450
 
 # Google Chrome
 sudo dpkg -i google-chrome-stable_current_amd64.deb
